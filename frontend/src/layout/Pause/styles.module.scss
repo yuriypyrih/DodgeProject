@@ -1,0 +1,44 @@
+.root {
+  z-index: 1000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(
+    -45deg,
+    #98989825 0%,
+    #98989825 19%,
+    #c6c6c632 20%,
+    #c6c6c632 35%,
+    #98989825 36%,
+    #98989825 59%,
+    #c6c6c632 60%,
+    #c6c6c632 75%,
+    #98989825 76%,
+    #98989825 100%
+  );
+}
+
+.container {
+  background: #2b2b2c;
+  border: 1px solid #2dd5c4;
+  border-radius: 4px;
+  box-shadow: 0 0 2rem #2dd5c420;
+  padding: 24px;
+  text-align: center;
+  min-width: 500px;
+}
+
+.button {
+  &:global(.MuiButton-root) {
+    padding: 4px;
+    color: white;
+    min-width: 200px;
+    background: #00afa3;
+    border: 2px solid #2dd5c4;
+  }
+}

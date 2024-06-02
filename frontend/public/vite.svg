@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <!-- Trail part 1 (more transparent) -->
+    <rect x="4" y="4" width="20" height="20" fill="#2dd5c4" fill-opacity="0.3"/>
+    <!-- Trail part 2 (less transparent) -->
+    <rect x="8" y="8" width="20" height="20" fill="#2dd5c4" fill-opacity="0.5"/>
+    <!-- Main Square -->
+    <rect x="12" y="12" width="20" height="20" fill="#2dd5c4"/>
+</svg>

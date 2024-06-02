@@ -1,0 +1,136 @@
+@import '../../Theme/_variables';
+
+@mixin createPulseKeyframes($name, $color, $maxOpacity: 0.6) {
+  @keyframes #{$name} {
+    0% {
+      border: 1px solid #2dd5c4;
+      //box-shadow: 0 0 2rem rgba(#2dd5c4, 0.2);
+    }
+
+    30% {
+      border: 1px solid $color;
+      box-shadow: 0 0 2.4rem rgba($color, $maxOpacity);
+    }
+
+    100% {
+      border: 1px solid #2dd5c4;
+      // box-shadow: 0 0 2rem rgba(#2dd5c4, 0.2);
+    }
+  }
+}
+
+@keyframes pulsePortalOrange {
+  0% {
+    box-shadow: inset 50px 0 50px -50px #2dd5c400;
+  }
+
+  30% {
+    box-shadow: inset 50px 0 50px -50px #ff934d60;
+  }
+
+  100% {
+    box-shadow: inset 50px 0 50px -50px #2dd5c400;
+  }
+}
+
+@keyframes pulsePortalBlue {
+  0% {
+    box-shadow: inset -50px 0 50px -50px #2dd5c400;
+  }
+
+  30% {
+    box-shadow: inset -50px 0 50px -50px #4db9ff60;
+  }
+
+  100% {
+    box-shadow: inset -50px 0 50px -50px #2dd5c400;
+  }
+}
+
+@keyframes pulseImmune {
+  0% {
+    border: 1px solid #2dd5c4;
+  }
+
+  20% {
+    border: 1px solid $GOLD;
+    box-shadow: 0 0 2.4rem rgba($GOLD, 1);
+  }
+
+  100% {
+    border: 1px solid #2dd5c4;
+  }
+}
+
+@include createPulseKeyframes('pulseRed', $RED);
+@include createPulseKeyframes('pulseLightBlue', $LIGHT_BLUE);
+@include createPulseKeyframes('pulseGreen', $AQUA);
+@include createPulseKeyframes('pulseHacked', $GREEN);
+@include createPulseKeyframes('pulsePurple', $PURPLE, 0.4);
+@include createPulseKeyframes('pulseGold', $GOLD, 0.3);
+@include createPulseKeyframes('pulseBlack', $BLACK);
+
+.root {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  border: 1px solid #2dd5c4;
+  box-shadow: 0 0 2rem #2dd5c402;
+  overflow: hidden;
+  transition: all;
+}
+
+.innerContainer {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transition: all;
+}
+
+.PULSE_RED_ANIMATION {
+  animation: pulseRed 0.7s ease-in;
+}
+
+.PULSE_LIGHT_BLUE_ANIMATION {
+  animation: pulseLightBlue 0.7s ease-in;
+}
+
+.PULSE_GREEN_ANIMATION {
+  animation: pulseGreen 0.7s ease-in;
+}
+
+.PULSE_HACKED_ANIMATION {
+  animation: pulseHacked 0.7s ease-in;
+}
+
+.PULSE_PURPLE_ANIMATION {
+  animation: pulsePurple 3s;
+}
+
+.PULSE_PORTAL_ORANGE {
+  animation: pulsePortalOrange 0.5s ease-out;
+}
+
+.PULSE_PORTAL_BLUE {
+  animation: pulsePortalBlue 0.5s ease-out;
+}
+
+.PULSE_GOLD_ANIMATION {
+  animation: pulseGold 0.7s ease-out;
+}
+
+.PULSE_IMMUNITY_ANIMATION {
+  animation: pulseImmune 2s ease-out;
+}
+
+.PULSE_DEATHMARK {
+  animation: pulseBlack 3s ease-out;
+}
+
+.nightVisionEffect {
+  background: radial-gradient(#2e790150 0%, #01230100 60%, #01230100 100%);
+}

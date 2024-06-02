@@ -1,0 +1,39 @@
+
+services:
+  dodge_mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=deskAdmin
+      - MONGO_INITDB_ROOT_PASSWORD=deskPassword
+      - MONGO_INITDB_DATABASE=dodgeDatabase
+    command: |
+      bash -c "mongod --auth --bind_ip_all --fork --logpath /var/log/mongodb.log && \
+      mongo --eval 'db.createUser({user: \"deskAdmin\", pwd: \"deskPassword\", roles: [{ role: \"readWrite\", db: \"dodgeDatabase\" }]})' dodgeDatabase && \
+      tail -f /dev/null"
+    volumes:
+      - mongo-data:/data/db
+
+  dodge_backend:
+    build:
+      context: ./DodgerBackend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./DodgerBackend/.env
+    depends_on:
+      - dodge_mongo
+
+  dodge_frontend:
+    build:
+      context: ./DodgeReactFrontend
+    ports:
+      - "3000:80"
+    env_file:
+      - ./DodgeReactFrontend/.env.local
+    depends_on:
+      - dodge_backend
+
+volumes:
+  mongo-data:

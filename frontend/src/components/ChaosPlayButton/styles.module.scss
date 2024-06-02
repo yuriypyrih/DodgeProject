@@ -1,0 +1,27 @@
+.root {
+  &:global(.MuiButton-root) {
+    width: 250px;
+    height: 300px;
+    background: #00afa3;
+    border: 4px solid #2dd5c4;
+    border-radius: 4px;
+    position: relative;
+    color: white;
+  }
+}
+
+.locked {
+  &:global(.MuiButton-root) {
+    background: #808080;
+    border: 4px solid #5a5a5a;
+  }
+}
+
+.locker {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  color: #bfbfbf;
+  right: -12px;
+  top: -12px;
+}

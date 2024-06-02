@@ -1,0 +1,43 @@
+.root {
+  padding: 16px;
+  height: 100%;
+  background: #2b2b2c;
+}
+
+.textarea {
+  & :global(.MuiOutlinedInput-root) {
+    fieldset {
+      border-color: #2dd5c4;
+    }
+
+    &:not(:global(.Mui-disabled)):hover fieldset {
+      border-color: #2dd5c4;
+    }
+
+    & :global(.MuiInputBase-input::placeholder) {
+      color: #ffffffaa;
+    }
+
+    & :global(.MuiInputLabel-root) {
+      color: #2dd5c4;
+    }
+
+    & :global(.MuiInputLabel-root.Mui-disabled) {
+      color: #2dd5c4;
+    }
+  }
+}
+
+.paginatorBtn {
+  width: 30px;
+  height: 30px;
+}
+
+.relicIcon {
+  width: 34px;
+  height: 34px;
+  padding: 6px;
+  background: #2b2b2c;
+  border-radius: 99px;
+  margin-right: 8px;
+}

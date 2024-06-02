@@ -1,0 +1,40 @@
+.root {
+  background: #2b2b2c;
+  height: 100%;
+  animation: popOut 0.4s forwards;
+  box-shadow:
+    inset 0 0 10px #2dd5c4,
+    inset 0 0 40px rgba(#2dd5c4, 0.4);
+}
+
+.container {
+  padding: 24px;
+  min-width: 400px;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+}
+
+//.button {
+//  &:global(.MuiButton-root) {
+//    padding: 4px;
+//    color: white;
+//    min-width: 200px;
+//    background: #00afa3;
+//    border: 2px solid #00afa3;
+//  }
+//}
+
+@keyframes popOut {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,14 @@
+.root {
+  & fieldset {
+    border-radius: 8px;
+    border-color: #2dd5c4;
+  }
+
+  &:hover fieldset {
+    border-color: #2dd5c4 !important;
+  }
+
+  &.Mui-focused fieldset {
+    box-shadow: 0 0 2rem #2dd5c402;
+  }
+}

@@ -1,0 +1,50 @@
+.root {
+  padding: 16px;
+  height: 100%;
+  background: #2b2b2c;
+}
+
+.journalBtn {
+  padding: 4px 16px;
+  background: #00afa3;
+  border: 2px solid #2dd5c4;
+  border-radius: 4px;
+  color: white;
+}
+
+.relicBtn {
+  padding: 4px;
+  background: #00afa3;
+  border: 2px solid #2dd5c4;
+  border-radius: 99px 4px 4px 99px;
+  color: white;
+}
+
+.disabledBtn {
+  background: #808080;
+  border: 4px solid #5a5a5a;
+}
+
+.starsBtn {
+  position: relative;
+  padding: 4px 8px;
+  background: #00afa3;
+  border: 2px solid #2dd5c4;
+  user-select: none;
+  border-radius: 4px;
+  color: white;
+}
+
+.paginatorBtn {
+  width: 30px;
+  height: 30px;
+}
+
+.relicIcon {
+  width: 34px;
+  height: 34px;
+  padding: 6px;
+  background: #2b2b2c;
+  border-radius: 99px;
+  margin-right: 8px;
+}
