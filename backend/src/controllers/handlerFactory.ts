@@ -2,7 +2,7 @@ import catchAsync from '../utils/catchAsync';
 import { AppError } from '../utils/appError';
 // import APIFeatures from '../utils/apiFeatures';
 
-const deleteOne = Model =>
+const deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findByIdAndDelete(req.params.id);
 
@@ -16,7 +16,7 @@ const deleteOne = Model =>
     });
   });
 
-const updateOne = Model =>
+const updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -35,7 +35,7 @@ const updateOne = Model =>
     });
   });
 
-const createOne = Model =>
+const createOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.create(req.body);
 
@@ -63,7 +63,7 @@ const getOne = (Model, popOptions?: any) =>
     });
   });
 
-const getAll = Model =>
+const getAll = (Model) =>
   catchAsync(async (req, res, next) => {
     // To allow for nested GET reviews on tour (hack)
     let filter = {};

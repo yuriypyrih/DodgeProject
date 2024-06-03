@@ -12,7 +12,7 @@ This project leverages a variety of modern technologies:
 - **Game Engine**: Custom made engine using HTML Canvas and RequestAnimationFrame for the game loop
 - **Front End**: ReactJs, Redux (RTK), Material-UI, Axios
 - **Design**: Adobe XD, Illustrator, and the power of CSS animations
-- **Back End**: NodeJs (ExpressJS), MongoDB, JWT Authentication (Check Dodge Backend Repo for Source)
+- **Back End**: NodeJs (ExpressJS), MongoDB, JWT Authentication 
 
 Stay tuned for a Dev Blog where I will dive deeper into the creation process and the tools used.
 
@@ -30,8 +30,3 @@ To get started with The Dodge, follow these steps:
 
 1. You will need to have both the Backend + Database running for this and a local env file (more info later)
 
-2. Clone the report and then:
-   ```bash
-   npm install
-   npm start
-   ```

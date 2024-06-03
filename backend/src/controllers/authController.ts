@@ -9,7 +9,7 @@ import { sendEmail } from '../utils/email';
 import { env } from '../utils/env';
 import { ERROR_CODE } from '../data/ERROR_CODE';
 
-const signToken = id => {
+const signToken = (id) => {
   return jwt.sign({ id }, env.JWT_SECRET, {
     expiresIn: env.JWT_EXPIRES_IN
   });

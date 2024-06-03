@@ -28,26 +28,26 @@ paths:
                   type: string
                   default: johnDoe20!@
       responses:
-        "201":
+        '201':
           description: Created
-        "404":
+        '404':
           description: Not Found
-        "409":
+        '409':
           description: Conflict
-        "500":
+        '500':
           description: Server Error
   /users:
     get:
       summary: Retrieve a list of users
       responses:
-        "200":
+        '200':
           description: A list of users
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
+                  $ref: '#/components/schemas/User'
 components:
   schemas:
     User:

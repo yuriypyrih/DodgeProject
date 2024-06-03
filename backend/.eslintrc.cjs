@@ -6,7 +6,7 @@ module.exports = {
     es2021: true
   },
   extends: [
-    '../.eslintrc.cjs', // Extend the common configuration
+    '../.eslintrc.cjs' // Extend the common configuration
   ],
   parserOptions: {
     ecmaVersion: 12
@@ -16,5 +16,5 @@ module.exports = {
     'node/no-unsupported-features/es-syntax': 'off',
     'space-before-function-paren': 'off'
   },
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
+  ignorePatterns: ['dist', '.eslintrc.cjs']
 };

@@ -1,6 +1,6 @@
 import { AppError } from '../utils/appError';
 
-const handleCastErrorDB = err => {
+const handleCastErrorDB = (err) => {
   const message = ` Invalid ${err.path}: ${err.value}.`;
   return new AppError(message, 400);
 };
@@ -9,9 +9,9 @@ const handleCastErrorDB = err => {
 //     const value
 // }
 
-const handleValidationErrorDB = err => {
+const handleValidationErrorDB = (err) => {
   // @ts-ignore
-  const errors = Object.values(err.errors).map(el => el.messages);
+  const errors = Object.values(err.errors).map((el) => el.messages);
 
   const message = `Invalid input data. ${errors.join('. ')}`;
   return new AppError(message, 400);

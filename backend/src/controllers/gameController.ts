@@ -76,7 +76,7 @@ export const beatLevel = catchAsync(async (req, res, next) => {
   //  Add the Stars to the User
   if (stars) foundUser.stars += stars;
 
-  const foundIndex = Object.keys(LEVELS).findIndex(lvl => lvl === level);
+  const foundIndex = Object.keys(LEVELS).findIndex((lvl) => lvl === level);
   if (foundIndex === -1) return next(new AppError('Invalid level name', 500));
   const lastRun: any = { lastRecord: null, newRecord: null, score };
 
@@ -148,7 +148,7 @@ const getTopRecords = async (user: IUser, level: LEVELS) => {
     .lean();
 
   if (userRecord) {
-    const userInTop10 = topRecords.some(record =>
+    const userInTop10 = topRecords.some((record) =>
       new mongoose.Types.ObjectId(record.userId._id).equals(
         userRecord.userId._id
       )
@@ -166,7 +166,7 @@ const getTopRecords = async (user: IUser, level: LEVELS) => {
     }
   }
 
-  return topRecords.map(record => ({
+  return topRecords.map((record) => ({
     ...record,
     userName: (record.userId as unknown as { name: string }).name,
     userId: record.userId._id

@@ -17,13 +17,13 @@ import connectDB from './database';
 import { env } from './utils/env';
 import { setupSwagger } from './swagger';
 
-process.on('uncaughtException', err => {
+process.on('uncaughtException', (err) => {
   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
   console.log(err.name, err.message);
   process.exit(1);
 });
 
-process.on('unhandledRejection', err => {
+process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION! 💥 Shutting down...');
   console.log('Error:', err);
   process.exit(1);
