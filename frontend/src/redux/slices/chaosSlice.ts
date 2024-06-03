@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { ScoreRecord } from '../../Models/ScoreRecord.ts';
-import { getLeaderboardsRequest } from '../../lib/api/http/requests/chaos.ts';
+import { ScoreRecord } from 'Models/ScoreRecord';
+import { getLeaderboardsRequest } from '../../lib/api/http/requests/chaos';
 
 export const getLeaderboards = createAsyncThunk('chaosData/getLeaderboards', async (_params, thunkAPI) => {
   try {

@@ -1,4 +1,4 @@
-@import '../../Theme/_variables';
+@import "../../Theme/_variables";
 
 @mixin createPulseKeyframes($name, $color, $maxOpacity: 0.6) {
   @keyframes #{$name} {
@@ -62,13 +62,13 @@
   }
 }
 
-@include createPulseKeyframes('pulseRed', $RED);
-@include createPulseKeyframes('pulseLightBlue', $LIGHT_BLUE);
-@include createPulseKeyframes('pulseGreen', $AQUA);
-@include createPulseKeyframes('pulseHacked', $GREEN);
-@include createPulseKeyframes('pulsePurple', $PURPLE, 0.4);
-@include createPulseKeyframes('pulseGold', $GOLD, 0.3);
-@include createPulseKeyframes('pulseBlack', $BLACK);
+@include createPulseKeyframes("pulseRed", $RED);
+@include createPulseKeyframes("pulseLightBlue", $LIGHT_BLUE);
+@include createPulseKeyframes("pulseGreen", $AQUA);
+@include createPulseKeyframes("pulseHacked", $GREEN);
+@include createPulseKeyframes("pulsePurple", $PURPLE, 0.4);
+@include createPulseKeyframes("pulseGold", $GOLD, 0.3);
+@include createPulseKeyframes("pulseBlack", $BLACK);
 
 .root {
   top: 0;

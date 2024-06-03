@@ -2,8 +2,11 @@
   "extends": "stylelint-config-recommended-scss",
   "rules": {
     "scss/at-if-no-null": null,
-    "selector-pseudo-class-no-unknown": [true, {
-      "ignorePseudoClasses": ["global"]
-    }]
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["global"]
+      }
+    ]
   }
 }

@@ -88,7 +88,7 @@
   align-items: center;
 
   &::before {
-    content: '';
+    content: "";
     z-index: 10;
     display: inline-block;
     width: 36px;
@@ -166,7 +166,7 @@
     transition: width 0.2s ease-out;
 
     &::before {
-      content: '';
+      content: "";
       display: block;
       position: relative;
       transform: skew(-20deg);

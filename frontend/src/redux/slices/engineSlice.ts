@@ -1,5 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import Game from "../../game/engine/game";
+import { createSlice } from '@reduxjs/toolkit';
+import Game from '../../game/engine/game';
 
 type engineSliceType = {
   game: Game | null;
@@ -10,7 +10,7 @@ const initialState: engineSliceType = {
 };
 
 const engineSlice = createSlice({
-  name: "engine",
+  name: 'engine',
   initialState,
 
   reducers: {

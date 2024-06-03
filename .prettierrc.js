@@ -6,7 +6,7 @@ module.exports = {
   tabWidth: 2,
   useTabs: false,
   bracketSpacing: true,
-  arrowParens: 'avoid',
+  arrowParens: 'always',
   overrides: [
     {
       files: ['*.css', '*.scss'],

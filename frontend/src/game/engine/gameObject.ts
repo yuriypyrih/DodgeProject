@@ -1,5 +1,5 @@
-import { ENTITY_ID } from "../enum/entitiy_id";
-import { Rectangle } from "../types/Rectangle";
+import { ENTITY_ID } from '../enum/entitiy_id';
+import { Rectangle } from '../types/Rectangle';
 
 type GameObjectProps = {
   id: ENTITY_ID;
