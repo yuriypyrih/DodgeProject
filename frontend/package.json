@@ -8,7 +8,12 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "generate-types": "node ./src/scripts/generateApi.js"
+    "generate-types": "node ./src/scripts/generateApi.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "engines": {
+    "node": "20.x"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",

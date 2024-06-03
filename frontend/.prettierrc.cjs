@@ -1,13 +1,14 @@
 module.exports = {
-    singleQuote: true,
-    trailingComma: 'all',
+    ...require('../.prettierrc.js'), // Extend the base configuration
+
+
+
+
+
+
+
+
+
+
     printWidth: 120,
-    overrides: [
-        {
-            files: ['*/.css', '*/.scss'],
-            options: {
-                singleQuote: false,
-            },
-        },
-    ],
 };

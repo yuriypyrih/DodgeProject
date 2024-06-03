@@ -1,0 +1,27 @@
+{
+  "name": "dodgeproject",
+  "version": "1.0.0",
+  "description": "Dodge Project",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "tsc": "npm run tsc:frontend && npm run tsc:backend",
+    "tsc:frontend": "tsc --project ./frontend/tsconfig.json",
+    "tsc:backend": "tsc --project ./backend/tsconfig.json"
+  },
+  "keywords": [],
+  "author": "YURIY PYRIH",
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.11.0",
+    "@typescript-eslint/parser": "^7.11.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "prettier": "^3.3.0",
+    "typescript": "^5.4.5"
+  }
+}

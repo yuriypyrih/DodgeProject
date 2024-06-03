@@ -1,13 +1,14 @@
+
 module.exports = {
   root: true,
-  env: { browser: true, es2020: true },
+  env: {
+    browser: true,
+    es2020: true
+  },
   extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:react-hooks/recommended',
-    'prettier'
+    '../.eslintrc.cjs', // Extend the common configuration
+    'plugin:react-hooks/recommended'
   ],
-  ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
   rules: {
@@ -15,9 +16,7 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
-    "no-useless-catch": "warn",
-    "@typescript-eslint/no-explicit-any": "warn",
-    "@typescript-eslint/no-unused-vars": "off",
-    "@typescript-eslint/ban-ts-comment": "warn"
+    "no-useless-catch": "warn"
   },
-}
+  ignorePatterns: ['dist', '.eslintrc.cjs'],
+};

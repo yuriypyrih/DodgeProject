@@ -3,7 +3,6 @@ import gameRouter from './routes/gameRouter';
 import { AppError } from './utils/appError';
 import path from 'path';
 import cookieParser from 'cookie-parser';
-
 import express from 'express';
 import morgan from 'morgan';
 import helmet from 'helmet';
@@ -14,6 +13,7 @@ import xss from 'xss-clean';
 import hpp from 'hpp';
 import cors from 'cors';
 import connectDB from './database';
+
 import { env } from './utils/env';
 import { setupSwagger } from './swagger';
 
@@ -117,5 +117,3 @@ export const startServer = async () => {
     process.exit(1);
   }
 };
-
-

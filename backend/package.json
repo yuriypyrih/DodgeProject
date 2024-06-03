@@ -6,7 +6,9 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc",
-    "migration": "ts-node src/scripts/migration.ts"
+    "migration": "ts-node src/scripts/migration.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "author": "Yuriy Pyrih",
   "license": "ISC",
