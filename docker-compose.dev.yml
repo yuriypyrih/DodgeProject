@@ -2,8 +2,7 @@
 services:
   dodge_backend:
     build:
-      context: .
-      dockerfile: backend/Dockerfile
+      context: ./backend
     ports:
       - "5000:5000"
     env_file:
@@ -11,8 +10,7 @@ services:
 
   dodge_frontend:
     build:
-      context: .
-      dockerfile: frontend/Dockerfile
+      context: ./frontend
     ports:
       - "3000:80"
     env_file:

@@ -5,8 +5,7 @@ FROM node:16.13.2-alpine as build
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY frontend/package*.json ./
-COPY tsconfig.base.json ./
+COPY package*.json ./
 
 RUN npm install
 
@@ -17,6 +16,6 @@ RUN npm run build
 # Stage 2: Serve app with nginx server
 FROM nginx:1.21.5-alpine as release
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
-COPY frontend/default.conf /etc/nginx/conf.d/default.conf
+COPY default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

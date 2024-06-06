@@ -5,16 +5,13 @@ FROM node:22
 WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json to the working directory
-COPY backend/package*.json ./
+COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
 # Copy the rest of the application code to the working directory
 COPY . .
-
-# Copy tsconfig.base.json if it exists at the root
-COPY tsconfig.base.json ./
 
 # Build the TypeScript code (if applicable)
 RUN npm run build

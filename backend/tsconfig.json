@@ -1,12 +1,22 @@
 {
-  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "./src",
     "allowJs": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noUnusedLocals": false,
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
