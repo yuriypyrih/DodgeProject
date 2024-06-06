@@ -1,15 +1,5 @@
 
 services:
-  dodge_mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: adminTest
-      MONGO_INITDB_ROOT_PASSWORD: passwordTest
-
   dodge_backend:
     build:
       context: .
@@ -18,8 +8,6 @@ services:
       - "5000:5000"
     env_file:
       - ./backend/.env
-    depends_on:
-      - dodge_mongo
 
   dodge_frontend:
     build:
@@ -31,6 +19,3 @@ services:
       - ./frontend/.env.local
     depends_on:
       - dodge_backend
-
-volumes:
-  mongo-data:
