@@ -5,7 +5,7 @@ FROM node:16.13.2-alpine as build
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY /frontend/package*.json ./
+COPY frontend/package*.json ./
 COPY tsconfig.base.json ./
 
 RUN npm install
