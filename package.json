@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Dodge Project",
   "scripts": {
+    "docer-compose": "docker-compose up --build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "tsc": "npm run tsc:frontend && npm run tsc:backend",

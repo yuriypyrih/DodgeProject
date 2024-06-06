@@ -6,6 +6,9 @@ WORKDIR /usr/src/app
 
 # Install app dependencies
 COPY package*.json ./
+# Copy tsconfig.base.json if it exists at the root
+COPY tsconfig.base.json ./
+
 RUN npm install
 
 # Bundle app source

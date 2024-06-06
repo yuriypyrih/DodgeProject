@@ -13,6 +13,9 @@ RUN npm install
 # Copy the rest of the application code to the working directory
 COPY . .
 
+# Copy tsconfig.base.json if it exists at the root
+COPY tsconfig.base.json ./
+
 # Build the TypeScript code (if applicable)
 RUN npm run build
 

@@ -1,39 +1,34 @@
 
 services:
-  dodge_mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=deskAdmin
-      - MONGO_INITDB_ROOT_PASSWORD=deskPassword
-      - MONGO_INITDB_DATABASE=dodgeDatabase
-    command: |
-      bash -c "mongod --auth --bind_ip_all --fork --logpath /var/log/mongodb.log && \
-      mongo --eval 'db.createUser({user: \"deskAdmin\", pwd: \"deskPassword\", roles: [{ role: \"readWrite\", db: \"dodgeDatabase\" }]})' dodgeDatabase && \
-      tail -f /dev/null"
-    volumes:
-      - mongo-data:/data/db
-
   dodge_backend:
     build:
-      context: ./DodgerBackend
+      context: .
+      dockerfile: backend/Dockerfile
     ports:
       - "5000:5000"
-    env_file:
-      - ./DodgerBackend/.env
-    depends_on:
-      - dodge_mongo
+    environment:
+      - NODE_ENV=production
+      - DB_CONNECTION_STRING=${DB_CONNECTION_STRING}
+      - CYPHER_KEY=${CYPHER_KEY}
+      - JWT_KEY=${JWT_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_COOKIE_EXPIRES_IN=${JWT_COOKIE_EXPIRES_IN}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - MANAGER_EMAIL=${MANAGER_EMAIL}
+      - SERVER_EMAIL=${SERVER_EMAIL}
+      - SERVER_EMAIL_PASS=${SERVER_EMAIL_PASS}
+      - FRONTEND_URL=${FRONTEND_URL}
 
   dodge_frontend:
     build:
-      context: ./DodgeReactFrontend
+      context: .
+      dockerfile: frontend/Dockerfile
     ports:
       - "3000:80"
-    env_file:
-      - ./DodgeReactFrontend/.env.local
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+      - VITE_CLIENT_ID=${VITE_CLIENT_ID}
+      - VITE_CLIENT_SECRET=${VITE_CLIENT_SECRET}
+      - VITE_CYPHER_KEY=${VITE_CYPHER_KEY}
     depends_on:
       - dodge_backend
-
-volumes:
-  mongo-data:
