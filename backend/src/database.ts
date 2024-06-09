@@ -10,7 +10,7 @@ const connectDB = async () => {
   console.log(`MongoDB: Connecting to ${displayUrl}`);
 
   try {
-    await mongoose.connect(mongoDB);
+    await mongoose.connect(mongoDB, { dbName: 'dodge' });
     console.log('MongoDB: connected...');
     // await createAdminUser();
   } catch (error) {

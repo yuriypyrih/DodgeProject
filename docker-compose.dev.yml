@@ -1,14 +1,30 @@
-
+name: dodge
 services:
-  dodge_backend:
+  mongodb:
+    container_name: dodge_database
+    image: bitnami/mongodb:7.0-debian-12
+
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/bitnami/mongodb
+    env_file:
+      - ./.env.database
+
+  backend:
+    container_name: dodge_backend
     build:
       context: ./backend
     ports:
       - "5000:5000"
     env_file:
-      - ./backend/.env
+      - ./backend/.env.local.docker
+    depends_on:
+      - mongodb
 
-  dodge_frontend:
+
+  frontend:
+    container_name: dodge_frontend
     build:
       context: ./frontend
     ports:
@@ -16,4 +32,7 @@ services:
     env_file:
       - ./frontend/.env.local
     depends_on:
-      - dodge_backend
+      - backend
+
+volumes:
+  mongodb-data:
