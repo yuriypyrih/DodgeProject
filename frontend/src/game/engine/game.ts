@@ -7,12 +7,12 @@ import GameObject from './gameObject';
 import Hud from './hud';
 import Spawner from './spawner';
 import Trail from './trail';
-import { setGameState } from '../../redux/slices/gameSlice';
+import { setGameState } from 'redux/slices/gameSlice';
 import store from '../../redux/store';
 import { Relic } from '../types/Relic.ts';
 import { relics } from './relics/relics_collection';
 import { COLOR } from '../enum/colors.ts';
-import { getMinMax } from '../../utils/getMinMax.ts';
+import { getMinMax } from 'utils/getMinMax.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
 
 type GameProps = {
@@ -44,7 +44,7 @@ export default class Game {
 
     this.level = 1;
     // Dev option for debugging
-    this.dev = true; // process.env.NODE_ENV === 'development';
+    this.dev = false; // process.env.NODE_ENV === 'development';
     /**
      * gameObjects -> Player can interact with (Player excluded)
      * particleObject -> Player usually cannot interact with
