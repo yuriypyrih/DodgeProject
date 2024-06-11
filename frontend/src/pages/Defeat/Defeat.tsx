@@ -70,8 +70,8 @@ const Defeat: React.FC<unknown> = () => {
   };
 
   const isCurrentScoreBestScore = () => {
-    if (lastRun.bestRecord && lastRun.lastRecord) {
-      return lastRun.lastRecord.score >= lastRun.bestRecord.score;
+    if (lastRun.lastRecord && lastRun.score) {
+      return lastRun.score > lastRun.lastRecord.score;
     } else {
       return true;
     }
@@ -89,7 +89,7 @@ const Defeat: React.FC<unknown> = () => {
           </Typography>
         )}
         {wasChaos && lastRun.score ? (
-          <div>
+          <Box sx={{ mb: 2 }}>
             <div>
               <Typography style={{ color: '#D4D4D4', fontSize: '18px' }}>Current run {lastRun.score} sec</Typography>
               {isCurrentScoreBestScore() && (
@@ -105,7 +105,7 @@ const Defeat: React.FC<unknown> = () => {
                 </Typography>
               </div>
             )}
-          </div>
+          </Box>
         ) : null}
         {tip && (
           <Typography style={{ color: '#D4D4D4', marginBottom: '24px' }}>
