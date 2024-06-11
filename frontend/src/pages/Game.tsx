@@ -12,8 +12,8 @@ import { game } from '../App.tsx';
 import { relics } from '../game/engine/relics/relics_collection.ts';
 import { setContext } from '../game';
 import { splitCamelCase } from '../utils/splitCaseWord.ts';
-import { LocalLevels } from '../Models/data/LocalLevels.ts';
 import { isChaosDungeon } from '../utils/isChaosDungeon.ts';
+import { LEVEL_STATUS } from 'Models/enum/LEVEL_STATUS.ts';
 
 const Game: React.FC = () => {
   const navigate = useNavigate();
@@ -21,6 +21,8 @@ const Game: React.FC = () => {
   const { total_stars_collected } = useSelector((state: RootState) => state.gameSlice.progress);
   const gameState = useSelector((state: RootState) => state.gameSlice.gameState);
   const level = useSelector((state: RootState) => state.gameSlice.level);
+  const levels = useSelector((state: RootState) => state.gameSlice.levels);
+
   const { selectedRelic } = useSelector((state: RootState) => state.authSlice.user);
 
   const userIsLoading = useSelector((state: RootState) => state.authSlice.userIsLoading);
@@ -48,13 +50,16 @@ const Game: React.FC = () => {
     console.log('RUN game.start()');
     dispatch(resetTimers());
     const lvl = Number(window.location.pathname.split('/')[2]);
-    const foundLevel = LocalLevels.find((l) => l.level === lvl);
-    if (foundLevel) {
+    const foundLevel = levels.find((l) => l.level === lvl);
+    if (foundLevel && foundLevel.status === LEVEL_STATUS.UNLOCKED) {
       dispatch(setLevel(foundLevel));
+      const foundRelic = relics.find((r) => r.id === selectedRelic);
+      game.start(foundLevel.level, foundRelic || null);
+      handleResetToggle();
+    } else {
+      navigate('/Selection');
     }
-    const foundRelic = relics.find((r) => r.id === selectedRelic);
-    game.start(lvl, foundRelic || null);
-    handleResetToggle();
+
     //eslint-disable-next-line
   }, []);
 

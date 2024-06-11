@@ -1,9 +1,9 @@
 import { Button, Tooltip, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LEVEL_STATUS } from '../../Models/enum/LEVEL_STATUS.ts';
+import { LEVEL_STATUS } from 'Models/enum/LEVEL_STATUS.ts';
 import clsx from 'clsx';
-import { Level } from '../../Models/level.ts';
+import { Level } from 'Models/level.ts';
 import styles from './styles.module.scss';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import StarCost from '../StarCost';

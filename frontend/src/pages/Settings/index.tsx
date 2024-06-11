@@ -5,15 +5,15 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import styles from './styles.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../redux/store.ts';
-import { setZoom } from '../../redux/slices/layoutSlice.ts';
+import { AppDispatch, RootState } from 'redux/store.ts';
+import { setZoom } from 'redux/slices/layoutSlice.ts';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
-import { isKeyBindingsAWSD, KEY_BINDINGS } from '../../game/engine/input.ts';
+import { isKeyBindingsArrows, KEY_BINDINGS } from 'game/engine/input.ts';
 import CustomButton from '../../components/CustomButton';
 const zoomLevels = [0.6, 0.8, 1, 1.2, 1.5];
 
-const CustomFormControlLabel = styled(FormControlLabel)(({}) => ({
+const CustomFormControlLabel = styled(FormControlLabel)(() => ({
   '.MuiRadio-root': {
     color: '#ffffffAA', // Default (not selected) color for the radio button
   },
@@ -30,7 +30,9 @@ const CustomFormControlLabel = styled(FormControlLabel)(({}) => ({
 const SettingsPage: React.FC<unknown> = () => {
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
-  const [bindings, setBindings] = useState<KEY_BINDINGS>(isKeyBindingsAWSD() ? KEY_BINDINGS.AWSD : KEY_BINDINGS.ARROWS);
+  const [bindings, setBindings] = useState<KEY_BINDINGS>(
+    isKeyBindingsArrows() ? KEY_BINDINGS.ARROWS : KEY_BINDINGS.AWSD,
+  );
   const zoom = useSelector((state: RootState) => state.layoutSlice.zoom);
 
   const isZoomMax = zoom >= zoomLevels[zoomLevels.length - 1];
@@ -128,14 +130,14 @@ const SettingsPage: React.FC<unknown> = () => {
               <Box sx={{ display: 'flex', flex: 0 }}>
                 <RadioGroup value={bindings} onChange={(e) => handleChangeBindings(e.target.value as KEY_BINDINGS)}>
                   <CustomFormControlLabel
-                    value={KEY_BINDINGS.ARROWS}
-                    control={<Radio />}
-                    label="Arrows for movement and Q to activate augment"
-                  />
-                  <CustomFormControlLabel
                     value={KEY_BINDINGS.AWSD}
                     control={<Radio />}
                     label="AWSD for movement and L to activate augment"
+                  />
+                  <CustomFormControlLabel
+                    value={KEY_BINDINGS.ARROWS}
+                    control={<Radio />}
+                    label="Arrows for movement and Q to activate augment"
                   />
                 </RadioGroup>
               </Box>

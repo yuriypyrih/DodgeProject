@@ -12,12 +12,12 @@ export enum KEY_BINDINGS {
 const arrowsBindings = ['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'KeyQ'];
 const awsdBindings = ['KeyA', 'KeyW', 'KeyD', 'KeyS', 'KeyL'];
 
-export const isKeyBindingsAWSD = () => {
-  return localStorage.getItem('keyBindings') === KEY_BINDINGS.AWSD;
+export const isKeyBindingsArrows = () => {
+  return localStorage.getItem('keyBindings') === KEY_BINDINGS.ARROWS;
 };
 
 const keyDownEvents = (event: any, game: Game) => {
-  const actualBinding = isKeyBindingsAWSD() ? awsdBindings : arrowsBindings;
+  const actualBinding = isKeyBindingsArrows() ? arrowsBindings : awsdBindings;
 
   switch (event.code) {
     case actualBinding[0]:
@@ -45,7 +45,7 @@ const keyDownEvents = (event: any, game: Game) => {
 };
 
 const keyUpEvents = (event: any, game: Game) => {
-  const actualBinding = isKeyBindingsAWSD() ? awsdBindings : arrowsBindings;
+  const actualBinding = isKeyBindingsArrows() ? arrowsBindings : awsdBindings;
 
   switch (event.code) {
     case actualBinding[0]:

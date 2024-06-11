@@ -23,25 +23,22 @@ const startEngine = () => {
   const game = new Game({ canvasWidth: GAME_WIDTH, canvasHeight: GAME_HEIGHT });
 
   let lastTime = 0;
-  let elapsed = 0;
+  const fps = 60;
+  const fpsInterval = 1000 / fps;
 
   function gameLoop(timestamp: number) {
-    if (game.gameState === GAME_STATE.PLAYING || context !== null) {
+    if (game.gameState === GAME_STATE.PLAYING && context !== null) {
       const deltaTime = timestamp - lastTime;
-      elapsed += deltaTime;
-      lastTime = timestamp;
 
-      // elapsed >= 1000 / 100 Throttling the game aat 60fps
-      if (elapsed >= 1000 / 100) {
+      if (deltaTime >= fpsInterval) {
         // Clear Screen
-        context?.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        context.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         // Update Logic and Redraw
-        game.update(elapsed);
-        if (context) {
-          game.draw(context);
-        }
-        //Resetting elapsed after passing it into the game
-        elapsed = 0;
+        game.update(deltaTime);
+        game.draw(context);
+
+        // Update lastTime to now, subtracting any extra time elapsed beyond the frame time
+        lastTime = timestamp - (deltaTime % fpsInterval);
       }
     }
 
