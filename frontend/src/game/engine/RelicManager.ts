@@ -76,7 +76,7 @@ export default class RelicManager {
       this.available_uses = this.relic.max_uses;
       this.fear_animation_timer = -1;
       this.isImmune = false;
-      this.isStabilized = this.relic.id === AUGMENTS.STABILIZER;
+      this.isStabilized = false;
       this.immunityActivationTime = 0;
       this.guardianActivationTime = 0;
       this.regenIntervalTime = 0;
@@ -211,6 +211,9 @@ export default class RelicManager {
     // Check for Immunity
     this.isImmune =
       now - this.immunityActivationTime < IMMUNITY_TOTAL || now - this.guardianActivationTime < GUARDIAN_TOTAL;
+
+    // Check if stabilized
+    this.isStabilized = this.relic?.id === AUGMENTS.STABILIZER;
 
     if (this.relic?.id === AUGMENTS.REGENERATION) {
       this.regenIntervalTime++;

@@ -10,7 +10,6 @@ import Trail from './trail';
 import { setGameState } from 'redux/slices/gameSlice';
 import store from '../../redux/store';
 import { Relic } from '../types/Relic.ts';
-import { relics } from './relics/relics_collection';
 import { COLOR } from '../enum/colors.ts';
 import { getMinMax } from 'utils/getMinMax.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
@@ -32,7 +31,6 @@ export default class Game {
   spawner: Spawner;
   hud: Hud;
   inputHandler: InputHandler;
-  selectedRelic: Relic | null;
   birthday: number;
   darkness: number; // 0 to 100;
 
@@ -50,6 +48,7 @@ export default class Game {
      * particleObject -> Player usually cannot interact with
      */
     this.gameObjects = [];
+
     this.particleObjects = [];
 
     this.gameState = GAME_STATE.CLOSED;
@@ -59,8 +58,6 @@ export default class Game {
     this.hud = new Hud({ game: this });
     this.player = new Player({ game: this });
     this.now = Date.now();
-
-    this.selectedRelic = relics[6];
 
     // TESTING
     // this.menu.playGame(this.level);
@@ -77,7 +74,6 @@ export default class Game {
     console.log('⛳️ LEVEL STARTED', level, relic);
     this.togglePause(GAME_STATE.PLAYING);
     this.level = level;
-    this.selectedRelic = relic;
     this.player.relicManager.assignRelic(relic);
     this.spawner.startLevel(this.level);
   }
