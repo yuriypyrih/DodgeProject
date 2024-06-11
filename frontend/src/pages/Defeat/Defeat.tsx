@@ -71,7 +71,7 @@ const Defeat: React.FC<unknown> = () => {
 
   const isCurrentScoreBestScore = () => {
     if (lastRun.lastRecord && lastRun.score) {
-      return lastRun.score > lastRun.lastRecord.score;
+      return lastRun.score >= lastRun.lastRecord.score;
     } else {
       return true;
     }

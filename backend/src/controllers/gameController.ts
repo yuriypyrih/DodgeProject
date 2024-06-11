@@ -89,7 +89,7 @@ export const beatLevel = catchAsync(async (req, res, next) => {
     }).lean();
     lastRun.lastRecord = lastRecord || null;
     // New high score?
-    if (!lastRecord || lastRecord.score < score) {
+    if (!lastRecord || lastRecord.score <= score) {
       lastRun.lastRecord = await ScoreRecord.findOneAndUpdate(
         { userId: foundUser, level },
         {
