@@ -100,9 +100,7 @@ const Defeat: React.FC<unknown> = () => {
             </div>
             {lastRun.lastRecord && !isCurrentScoreBestScore() && (
               <div>
-                <Typography style={{ color: '#D4D4D4', marginBottom: '24px', marginTop: '24px' }}>
-                  Your Highest was {lastRun.lastRecord.score} sec
-                </Typography>
+                <Typography style={{ color: '#D4D4D4' }}>Your Highest was {lastRun.lastRecord.score} sec</Typography>
               </div>
             )}
           </Box>
