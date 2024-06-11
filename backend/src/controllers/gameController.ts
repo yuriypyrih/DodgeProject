@@ -78,7 +78,7 @@ export const beatLevel = catchAsync(async (req, res, next) => {
 
   const foundIndex = Object.keys(LEVELS).findIndex((lvl) => lvl === level);
   if (foundIndex === -1) return next(new AppError('Invalid level name', 500));
-  const lastRun: any = { lastRecord: null, newRecord: null, score };
+  const lastRun: any = { lastRecord: null, bestRecord: null, score };
 
   // Create ScoreRecord if score is provided
   if (score) {
@@ -88,7 +88,7 @@ export const beatLevel = catchAsync(async (req, res, next) => {
     }).lean();
     lastRun.lastRecord = lastRecord || null;
     if (!lastRecord || lastRecord.score < score) {
-      const newRecord = await ScoreRecord.findOneAndUpdate(
+      lastRun.bestRecord = await ScoreRecord.findOneAndUpdate(
         { userId: foundUser, level },
         {
           score,
@@ -96,7 +96,6 @@ export const beatLevel = catchAsync(async (req, res, next) => {
         },
         { new: true, upsert: true }
       );
-      lastRun.newRecord = newRecord;
     }
   }
 

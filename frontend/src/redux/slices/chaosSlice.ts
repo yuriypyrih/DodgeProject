@@ -18,7 +18,7 @@ export const getLeaderboards = createAsyncThunk('chaosData/getLeaderboards', asy
 });
 
 type ChaosSliceType = {
-  lastRun: { lastRecord: ScoreRecord | null; newRecord: ScoreRecord | null; score: number | null };
+  lastRun: { lastRecord: ScoreRecord | null; bestRecord: ScoreRecord | null; score: number | null };
   leaderboards: Array<{
     levelId: string;
     records: ScoreRecord[];
@@ -29,7 +29,7 @@ type ChaosSliceType = {
 };
 
 const initialState: ChaosSliceType = {
-  lastRun: { lastRecord: null, newRecord: null, score: null },
+  lastRun: { lastRecord: null, bestRecord: null, score: null },
   leaderboards: [],
   meta: {
     leaderboardsLoading: false,
@@ -45,7 +45,7 @@ const chaosSlice = createSlice({
       state.lastRun = action.payload;
     },
     resetLastRun: (state) => {
-      state.lastRun = { lastRecord: null, newRecord: null, score: null };
+      state.lastRun = { lastRecord: null, bestRecord: null, score: null };
     },
   },
   extraReducers: (builder) => {
@@ -54,7 +54,7 @@ const chaosSlice = createSlice({
       state.meta.leaderboardsLoading = false;
     });
     builder.addCase(getLeaderboards.pending, (state) => {
-      state.meta.leaderboardsLoading = false;
+      state.meta.leaderboardsLoading = true;
     });
     builder.addCase(getLeaderboards.rejected, (state) => {
       state.leaderboards = [];

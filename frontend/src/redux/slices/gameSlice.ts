@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Game from '../../game/engine/game';
-import { GAME_STATE } from '../../game/enum/game_state';
-import { Level } from '../../Models/level';
-import { LocalLevels } from '../../Models/data/LocalLevels';
+import { GAME_STATE } from 'game/enum/game_state';
+import { Level } from 'Models/level';
+import { LocalLevels } from 'Models/data/LocalLevels';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
 
 type gameSliceType = {
@@ -13,6 +13,7 @@ type gameSliceType = {
     relic: AUGMENTS;
     relic_available_uses: number;
   } | null;
+  isHacked: boolean;
   hp: number;
   gameState: GAME_STATE;
   poisoned: boolean;
@@ -30,6 +31,7 @@ const initialState: gameSliceType = {
   level: LocalLevels[0],
   levels: LocalLevels,
   selectedRelic: null,
+  isHacked: false,
   hp: 0,
   gameState: GAME_STATE.PLAYING,
   poisoned: false,
@@ -68,6 +70,9 @@ const gameSlice = createSlice({
     setHP: (state, action) => {
       state.hp = action.payload;
     },
+    setIsHacked: (state, action) => {
+      state.isHacked = action.payload;
+    },
     setGameState: (state, action) => {
       state.gameState = action.payload;
     },
@@ -102,6 +107,7 @@ const gameSlice = createSlice({
 
 export const {
   setHP,
+  setIsHacked,
   setSelectedRelic,
   setPoisoned,
   setLevel,

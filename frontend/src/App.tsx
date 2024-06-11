@@ -29,6 +29,7 @@ function App() {
 
   return (
     <div className={clsx(styles.app, chaosTimer > 0 ? styles.chaos : null)}>
+      {chaosTimer > 0 && <div className={styles.skullBg} />}
       <div className={styles.mainWindow} style={{ transform: `scale(${zoom})` }}>
         <VfxAnimation>
           <Routes />

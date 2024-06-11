@@ -24,6 +24,7 @@ export default class SpeederEnemy extends GameObject {
       position,
       velY,
       velX,
+      name: 'Speeder Enemy',
     });
 
     this.game = game;

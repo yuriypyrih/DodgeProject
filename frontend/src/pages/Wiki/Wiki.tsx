@@ -177,7 +177,7 @@ const enemiesContent: ContentType[] = [
     description: [
       'When hit you get Hacked',
       '- Does 25 dmg',
-      '- Has completely random movement pattern',
+      '- Has completely random movement pattern but can be frightened',
       '- Hacked: disables your Augment',
     ],
   },
@@ -212,7 +212,11 @@ const enemiesContent: ContentType[] = [
   {
     title: 'Scorpion',
     Icon: <ColorfullSquare size={30} color2={COLOR.ORANGE} color1={COLOR.RED} />,
-    description: ['Resembles an ordinary enemy but carries a second Head on its tail', '- Head/Tail: 25 dmg'],
+    description: [
+      'Resembles an ordinary enemy but carries a second Head on its tail',
+      '- Head/Tail: 25 dmg',
+      '- Immune to Fear',
+    ],
   },
 ];
 
@@ -227,29 +231,38 @@ const augmentsContent: ContentType[] = [
   },
   {
     Icon: <ImmunityIcon style={{ width: 30, height: 30 }} />,
-    title: ['Immunity', '(Active 2X)'],
+    title: ['Immunity', '(Active 1X)', 'Rechargeable'],
     description: [
-      'Grants damage immunity for 2 seconds and heals for 10hp',
+      'Grants damage immunity for 2 seconds and heals for 15hp',
       '- While immune you also cannot receive Poison and Deathmark',
+      '- Every time you collect a star you get a new charge of this',
     ],
   },
   {
     Icon: <RegenIcon style={{ width: 30, height: 30 }} />,
     title: 'Regeneration (Passive ∞)',
-    description: ['Heals for 2hp every second'],
+    description: [
+      'Heals for 2hp every second and take 10% less damage',
+      `- Damage reduction doesn't apply on Poison, Explosions, Deathmark and Burn effects`,
+    ],
   },
   {
     Icon: <CureIcon style={{ width: 30, height: 30 }} />,
-    title: 'Poison Cure (Active x2)',
-    description: ['Cures Poison and heals 15hp plus all the health you lost from poison until then'],
+    title: ['Elixir of Vigor', '(Active x2)', 'Rechargeable'],
+    description: [
+      'Cleanses all negative effects like Poison, Deathmark, and Frost/Darkness buildup',
+      '- Also heals you 10hp plus all the health you lost from poison until then',
+      '- Every time you collect a star refill one Elixir',
+    ],
   },
   {
     Icon: <FearIcon style={{ width: 30, height: 30 }} />,
     title: ['Fear', '(Active x3)'],
     description: [
-      'Scare all enemies and bullets away from you',
+      'Scare all enemies away from you and destroy all bullets near you',
       '- Upon activation alleviates Frost/Darkness build up',
-      `- Does not work on Bosses or on enemies like Portal, Hacker, and Voidborn`,
+      `- Does not work on Bosses or on enemies like Portal, Voidborn, and Scorpion`,
+      `- Very effective against Tracer and Hacker`,
     ],
   },
   {
@@ -278,7 +291,7 @@ const augmentsContent: ContentType[] = [
     title: 'Guardian Angel (Passive x1)',
     description: [
       'The first time you are about to die, you gain 2 seconds of damage immunity instead',
-      '- Raises your health to 25hp after saving you',
+      '- Raises your health to 35hp after saving you',
       '- Also cures Poison and alleviates Frost/Darkness build up',
     ],
   },

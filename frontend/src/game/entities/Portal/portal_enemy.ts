@@ -27,6 +27,7 @@ export default class PortalEnemy extends GameObject {
       position,
       velY: reverted ? velY * -1 : velY,
       velX,
+      name: 'Portal Enemy',
     });
 
     this.game = game;

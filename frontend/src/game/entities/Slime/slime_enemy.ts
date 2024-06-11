@@ -24,6 +24,7 @@ export default class SlimeEnemy extends GameObject {
       position,
       velY,
       velX,
+      name: 'Slime Enemy',
     });
 
     this.game = game;

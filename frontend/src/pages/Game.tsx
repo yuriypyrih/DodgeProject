@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Hud from '../layout/Hud';
 import Pause from '../layout/Pause';
 import { useSelector } from 'react-redux';
@@ -21,7 +21,8 @@ const Game: React.FC = () => {
   const { total_stars_collected } = useSelector((state: RootState) => state.gameSlice.progress);
   const gameState = useSelector((state: RootState) => state.gameSlice.gameState);
   const level = useSelector((state: RootState) => state.gameSlice.level);
-  const selectedRelic = useSelector((state: RootState) => state.gameSlice.selectedRelic);
+  const { selectedRelic } = useSelector((state: RootState) => state.authSlice.user);
+
   const userIsLoading = useSelector((state: RootState) => state.authSlice.userIsLoading);
   const chaosTimer = useSelector((state: RootState) => state.gameSlice.chaosTimer);
   const isChaos = isChaosDungeon(level.level);
@@ -43,22 +44,26 @@ const Game: React.FC = () => {
     };
   }, []);
 
+  const startLevel = useCallback(() => {
+    console.log('RUN game.start()');
+    dispatch(resetTimers());
+    const lvl = Number(window.location.pathname.split('/')[2]);
+    const foundLevel = LocalLevels.find((l) => l.level === lvl);
+    if (foundLevel) {
+      dispatch(setLevel(foundLevel));
+    }
+    const foundRelic = relics.find((r) => r.id === selectedRelic);
+    game.start(lvl, foundRelic || null);
+    handleResetToggle();
+    //eslint-disable-next-line
+  }, []);
+
   useEffect(() => {
     // Start the Level
     if (!userIsLoading) {
-      console.log('RUN game.start()');
-      dispatch(resetTimers());
-      const lvl = Number(window.location.pathname.split('/')[2]);
-      const foundLevel = LocalLevels.find((l) => l.level === lvl);
-      if (foundLevel) {
-        dispatch(setLevel(foundLevel));
-      }
-      const foundRelic = relics.find((r) => r.id === selectedRelic?.relic);
-      game.start(lvl, foundRelic || null);
-      handleResetToggle();
+      startLevel();
     }
-    //eslint-disable-next-line
-  }, [game, userIsLoading]);
+  }, [userIsLoading, startLevel]);
 
   useEffect(() => {
     // Go to Defeat/Victory
@@ -97,7 +102,7 @@ const Game: React.FC = () => {
     >
       <canvas id={'gameScreen-canvas'} width="900" height="500" />
       <Hud game={game} reset={resetToggle} />
-      {gameState === GAME_STATE.PAUSED ? <Pause game={game} toggleReset={handleResetToggle} /> : null}
+      {gameState === GAME_STATE.PAUSED ? <Pause game={game} toggleReset={startLevel} /> : null}
     </div>
   );
 };

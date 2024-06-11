@@ -84,9 +84,11 @@ export default class HealthManager {
     //Take the buffered dmg
     if (this.buffered_dmg > 0) {
       if (relicManager.relic?.id === AUGMENTS.STABILIZER) {
-        this.health -= (this.buffered_dmg * 4) / 5; // 20% dmg reduction
+        this.health -= this.buffered_dmg * 0.8; // 20% dmg reduction
+      } else if (relicManager.relic?.id === AUGMENTS.REGENERATION) {
+        this.health -= this.buffered_dmg * 0.9; // 10% dmg reduction
       } else if (relicManager.berserkIsActive) {
-        this.health -= this.buffered_dmg / 2; // 50% dmg reduction
+        this.health -= this.buffered_dmg * 0.5; // 50% dmg reduction
       } else {
         this.health -= this.buffered_dmg;
       }

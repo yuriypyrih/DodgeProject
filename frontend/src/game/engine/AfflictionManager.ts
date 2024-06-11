@@ -1,10 +1,10 @@
 import Game from './game';
 import { COLOR } from '../enum/colors.ts';
 import store from '../../redux/store.ts';
-import { setPoisoned } from '../../redux/slices/gameSlice.ts';
+import { setPoisoned } from 'redux/slices/gameSlice.ts';
 import GameObject from './gameObject.ts';
 import { relics } from './relics/relics_collection.ts';
-import { playAnimation, playText } from '../../redux/slices/vfxSlice.ts';
+import { playAnimation, playText } from 'redux/slices/vfxSlice.ts';
 import { VFX } from '../enum/vfx.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
 
@@ -110,14 +110,26 @@ export default class AfflictionManager {
 
     if (distance < 1) distance = 1;
 
-    if (distance < 30) return null;
+    if (distance < 40) return null;
 
     const max_distance = 300;
     const force = Math.min((max_distance - distance) / max_distance, 1);
 
+    // Calculate player's velocity direction
+    const playerVelX = player.gameObject.velX;
+    const playerVelY = player.gameObject.velY;
+
+    // Determine if the player is moving away from the magnetic object
+    const isMovingAwayX = (playerVelX > 0 && diffX < 0) || (playerVelX < 0 && diffX > 0);
+    const isMovingAwayY = (playerVelY > 0 && diffY < 0) || (playerVelY < 0 && diffY > 0);
+
     if (type === 'minus') {
-      player.gameObject.position.x += (-this.MAGNET_POWER / distance) * diffX * force;
-      player.gameObject.position.y += (-this.MAGNET_POWER / distance) * diffY * force;
+      player.gameObject.position.x += !isMovingAwayX
+        ? (-this.MAGNET_POWER / distance) * diffX * force
+        : (-2 / distance) * diffX * force;
+      player.gameObject.position.y += !isMovingAwayY
+        ? (-this.MAGNET_POWER / distance) * diffY * force
+        : (-2 / distance) * diffX * force;
     } else {
       player.gameObject.position.x -= (-this.MAGNET_POWER / distance) * diffX * force;
       player.gameObject.position.y -= (-this.MAGNET_POWER / distance) * diffY * force;

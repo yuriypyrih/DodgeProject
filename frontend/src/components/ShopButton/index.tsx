@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 import StarIcon from 'assets/svg/diamond.svg?react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store.ts';
+import { RootState } from 'redux/store.ts';
 import { useNavigate } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 

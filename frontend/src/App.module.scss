@@ -19,4 +19,27 @@
   border-radius: 3px;
   z-index: 1;
   transform: scale(1);
+  background: #1a1a1d;
+}
+
+
+.skullBg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-image: url('assets/svg/skull.svg');
+  background-size: 20vh 25vh;
+  background-repeat: repeat;
+  background-position: 0 0, 300px 0, 0 300px, 300px 300px;
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.01;
+  }
 }

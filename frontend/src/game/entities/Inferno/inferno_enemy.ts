@@ -24,6 +24,7 @@ export default class InfernoEnemy extends GameObject {
       position,
       velY,
       velX,
+      name: 'Inferno Enemy',
     });
 
     this.game = game;

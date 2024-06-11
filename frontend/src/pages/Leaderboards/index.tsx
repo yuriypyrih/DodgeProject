@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress, Tab, Tabs, Typography } from '@mui/material';
 import LeaderboardItem from './LeaderboardItem.tsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../redux/store.ts';
+import { AppDispatch, RootState } from 'redux/store.ts';
 import styles from './styles.module.scss';
-import { getLeaderboards } from '../../redux/slices/chaosSlice.ts';
+import { getLeaderboards } from 'redux/slices/chaosSlice.ts';
 import CustomButton from '../../components/CustomButton';
 import useNavigateBack from '../../utils/hooks/useNavigateBack.ts';
 

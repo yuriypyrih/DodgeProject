@@ -28,6 +28,7 @@ export default class GhostEnemy extends GameObject {
       position,
       velY,
       velX,
+      name: 'Ghost Enemy',
     });
 
     this.game = game;

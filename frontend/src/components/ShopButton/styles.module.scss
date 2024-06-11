@@ -1,5 +1,6 @@
 .starsBtn {
   &:global(.MuiButton-root) {
+    min-height: 44px;
     position: relative;
     padding: 4px 8px;
     background: #00afa3;

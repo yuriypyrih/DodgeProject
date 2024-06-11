@@ -25,6 +25,7 @@ export default class WormEnemy extends GameObject {
       position,
       velY,
       velX,
+      name: 'Worm Enemy',
     });
 
     this.game = game;

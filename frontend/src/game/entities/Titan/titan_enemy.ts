@@ -26,6 +26,7 @@ export default class TitanEnemy extends GameObject {
       position,
       velY,
       velX,
+      name: 'Titan Enemy',
     });
 
     this.game = game;

@@ -26,6 +26,7 @@ export default class TracerEnemy extends GameObject {
       position,
       velY,
       velX,
+      name: 'Tracer Enemy',
     });
 
     this.game = game;
@@ -59,7 +60,7 @@ export default class TracerEnemy extends GameObject {
   update(deltaTime: number) {
     // Fear calculation
     if (this.feared_timer > -1) this.feared_timer += deltaTime;
-    if (this.feared_timer >= 1500) this.feared_timer = -1;
+    if (this.feared_timer >= 3000) this.feared_timer = -1;
 
     // Updating the entity's position based on its velocity (if it has one)
     this.gameObject.position.x += this.feared_timer > -1 ? -this.gameObject.velX : this.gameObject.velX;

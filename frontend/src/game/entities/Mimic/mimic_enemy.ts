@@ -41,6 +41,7 @@ export default class MimicEnemy extends GameObject {
       position,
       velY,
       velX,
+      name: 'Mimic Enemy',
     });
 
     this.game = game;

@@ -4,20 +4,20 @@ import CubePlayButton from '../../components/CubePlayButton';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ImportContactsIcon from '@mui/icons-material/ImportContacts';
-import { AppDispatch, RootState } from '../../redux/store.ts';
+import { AppDispatch, RootState } from 'redux/store.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import DefaultIcon from '@mui/icons-material/Description';
 import clsx from 'clsx';
-import { Level } from '../../Models/level.ts';
+import { Level } from 'Models/level.ts';
 import UnlockLevelModal from '../../components/UnlockLevelModal/UnlockLevelModal.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Selection.module.scss';
-import { relics } from '../../game/engine/relics/relics_collection.ts';
+import { relics } from 'game/engine/relics/relics_collection.ts';
 import ChaosPlayButton from '../../components/ChaosPlayButton';
-import { unlockLevel } from '../../redux/slices/authSlice.ts';
+import { unlockLevel } from 'redux/slices/authSlice.ts';
 import ShopButton from '../../components/ShopButton';
 import LeaderboardButton from '../../components/LeaderboardButton';
-import { API_LEVEL } from '../../Models/enum/API_LEVEL.ts';
+import { API_LEVEL } from 'Models/enum/API_LEVEL.ts';
 import CustomButton from '../../components/CustomButton';
 
 const Selection: React.FC<unknown> = () => {
@@ -111,7 +111,7 @@ const Selection: React.FC<unknown> = () => {
               {getRelic()}
             </Button>
           </Box>
-          <Box sx={{ width: 250, height: 35, display: 'flex', wrap: 'nowrap', gap: 1, justifyContent: 'flex-end' }}>
+          <Box sx={{ width: 250, height: 44, display: 'flex', wrap: 'nowrap', gap: 1, justifyContent: 'flex-end' }}>
             {page === 3 && <LeaderboardButton />}
             <ShopButton />
           </Box>

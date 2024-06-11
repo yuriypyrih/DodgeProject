@@ -23,6 +23,7 @@ export default class BasicEnemy extends GameObject {
       position,
       velY,
       velX,
+      name: 'Scout Enemy',
     });
 
     this.game = game;

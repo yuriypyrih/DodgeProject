@@ -4,8 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Defeat.module.scss';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store.ts';
-import { getRandomNumber } from '../../utils/random.ts';
+import { RootState } from 'redux/store.ts';
+import { getRandomNumber } from 'utils/random.ts';
 import { DEFEAT_QUOTES } from '../../modules/quotes/DEFEAT_QUOTES.ts';
 import { CHAOS_DUNGEON_QUOTES } from '../../modules/quotes/CHAOS_QUOTES.ts';
 
@@ -69,6 +69,14 @@ const Defeat: React.FC<unknown> = () => {
     navigate(`/Selection?queryPage=${page}`, { replace: true });
   };
 
+  const isCurrentScoreBestScore = () => {
+    if (lastRun.bestRecord && lastRun.lastRecord) {
+      return lastRun.lastRecord.score >= lastRun.bestRecord.score;
+    } else {
+      return true;
+    }
+  };
+
   return (
     <Box className={clsx(styles.root, wasChaos ? styles.chaos : styles.defeat)}>
       <Box className={styles.container}>
@@ -84,13 +92,13 @@ const Defeat: React.FC<unknown> = () => {
           <div>
             <div>
               <Typography style={{ color: '#D4D4D4', fontSize: '18px' }}>Current run {lastRun.score} sec</Typography>
-              {lastRun.newRecord && (
+              {isCurrentScoreBestScore() && (
                 <div style={{ color: '#D4D4D4', fontSize: '18px', textShadow: '#00afa3 1px 0 10px' }}>
-                  Your Highest!
+                  New Personal Highest!
                 </div>
               )}
             </div>
-            {lastRun.lastRecord && (
+            {lastRun.lastRecord && !isCurrentScoreBestScore() && (
               <div>
                 <Typography style={{ color: '#D4D4D4', marginBottom: '24px', marginTop: '24px' }}>
                   Your Highest was {lastRun.lastRecord.score} sec

@@ -15,6 +15,7 @@ type TProps = {
 export default class HackerEnemy extends GameObject {
   game: Game;
   randomizeMovement: number;
+  feared_timer: number;
 
   constructor({ game, position, velX = 5, velY = 0 }: TProps) {
     super({
@@ -28,6 +29,7 @@ export default class HackerEnemy extends GameObject {
 
     this.game = game;
     this.randomizeMovement = 30;
+    this.feared_timer = -1;
   }
 
   getBounds() {
@@ -40,12 +42,8 @@ export default class HackerEnemy extends GameObject {
     return rectangle;
   }
 
-  fear(x: number, y: number) {
-    const size = this.gameObject.height / 2;
-    if (this.gameObject.position.x + size <= x && this.gameObject.velX > 0) this.gameObject.velX *= -1;
-    else if (this.gameObject.position.x + size > x && this.gameObject.velX < 0) this.gameObject.velX *= -1;
-    if (this.gameObject.position.y + size <= y && this.gameObject.velY > 0) this.gameObject.velY *= -1;
-    else if (this.gameObject.position.y + size > y && this.gameObject.velY < 0) this.gameObject.velY *= -1;
+  fear() {
+    this.feared_timer = 0;
   }
 
   draw(context: any) {
@@ -58,7 +56,11 @@ export default class HackerEnemy extends GameObject {
     );
   }
 
-  update(_deltaTime: number) {
+  update(deltaTime: number) {
+    // Fear calculation
+    if (this.feared_timer > -1) this.feared_timer += deltaTime;
+    if (this.feared_timer >= 4000) this.feared_timer = -1;
+
     // Updating the entity's position based on its velocity (if it has one)
     this.gameObject.position.x += this.gameObject.velX;
     this.gameObject.position.y += this.gameObject.velY;
@@ -85,12 +87,22 @@ export default class HackerEnemy extends GameObject {
       this.randomizeMovement = Math.floor(Math.random() * (MAX - MIN + 1)) + MIN;
       const rand = Math.floor(Math.random() * 2);
 
-      if (this.gameObject.velY === 0) {
-        this.gameObject.velY = rand === 0 ? 6 : -6;
-        this.gameObject.velX = 0;
+      if (this.feared_timer > -1) {
+        if (this.gameObject.velY === 0) {
+          this.gameObject.velY = this.gameObject.position.y < this.game.player.gameObject.position.y ? -6 : 6;
+          this.gameObject.velX = 0;
+        } else {
+          this.gameObject.velX = this.gameObject.position.x < this.game.player.gameObject.position.x ? -6 : 6;
+          this.gameObject.velY = 0;
+        }
       } else {
-        this.gameObject.velX = rand === 0 ? 6 : -6;
-        this.gameObject.velY = 0;
+        if (this.gameObject.velY === 0) {
+          this.gameObject.velY = rand === 0 ? 6 : -6;
+          this.gameObject.velX = 0;
+        } else {
+          this.gameObject.velX = rand === 0 ? 6 : -6;
+          this.gameObject.velY = 0;
+        }
       }
     }
 

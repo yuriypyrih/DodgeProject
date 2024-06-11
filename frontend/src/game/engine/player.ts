@@ -5,7 +5,7 @@ import Game from './game';
 import { Rectangle } from '../types/Rectangle';
 import store from '../../redux/store';
 import Trail from './trail';
-import { playAnimation, playText } from '../../redux/slices/vfxSlice';
+import { playAnimation, playText } from 'redux/slices/vfxSlice';
 import { VFX } from '../enum/vfx';
 import HealthManager from './HealthManager.ts';
 import AfflictionManager from './AfflictionManager.ts';
@@ -169,7 +169,7 @@ export default class Player extends GameObject {
       else if (relic && relic.id === AUGMENTS.GUARDIAN_ANGEL && this.relicManager.available_uses > 0) {
         store.dispatch(playText(['GUARDIAN ANGEL']));
         store.dispatch(playAnimation(VFX.PULSE_IMMUNITY));
-        this.healthManager.health = 25;
+        this.healthManager.health = 35;
         this.relicManager.guardianActivationTime = this.game.now;
         this.afflictionManager.removePoison();
         this.afflictionManager.frostIntensity = 0;
@@ -243,16 +243,28 @@ export default class Player extends GameObject {
         // You're immune to dmg when healed
         if (object.gameObject.id === ENTITY_ID.STAR) {
           this.stars++;
-          //IMPORTANT: First update the stars and then the hudProgress
           store.dispatch(playAnimation(VFX.PULSE_GOLD));
+          //IMPORTANT: First update the stars and then the hudProgress
           this.game.spawner.updateHudProgress();
           this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
           this.milestone = true;
           this.healthManager.lastTimeDamaged = this.game.now;
+
+          if (
+            this.relicManager.relic?.id === AUGMENTS.POISON_CURE ||
+            this.relicManager.relic?.id === AUGMENTS.IMMUNITY
+          ) {
+            store.dispatch(playAnimation(VFX.PULSE_GOLD));
+            this.relicManager.available_uses = Math.min(
+              this.relicManager.relic.max_uses,
+              this.relicManager.available_uses + 1,
+            );
+            this.relicManager.updateRelic();
+          }
         }
 
         if (object.gameObject.id === ENTITY_ID.BASIC_ENEMY) {
-          this.healthManager.takeDamage(25, { lastWhoDamagedMe: object.constructor.name });
+          this.healthManager.takeDamage(25, { lastWhoDamagedMe: object.gameObject.name });
         }
 
         if (object.gameObject.id === ENTITY_ID.REAPER) {
@@ -267,7 +279,7 @@ export default class Player extends GameObject {
           object.gameObject.id === ENTITY_ID.TITAN_BOSS ||
           object.gameObject.id === ENTITY_ID.SHADOW_BOSS
         ) {
-          this.healthManager.takeDamage(40, { lastWhoDamagedMe: 'Boss' });
+          this.healthManager.takeDamage(40, { lastWhoDamagedMe: 'The Boss' });
         }
 
         if (object.gameObject.id === ENTITY_ID.EXPLOSION) {
@@ -278,11 +290,12 @@ export default class Player extends GameObject {
         }
         if (object.gameObject.id === ENTITY_ID.FROSTY) {
           this.getHitByBodyAura(object, 25, 'Frosty Enemy');
-          if (!this.relicManager.berserkIsActive) this.afflictionManager.frostIntensity += 2;
+          if (!this.relicManager.berserkIsActive && this.afflictionManager.frostIntensity <= 60)
+            this.afflictionManager.frostIntensity += 2;
         }
         if (object.gameObject.id === ENTITY_ID.FROSTY_BULLET) {
           this.healthManager.takeDamage(10, {
-            lastWhoDamagedMe: 'Bullet',
+            lastWhoDamagedMe: 'a Bullet',
             callback: () => {
               this.afflictionManager.frostIntensity = 160;
               this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
@@ -291,7 +304,7 @@ export default class Player extends GameObject {
         }
         if (object.gameObject.id === ENTITY_ID.BULLET) {
           this.healthManager.takeDamage(10, {
-            lastWhoDamagedMe: 'Bullet',
+            lastWhoDamagedMe: 'a Bullet',
             callback: () => {
               this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
             },
@@ -319,7 +332,7 @@ export default class Player extends GameObject {
         if (object.gameObject.id === ENTITY_ID.VENOM_BULLET) {
           this.healthManager.takeDamage(15, {
             disableDefaultPulse: !this.afflictionManager.isPoisoned,
-            lastWhoDamagedMe: 'Bullet',
+            lastWhoDamagedMe: 'a Bullet',
             callback: () => {
               this.afflictionManager.getPoisoned();
               this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);

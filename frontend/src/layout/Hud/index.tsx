@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../redux/store.ts';
-import { VFX } from '../../game/enum/vfx.ts';
-import { finishedTextAnimation, setNightVision } from '../../redux/slices/vfxSlice.ts';
-import { setPoisoned } from '../../redux/slices/gameSlice.ts';
-import Game from '../../game/engine/game.ts';
+import { RootState } from 'redux/store.ts';
+import { VFX } from 'game/enum/vfx.ts';
+import { finishedTextAnimation, setNightVision } from 'redux/slices/vfxSlice.ts';
+import { setPoisoned } from 'redux/slices/gameSlice.ts';
+import Game from 'game/engine/game.ts';
 import HealIcon from '@mui/icons-material/Favorite';
 import styles from './styles.module.scss';
-import { COLOR } from '../../game/enum/colors.ts';
-import { relics } from '../../game/engine/relics/relics_collection.ts';
-import { RELIC_TYPE } from '../../game/enum/relic_type.ts';
+import { COLOR } from 'game/enum/colors.ts';
+import { relics } from 'game/engine/relics/relics_collection.ts';
+import { RELIC_TYPE } from 'game/enum/relic_type.ts';
 import { CircularProgress } from '@mui/material';
-import { isChaosDungeon } from '../../utils/isChaosDungeon.ts';
+import { isChaosDungeon } from 'utils/isChaosDungeon.ts';
 import clsx from 'clsx';
 
 type HudProps = {

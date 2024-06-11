@@ -29,6 +29,7 @@ export default class VoidEnemy extends GameObject {
       position,
       velY,
       velX,
+      name: 'Voidborn Enemy',
     });
 
     this.game = game;

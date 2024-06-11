@@ -2,14 +2,14 @@ import Game from './game';
 import { Relic } from '../types/Relic.ts';
 import { XY } from '../types/XY.ts';
 import store from '../../redux/store.ts';
-import { playAnimation } from '../../redux/slices/vfxSlice.ts';
+import { playAnimation } from 'redux/slices/vfxSlice.ts';
 import { VFX } from '../enum/vfx.ts';
-import { setSelectedRelic } from '../../redux/slices/gameSlice.ts';
+import { setSelectedRelic } from 'redux/slices/gameSlice.ts';
 import GameObject from './gameObject.ts';
 import { COLOR } from '../enum/colors.ts';
 import { RELIC_TYPE } from '../enum/relic_type.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
-import { getSec } from '../../utils/deltaTime.ts';
+import { getSec } from 'utils/deltaTime.ts';
 
 type TProps = {
   game: Game;
@@ -102,13 +102,16 @@ export default class RelicManager {
       }
       if (this.relic.id === AUGMENTS.IMMUNITY) {
         this.immunityActivationTime = Date.now();
-        healthManager.health += 10;
+        this.game.player.healthManager.health += 15;
         store.dispatch(playAnimation(VFX.PULSE_IMMUNITY));
       }
       if (this.relic.id === AUGMENTS.POISON_CURE) {
-        healthManager.health += afflictionManager.poisonConsumed + 15;
+        healthManager.health += afflictionManager.poisonConsumed + 10;
         afflictionManager.poisonConsumed = 0;
         afflictionManager.removePoison();
+        afflictionManager.frostIntensity = 0;
+        afflictionManager.isDeathmarked = false;
+        this.game.darkness = 0;
         store.dispatch(playAnimation(VFX.PULSE_GREEN));
       }
       if (this.relic.id === AUGMENTS.FEAR) {
@@ -193,7 +196,7 @@ export default class RelicManager {
     }
     if (this.relic?.id === AUGMENTS.RECALL_BEACON && this.beaconPlaced) {
       context.fillStyle = COLOR.WHITE;
-      context.fillRect(this.beaconPlaced.x, this.beaconPlaced.y, 10, 10);
+      context.fillRect(this.beaconPlaced.x, this.beaconPlaced.y, 8, 8);
     }
   }
 
