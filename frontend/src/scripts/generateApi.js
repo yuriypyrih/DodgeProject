@@ -10,7 +10,7 @@ const directory = path.resolve(process.cwd(), './src/lib/api/specs');
 generateApi({
   name: fileName,
   output: directory,
-  url: 'http://localhost:3005/api-docs.json', // Local BE
+  url: 'http://localhost:5000/api-docs.json', // Local BE
   singleHttpClient: true,
   httpClientType: 'axios',
   prettier: {

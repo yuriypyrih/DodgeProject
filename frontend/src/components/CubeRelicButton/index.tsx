@@ -1,13 +1,13 @@
 import { Box, Button, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { LEVEL_STATUS } from '../../Models/enum/LEVEL_STATUS.ts';
+import { LEVEL_STATUS } from 'Models/enum/LEVEL_STATUS.ts';
 import clsx from 'clsx';
 import styles from './styles.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { COLOR } from '../../game/enum/colors.ts';
-import { selectAugment } from '../../redux/slices/authSlice.ts';
-import { Relic } from '../../game/types/Relic.ts';
-import { AppDispatch, RootState } from '../../redux/store.ts';
+import { COLOR } from 'game/enum/colors.ts';
+import { selectAugment } from 'redux/slices/authSlice.ts';
+import { Relic } from 'game/types/Relic.ts';
+import { AppDispatch, RootState } from 'redux/store.ts';
 import StarCost from '../StarCost';
 
 type CubeRelicButtonProps = {

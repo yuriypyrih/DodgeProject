@@ -10,6 +10,9 @@ export enum AUGMENTS {
   GUARDIAN_ANGEL = 'GUARDIAN_ANGEL',
   STABILIZER = 'STABILIZER',
   RECALL_BEACON = 'RECALL_BEACON',
+  DEMON_SOUL = 'DEMON_SOUL',
+  HARVESTER = 'HARVESTER',
+  STOPWATCH = 'STOPWATCH',
   HACKED = 'HACKED'
 }
 
@@ -31,6 +34,9 @@ export enum AUGMENTS {
  *         - GUARDIAN_ANGEL
  *         - STABILIZER
  *         - RECALL_BEACON
+ *         - DEMON_SOUL
+ *         - HARVESTER
+ *         - STOPWATCH
  *         - HACKED
  *       description: Enum representing various AUGMENTS
  */

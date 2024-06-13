@@ -42,7 +42,7 @@ const Pause: React.FC<PauseProps> = ({ game, toggleReset }) => {
     <Box className={styles.root}>
       <Box className={styles.container}>
         <Typography variant="h2" style={{ color: 'white', textShadow: '5px 5px #222' }}>
-          Paused
+          PAUSED
         </Typography>
         <Box
           sx={{

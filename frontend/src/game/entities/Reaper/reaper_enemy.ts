@@ -54,6 +54,13 @@ export default class ReaperEnemy extends GameObject {
       this.gameObject.width,
       this.gameObject.height,
     );
+    context.fillStyle = COLOR.BLACK;
+    context.fillRect(
+      this.gameObject.position.x + 2,
+      this.gameObject.position.y + 2,
+      this.gameObject.width - 4,
+      this.gameObject.height - 4,
+    );
   }
 
   update(_deltaTime: number) {
@@ -67,24 +74,11 @@ export default class ReaperEnemy extends GameObject {
         x: this.gameObject.position.x,
         y: this.gameObject.position.y,
         reductor: 12,
-        color: COLOR.BLACK,
+        color: COLOR.LIGHT_GREY,
         width: this.gameObject.width,
         height: this.gameObject.height,
         life: 0.7,
         minus: 0.02,
-        game: this.game,
-      }),
-    );
-    this.game.particleObjects.push(
-      new Trail({
-        x: this.gameObject.position.x,
-        y: this.gameObject.position.y,
-        reductor: 12,
-        color: COLOR.VENOM,
-        width: this.gameObject.width,
-        height: this.gameObject.height,
-        life: 1,
-        minus: 0.1,
         game: this.game,
       }),
     );

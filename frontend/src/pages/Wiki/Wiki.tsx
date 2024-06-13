@@ -16,10 +16,12 @@ import SkullIcon from '../../assets/svg/skull.svg?react';
 import CenterFocusWeakIcon from '@mui/icons-material/CenterFocusWeak';
 import StarIcon from 'assets/svg/diamond.svg?react';
 import ImportContactsIcon from '@mui/icons-material/ImportContacts';
+import WhatshotIcon from '@mui/icons-material/Whatshot';
+import StopwatchIcon from 'assets/svg/stopwatch.svg?react';
 import styles from './Wiki.module.scss';
 import ColorfullSquare from '../../components/ColorfullSquare';
 
-import { COLOR } from '../../game/enum/colors.ts';
+import { COLOR } from 'game/enum/colors.ts';
 import CustomButton from '../../components/CustomButton';
 import useNavigateBack from '../../utils/hooks/useNavigateBack.ts';
 
@@ -223,19 +225,18 @@ const enemiesContent: ContentType[] = [
 const augmentsContent: ContentType[] = [
   {
     Icon: <HealIcon style={{ width: 30, height: 30 }} />,
-    title: ['Heal', '(Active 1X)'],
+    title: ['Heal', '(Active x1)'],
     description: [
-      'Heals for 35hp ',
-      '- General Info: Your total health is 100hp and you die once bellow -1hp, not at 0hp',
+      'Heals for 35hp (Max Hp is 100)',
+      '- Overhealing will cleanse all negative effects like Poison and Deathmark',
     ],
   },
   {
     Icon: <ImmunityIcon style={{ width: 30, height: 30 }} />,
-    title: ['Immunity', '(Active 1X)', 'Rechargeable'],
+    title: ['Immunity', '(Active x3)'],
     description: [
-      'Grants damage immunity for 2 seconds and heals for 15hp',
-      '- While immune you also cannot receive Poison and Deathmark',
-      '- Every time you collect a star you get a new charge of this',
+      'Grants damage immunity for 2 seconds and heals for 10hp',
+      '- While immune you also cannot get Poisoned or Deathmarked',
     ],
   },
   {
@@ -248,18 +249,18 @@ const augmentsContent: ContentType[] = [
   },
   {
     Icon: <CureIcon style={{ width: 30, height: 30 }} />,
-    title: ['Elixir of Vigor', '(Active x2)', 'Rechargeable'],
+    title: ['Elixir of Vigor', '(Active x3)'],
     description: [
       'Cleanses all negative effects like Poison, Deathmark, and Frost/Darkness buildup',
-      '- Also heals you 10hp plus all the health you lost from poison until then',
-      '- Every time you collect a star refill one Elixir',
+      '- Also heals you 5hp + 5% of your missing hp + all the hp you lost from poison until then',
+      '- Stored poison is reused for subsequent healing making Elixir stronger each time',
     ],
   },
   {
     Icon: <FearIcon style={{ width: 30, height: 30 }} />,
-    title: ['Fear', '(Active x3)'],
+    title: ['Fear', '(Active x4)'],
     description: [
-      'Scare all enemies away from you and destroy all bullets near you',
+      'Scare all enemies and bullets away from you',
       '- Upon activation alleviates Frost/Darkness build up',
       `- Does not work on Bosses or on enemies like Portal, Voidborn, and Scorpion`,
       `- Very effective against Tracer and Hacker`,
@@ -267,24 +268,35 @@ const augmentsContent: ContentType[] = [
   },
   {
     Icon: <VisionIcon style={{ width: 30, height: 30 }} />,
-    title: 'Hunter (Passive ∞)',
+    title: 'Night Hunter (Passive ∞)',
     description: [
       'Applies a night vision filter on screen',
-      '- Ghost enemies become less effective at hiding',
-      '- Shadow enemies become less effective at applying darkness',
-      '- Deathmark always leaves you with 1hp',
-      '- Poison does 66% less damage',
+      '- Makes spotting Ghost & Shadow enemies easier',
+      '- Increased resistance to Poison (66%) and Frost (50%)',
+      '- Deathmark deals only 20dmg to you',
+    ],
+  },
+  {
+    Icon: <StabilizerIcon style={{ width: 30, height: 30 }} />,
+    title: 'Stabilizer (Passive ∞)',
+    description: [
+      'Stabilized: You are immune to immobilizing effects and take 30% less damage',
+      '- Immobilizing is any magnetic or slowing effect',
+      `- Damage reduction doesn't apply on Poison, Explosions, Deathmark and Burn effects`,
     ],
   },
   {
     Icon: <PortalIcon style={{ width: 30, height: 30 }} />,
     title: 'Teleportation (Passive ∞)',
-    description: ['You can pass through the left and right wall'],
+    description: ['You can pass through the left and right wall', '- You are briefly Stabilized after teleporting'],
   },
   {
     Icon: <CenterFocusWeakIcon style={{ width: 30, height: 30 }} />,
     title: 'Recall Beacon (Active ∞)',
-    description: ['Press once to place a beacon. Press again to recall back to it'],
+    description: [
+      'Press once to place a beacon. Press again to recall back to it',
+      '- Recalling on top of a star fully heals you',
+    ],
   },
   {
     Icon: <AngelIcon style={{ width: 30, height: 30 }} />,
@@ -297,23 +309,38 @@ const augmentsContent: ContentType[] = [
   },
   {
     Icon: <BerserkIcon style={{ width: 30, height: 30 }} />,
-    title: 'Berserk (Passive 1x)',
+    title: 'Berserk (Passive x1)',
     description: [
       'The first time you are about to die, your health gets instantly refilled, you scare the enemies away and you become Berserk',
       '- During Berserk your life burns until you die (~ 27s before you run out of HP)',
-      '- During Berserk you take 50% less damage',
+      '- During Berserk you take 60% less damage',
       '- During Berserk you are immune to Frost/Darkness build up',
       `- Damage reduction doesn't apply on Poison, Explosions, Deathmark and Burn effects`,
     ],
   },
   {
-    Icon: <StabilizerIcon style={{ width: 30, height: 30 }} />,
-    title: 'Stabilizer (Passive ∞)',
+    Icon: <StopwatchIcon style={{ width: 30, height: 30 }} />,
+    title: ['Stopwatch', ' (Active x1)', 'Rechargeable'],
     description: [
-      'You are immune to immobilizing effects and take 20% less damage',
-      '- Immobilizing is any magnetic or slowing effect',
-      `- Damage reduction doesn't apply on Poison, Explosions, Deathmark and Burn effects`,
+      'Slows down the time for the enemies for 3s and heals you for 40% of your missing hp',
+      '- You are Stabilized during this duration',
+      '- Collecting a star will recharge the augment',
     ],
+  },
+  {
+    Icon: <WhatshotIcon style={{ width: 30, height: 30 }} />,
+    title: 'Demon Soul (Passive ∞)',
+    description: [
+      'You receive 50% MORE damage from hitting enemies, but..',
+      '- Poison heals you instead of damaging you',
+      '- Deathmark heals you for 20hp instead of killing you',
+      '- Increased resistance to Burn (60%) and Explosions (75%)',
+    ],
+  },
+  {
+    Icon: <SkullIcon style={{ width: 30, height: 30 }} />,
+    title: 'Harvester (Passive ∞)',
+    description: ['You only have 1hp but you get x10 the amount of the stars you collect', '- Aka: Hardcore mode'],
   },
 ];
 

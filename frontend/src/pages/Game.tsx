@@ -14,6 +14,7 @@ import { setContext } from '../game';
 import { splitCamelCase } from '../utils/splitCaseWord.ts';
 import { isChaosDungeon } from '../utils/isChaosDungeon.ts';
 import { LEVEL_STATUS } from 'Models/enum/LEVEL_STATUS.ts';
+import { AUGMENTS } from '../lib/api/specs/api.ts';
 
 const Game: React.FC = () => {
   const navigate = useNavigate();
@@ -73,12 +74,16 @@ const Game: React.FC = () => {
   useEffect(() => {
     // Go to Defeat/Victory
     const lvl = window.location.pathname.split('/')[2];
+    let starsGranted = total_stars_collected;
+    if (selectedRelic === AUGMENTS.HARVESTER) {
+      starsGranted = starsGranted * 10;
+    }
     if (gameState === GAME_STATE.PAGE_DEFEAT) {
       const recap = splitCamelCase(game.player.healthManager.lastWhoDamagedMe);
       console.log('Proceed to Defeat screen');
       // Prevent from re-entering this state
       dispatch(setGameState(GAME_STATE.CLOSED));
-      dispatch(beatLevel({ level: level.levelId, stars: total_stars_collected, score: chaosTimer }));
+      dispatch(beatLevel({ level: level.levelId, stars: starsGranted, score: chaosTimer }));
       navigate(`/Defeat/${lvl}?recap=${recap}${isChaos ? '&isChaos=true' : ''}`);
     } else if (gameState === GAME_STATE.PAGE_VICTORY) {
       console.log('Proceed to Victory screen');
@@ -87,7 +92,7 @@ const Game: React.FC = () => {
       dispatch(
         beatLevel({
           level: level.levelId,
-          stars: total_stars_collected,
+          stars: starsGranted,
           unlockNext: true,
         }),
       );

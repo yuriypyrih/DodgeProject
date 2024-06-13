@@ -1,20 +1,18 @@
 @import "../../Theme/_variables";
 
-@mixin createPulseKeyframes($name, $color, $maxOpacity: 0.6) {
+@mixin createPulseKeyframes($name, $color, $maxOpacity: 0.6, $size : 32px) {
   @keyframes #{$name} {
     0% {
       border: 1px solid #2dd5c4;
-      //box-shadow: 0 0 2rem rgba(#2dd5c4, 0.2);
     }
 
     30% {
       border: 1px solid $color;
-      box-shadow: 0 0 2.4rem rgba($color, $maxOpacity);
+      box-shadow: 0 0 $size rgba($color, $maxOpacity);
     }
 
     100% {
       border: 1px solid #2dd5c4;
-      // box-shadow: 0 0 2rem rgba(#2dd5c4, 0.2);
     }
   }
 }
@@ -63,7 +61,7 @@
 }
 
 @include createPulseKeyframes("pulseRed", $RED);
-@include createPulseKeyframes("pulseLightBlue", $LIGHT_BLUE);
+@include createPulseKeyframes("pulseLightBlue", $LIGHT_BLUE, 1, 64px);
 @include createPulseKeyframes("pulseGreen", $AQUA);
 @include createPulseKeyframes("pulseHacked", $GREEN);
 @include createPulseKeyframes("pulsePurple", $PURPLE, 0.4);
@@ -96,7 +94,7 @@
 }
 
 .PULSE_LIGHT_BLUE_ANIMATION {
-  animation: pulseLightBlue 0.7s ease-in;
+  animation: pulseLightBlue 3s ease-out;
 }
 
 .PULSE_GREEN_ANIMATION {

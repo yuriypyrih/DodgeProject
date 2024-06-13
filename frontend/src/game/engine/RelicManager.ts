@@ -10,6 +10,8 @@ import { COLOR } from '../enum/colors.ts';
 import { RELIC_TYPE } from '../enum/relic_type.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
 import { getSec } from 'utils/deltaTime.ts';
+import { ENTITY_ID } from 'game/enum/entitiy_id.ts';
+import { calculateMissingHp } from 'utils/calculateMissingHp.ts';
 
 type TProps = {
   game: Game;
@@ -18,18 +20,23 @@ type TProps = {
 const IMMUNITY_TOTAL: number = 2000;
 const GUARDIAN_TOTAL: number = 2000;
 const BERSERK_TOTAL: number = 1000;
+const PORTAL_STABILIZED_TOTAL: number = 1000;
+const STOPWATCH_TOTAL: number = 3000;
 
 const REGEN_INTERVAL_TOTAL: number = 1;
 
 export default class RelicManager {
   private game: Game;
+  originalRelic: Relic | null;
   relic: Relic | null;
   available_uses: number;
   fear_animation_timer: number;
   isImmune: boolean;
   isStabilized: boolean;
+  tempStabilizedTime: number;
   immunityActivationTime: number;
   guardianActivationTime: number;
+  stopwatchActivationTime: number;
   regenIntervalTime: number;
   berserkIsActive: boolean;
   berserkTickTimer: number;
@@ -37,20 +44,26 @@ export default class RelicManager {
 
   constructor({ game }: TProps) {
     this.game = game;
+    this.originalRelic = null;
     this.relic = null;
     this.available_uses = 0;
     this.fear_animation_timer = -1;
     this.isImmune = false;
     this.isStabilized = false;
+    this.tempStabilizedTime = 0;
     this.immunityActivationTime = 0;
     this.guardianActivationTime = 0;
+    this.stopwatchActivationTime = 0;
     this.regenIntervalTime = 0;
     this.berserkIsActive = false;
     this.berserkTickTimer = 0;
     this.beaconPlaced = null;
   }
 
-  assignRelic(relic: Relic | null) {
+  assignRelic(relic: Relic | null, saveOriginal: boolean = false) {
+    if (saveOriginal) {
+      this.originalRelic = this.relic;
+    }
     this.relic = relic;
     if (relic) {
       this.available_uses = relic.max_uses;
@@ -72,17 +85,24 @@ export default class RelicManager {
   }
 
   reset() {
+    if (this.originalRelic) {
+      this.relic = this.originalRelic;
+      this.originalRelic = null;
+    }
     if (this.relic) {
       this.available_uses = this.relic.max_uses;
       this.fear_animation_timer = -1;
       this.isImmune = false;
-      this.isStabilized = false;
+      this.isStabilized = this.relic.id === AUGMENTS.STABILIZER;
       this.immunityActivationTime = 0;
       this.guardianActivationTime = 0;
+      this.stopwatchActivationTime = 0;
       this.regenIntervalTime = 0;
       this.berserkIsActive = false;
       this.berserkTickTimer = 0;
       this.beaconPlaced = null;
+      this.game.timeScale = 1;
+      this.game.updateTimeCounter = 0;
       this.updateRelic();
     }
   }
@@ -106,10 +126,11 @@ export default class RelicManager {
         store.dispatch(playAnimation(VFX.PULSE_IMMUNITY));
       }
       if (this.relic.id === AUGMENTS.POISON_CURE) {
-        healthManager.health += afflictionManager.poisonConsumed + 10;
-        afflictionManager.poisonConsumed = 0;
+        const missingHp = calculateMissingHp(healthManager.health, 5);
+        const totalHealing = afflictionManager.poisonConsumed + 5 + missingHp;
+        healthManager.health += totalHealing;
         afflictionManager.removePoison();
-        afflictionManager.frostIntensity = 0;
+        afflictionManager.frostIntensity = -60;
         afflictionManager.isDeathmarked = false;
         this.game.darkness = 0;
         store.dispatch(playAnimation(VFX.PULSE_GREEN));
@@ -124,10 +145,31 @@ export default class RelicManager {
             y: player.gameObject.position.y + 8,
           };
         } else {
+          this.game.gameObjects.forEach((object: GameObject) => {
+            // Very forgiving Bounds while recalling for collecting a star
+            if (
+              this.game.player.collision(
+                object.getBounds(),
+                { x: (this.beaconPlaced?.x as number) - 40, y: (this.beaconPlaced?.y as number) - 40 },
+                105,
+              )
+            ) {
+              if (object.gameObject.id === ENTITY_ID.STAR) {
+                player.healthManager.health = 100;
+                player.collectStar(object);
+              }
+            }
+          });
           player.gameObject.position.x = this.beaconPlaced.x - 8;
           player.gameObject.position.y = this.beaconPlaced.y - 8;
           this.beaconPlaced = null;
         }
+      }
+      if (this.relic.id === AUGMENTS.STOPWATCH) {
+        this.stopwatchActivationTime = Date.now();
+        store.dispatch(playAnimation(VFX.PULSE_LIGHT_BLUE));
+        const missingHp = calculateMissingHp(healthManager.health, 40);
+        healthManager.health += missingHp;
       }
     }
   }
@@ -135,7 +177,7 @@ export default class RelicManager {
   applyFear() {
     const player = this.game.player;
     this.fear_animation_timer = 0;
-    player.afflictionManager.frostIntensity = 0;
+    player.afflictionManager.frostIntensity = -40;
     this.game.darkness = 0;
     this.game.gameObjects.forEach((object: GameObject) => {
       if (player.fearCollision(object.getBounds())) {
@@ -212,8 +254,18 @@ export default class RelicManager {
     this.isImmune =
       now - this.immunityActivationTime < IMMUNITY_TOTAL || now - this.guardianActivationTime < GUARDIAN_TOTAL;
 
+    // Control Stopwatch
+    if (now - this.stopwatchActivationTime < STOPWATCH_TOTAL) {
+      this.game.timeScale = 3;
+    } else {
+      this.game.timeScale = 1;
+    }
+
     // Check if stabilized
-    this.isStabilized = this.relic?.id === AUGMENTS.STABILIZER;
+    this.isStabilized =
+      this.relic?.id === AUGMENTS.STABILIZER ||
+      now - this.tempStabilizedTime < PORTAL_STABILIZED_TOTAL ||
+      now - this.stopwatchActivationTime < STOPWATCH_TOTAL;
 
     if (this.relic?.id === AUGMENTS.REGENERATION) {
       this.regenIntervalTime++;
@@ -231,6 +283,10 @@ export default class RelicManager {
         this.berserkTickTimer = now;
         healthManager.health -= 4;
       }
+    }
+
+    if (this.relic?.id === AUGMENTS.HARVESTER && healthManager.health > 1) {
+      healthManager.health = 1;
     }
   }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store.ts';
-import { VFX } from '../../game/enum/vfx.ts';
+import { RootState } from 'redux/store.ts';
+import { VFX } from 'game/enum/vfx.ts';
 import clsx from 'clsx';
 import styles from './styles.module.scss';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
@@ -21,7 +21,7 @@ const VfxAnimation: React.FC<VfxAnimationProps> = ({ children }) => {
       setContainerClass(styles.PULSE_LIGHT_BLUE_ANIMATION);
       setTimeout(() => {
         setContainerClass('');
-      }, 700);
+      }, 3000);
     }
     if (vfxObject.run_animation === VFX.PULSE_RED) {
       setContainerClass(styles.PULSE_RED_ANIMATION);
@@ -76,14 +76,8 @@ const VfxAnimation: React.FC<VfxAnimationProps> = ({ children }) => {
     // eslint-disable-next-line
   }, [vfxObject.animation_counter]);
 
-  const getDarkness = () => {
-    if (selectedRelic?.relic === AUGMENTS.NIGHT_VISION) {
-      return Math.min(0.75, vfxObject.darkness);
-    } else return vfxObject.darkness;
-  };
-
   return (
-    <div className={clsx(styles.root, containerClass)} style={{ background: `#000000${getDarkness() * 100}` }}>
+    <div className={clsx(styles.root, containerClass)}>
       <div
         style={{ width: '100%', height: '100%' }}
         className={clsx(selectedRelic?.relic === AUGMENTS.NIGHT_VISION && styles.nightVisionEffect)}

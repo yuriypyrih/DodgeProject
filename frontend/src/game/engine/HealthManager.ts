@@ -1,9 +1,10 @@
 import Game from './game';
 import store from '../../redux/store.ts';
-import { playAnimation } from '../../redux/slices/vfxSlice.ts';
+import { playAnimation } from 'redux/slices/vfxSlice.ts';
 import { VFX } from '../enum/vfx.ts';
-import { setHP } from '../../redux/slices/gameSlice.ts';
+import { setHP } from 'redux/slices/gameSlice.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
+
 type TProps = {
   game: Game;
 };
@@ -71,6 +72,7 @@ export default class HealthManager {
   }
 
   update(_deltaNumber: number) {
+    this.health = Math.round(this.health * 10) / 10;
     store.dispatch(setHP(this.health));
     const relicManager = this.game.player.relicManager;
     // Buffer all the dmg that you take into one value and use it at the end of calculations
@@ -83,12 +85,14 @@ export default class HealthManager {
 
     //Take the buffered dmg
     if (this.buffered_dmg > 0) {
-      if (relicManager.relic?.id === AUGMENTS.STABILIZER) {
-        this.health -= this.buffered_dmg * 0.8; // 20% dmg reduction
+      if (relicManager.isStabilized) {
+        this.health -= this.buffered_dmg * 0.7; // 30% dmg reduction
       } else if (relicManager.relic?.id === AUGMENTS.REGENERATION) {
         this.health -= this.buffered_dmg * 0.9; // 10% dmg reduction
       } else if (relicManager.berserkIsActive) {
-        this.health -= this.buffered_dmg * 0.5; // 50% dmg reduction
+        this.health -= this.buffered_dmg * 0.4; // 60% dmg reduction
+      } else if (relicManager.relic?.id === AUGMENTS.DEMON_SOUL) {
+        this.health -= this.buffered_dmg * 1.5; // 100% EXTRA dmg
       } else {
         this.health -= this.buffered_dmg;
       }

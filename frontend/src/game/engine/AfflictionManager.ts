@@ -61,7 +61,7 @@ export default class AfflictionManager {
       store.dispatch(playText(['HACKED']));
       store.dispatch(playAnimation(VFX.PULSE_HACKED));
       const foundRelic = relics.find((r) => r.id === AUGMENTS.HACKED);
-      if (foundRelic) this.game.player.relicManager.assignRelic(foundRelic);
+      if (foundRelic) this.game.player.relicManager.assignRelic(foundRelic, true);
     }
   }
 
@@ -212,14 +212,21 @@ export default class AfflictionManager {
     }
 
     if (this.isDeathmarked) {
-      this.deathmark_aura_radius -= 0.2;
-      if (this.deathmark_aura_radius < 0) {
+      this.deathmark_aura_radius -= 0.3;
+      if (this.deathmark_aura_radius < 20) {
         this.isDeathmarked = false;
         this.deathmark_aura_radius = this.DEATHMARK_AURA_RADIUS_MAX;
         if (!relicManager.isImmune) {
-          store.dispatch(playAnimation(VFX.PULSE_RED));
-          player.healthManager.health = relicManager.relic?.id === AUGMENTS.NIGHT_VISION ? 1 : -10;
-          player.healthManager.lastWhoDamagedMe = 'Deathmark';
+          if (relicManager.relic?.id === AUGMENTS.NIGHT_VISION) {
+            player.healthManager.takeDamage(20, { lastWhoDamagedMe: 'Deathmark' });
+          } else if (relicManager.relic?.id === AUGMENTS.DEMON_SOUL) {
+            store.dispatch(playAnimation(VFX.PULSE_GREEN));
+            player.healthManager.health += 20;
+          } else {
+            store.dispatch(playAnimation(VFX.PULSE_RED));
+            player.healthManager.health = -10;
+            player.healthManager.lastWhoDamagedMe = 'Deathmark';
+          }
         }
       }
     }
@@ -232,7 +239,7 @@ export default class AfflictionManager {
         if (!relicManager.isImmune) {
           const poisonDmg = relicManager.relic?.id === AUGMENTS.NIGHT_VISION ? 1 : 3;
           this.poisonConsumed += poisonDmg;
-          player.healthManager.health -= poisonDmg;
+          player.healthManager.health += relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? poisonDmg : -poisonDmg;
           player.healthManager.lastWhoDamagedMe = 'Poison';
         }
       }

@@ -33,6 +33,8 @@ export default class Game {
   inputHandler: InputHandler;
   birthday: number;
   darkness: number; // 0 to 100;
+  timeScale: number; // 1 means normal, 2 means half the speed etc
+  updateTimeCounter: number;
 
   constructor({ canvasHeight, canvasWidth }: GameProps) {
     console.log('⚽️ GAME ENGINE CREATED');
@@ -65,6 +67,8 @@ export default class Game {
     this.inputHandler = new InputHandler({ game: this });
     this.inputHandler.initEvents();
     this.darkness = 0;
+    this.timeScale = 1;
+    this.updateTimeCounter = 0;
   }
 
   //This function runs once per reload of the page
@@ -132,7 +136,8 @@ export default class Game {
   }
 
   getDarkness() {
-    return getMinMax(0, 1, this.darkness / 100);
+    const MAX_DARKNESS = this.player.relicManager.relic?.id === AUGMENTS.NIGHT_VISION ? 0.6 : 1;
+    return getMinMax(0, MAX_DARKNESS, this.darkness / 100);
   }
 
   pumpDarkness(increase: number) {
@@ -166,8 +171,13 @@ export default class Game {
       if (this.darkness > 0) {
         this.darkness -= 1;
       }
-      this.particleObjects.forEach((object) => object.update(deltaTime));
-      this.gameObjects.forEach((object) => object.update(deltaTime));
+
+      if (this.updateTimeCounter % this.timeScale === 0) {
+        this.particleObjects.forEach((object) => object.update(deltaTime));
+        this.gameObjects.forEach((object) => object.update(deltaTime));
+      }
+
+      this.updateTimeCounter++;
       this.spawner.update(deltaTime);
       this.hud.update(deltaTime);
       this.player.update(deltaTime);
@@ -212,6 +222,7 @@ export default class Game {
       context.fillRect(0, 0, this.canvas.canvasWidth, this.canvas.canvasHeight);
     }
     this.particleObjects.forEach((object) => object.draw(context));
+    // this.playerParticleObjects.forEach((object) => object.draw(context));
     this.gameObjects.forEach((object) => object.draw(context));
     this.hud.draw(context);
     this.player.draw(context);

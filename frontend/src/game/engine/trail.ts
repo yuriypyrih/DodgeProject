@@ -15,6 +15,7 @@ type TrailProps = {
   minus: number;
   game: Game;
   shadowAlpha?: number;
+  isPlayerParticle?: boolean;
 };
 
 export default class Trail {
@@ -29,6 +30,7 @@ export default class Trail {
   height: number;
   life: number;
   minus: number;
+  isPlayerParticle: boolean;
   game: Game;
 
   constructor({
@@ -43,6 +45,7 @@ export default class Trail {
     life,
     minus,
     game,
+    isPlayerParticle = false,
   }: TrailProps) {
     this.id = ENTITY_ID.TRAIL;
     this.x = x + reductor / 2;
@@ -56,6 +59,7 @@ export default class Trail {
     this.life = life;
     this.minus = minus;
     this.game = game;
+    this.isPlayerParticle = isPlayerParticle;
   }
 
   draw(context: any) {
@@ -101,7 +105,11 @@ export default class Trail {
   update(_deltaTime: any) {
     this.life = this.life - this.minus;
     if (this.life <= 0.1) {
-      this.game.particleObjects.splice(this.game.particleObjects.indexOf(this), 1);
+      if (this.isPlayerParticle) {
+        this.game.player.personalParticles.splice(this.game.player.personalParticles.indexOf(this), 1);
+      } else {
+        this.game.particleObjects.splice(this.game.particleObjects.indexOf(this), 1);
+      }
     }
   }
 }
