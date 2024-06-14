@@ -61,6 +61,11 @@ export default class Player extends GameObject {
     this.maxDiagonialSpeed = Math.ceil(this.maxSpeed / Math.sqrt(2));
   }
 
+  resetMovement() {
+    this.afflictionManager.frostIntensity = 0;
+    this.gameObject.velX = this.gameObject.velX > 0 ? this.maxSpeed : -this.maxSpeed;
+  }
+
   moveLeft() {
     this.gameObject.velX = -this.maxSpeed;
   }
@@ -263,7 +268,7 @@ export default class Player extends GameObject {
 
           // RECHARGE AUGMENT
           if (this.relicManager.relic?.id === AUGMENTS.STOPWATCH) {
-            this.relicManager.stopwatchActivationTime = 0;
+            // this.relicManager.stopwatchActivationTime = 0;
             store.dispatch(playAnimation(VFX.PULSE_GOLD));
             this.relicManager.available_uses = Math.min(
               this.relicManager.relic.max_uses,
@@ -303,22 +308,25 @@ export default class Player extends GameObject {
         }
         if (object.gameObject.id === ENTITY_ID.INFERNO_WALL) {
           this.healthManager.takeDamage(
-            this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? (this.isChaosActive ? 1 : 4) : 10,
+            this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? (this.isChaosActive ? -1 : 2.5) : 10,
             {
               isTrueDmg: true,
               lastWhoDamagedMe: 'Firewall',
               ImmunityShiftInMS: -500,
+              isSecondaryDamage: true,
             },
           );
         }
         if (object.gameObject.id === ENTITY_ID.FROSTY) {
           this.getHitByBodyAura(object, 25, 'Frosty Enemy');
+          const isNightHunter = this.relicManager.relic?.id === AUGMENTS.NIGHT_VISION;
+          const MAX_FROST_INTENSITY = isNightHunter ? 35 : 60;
           if (
             !this.relicManager.berserkIsActive &&
             !this.relicManager.isStabilized &&
-            this.afflictionManager.frostIntensity <= 60
+            this.afflictionManager.frostIntensity <= MAX_FROST_INTENSITY
           ) {
-            this.afflictionManager.frostIntensity += this.relicManager.relic?.id === AUGMENTS.NIGHT_VISION ? 1.5 : 2;
+            this.afflictionManager.frostIntensity += isNightHunter ? 1.5 : 2;
           }
         }
         if (object.gameObject.id === ENTITY_ID.FROSTY_BULLET) {
@@ -341,17 +349,17 @@ export default class Player extends GameObject {
           });
         }
         if (object.gameObject.id === ENTITY_ID.VENOM) {
-          this.healthManager.takeDamage(10, {
+          this.healthManager.takeDamage(this.afflictionManager.isPoisoned ? 30 : 10, {
             lastWhoDamagedMe: 'Venom Enemy',
             disableDefaultPulse: !this.afflictionManager.isPoisoned,
-            callback: () => this.afflictionManager.getPoisoned(20),
+            bypassCallback: () => this.afflictionManager.getPoisoned(),
           });
         }
         if (object.gameObject.id === ENTITY_ID.HACKER) {
           this.healthManager.takeDamage(25, {
             disableDefaultPulse: true,
             lastWhoDamagedMe: 'Hacker Enemy',
-            callback: () => {
+            bypassCallback: () => {
               if (!this.afflictionManager.isHacked) {
                 this.afflictionManager.getHacked();
               }
@@ -397,14 +405,14 @@ export default class Player extends GameObject {
         store.dispatch(playAnimation(VFX.PULSE_PORTAL));
         this.gameObject.position.x = gameWidth - this.gameObject.width;
         this.relicManager.tempStabilizedTime = Date.now();
-        this.afflictionManager.frostIntensity = -40;
+        this.game.player.resetMovement();
       }
       // Player Collision with right wall
       if (this.gameObject.position.x + this.gameObject.width > gameWidth) {
         store.dispatch(playAnimation(VFX.PULSE_PORTAL));
         this.gameObject.position.x = 0;
         this.relicManager.tempStabilizedTime = Date.now();
-        this.afflictionManager.frostIntensity = -40;
+        this.game.player.resetMovement();
       }
     } else {
       // Player Collision with left wall

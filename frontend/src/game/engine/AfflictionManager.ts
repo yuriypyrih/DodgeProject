@@ -65,14 +65,12 @@ export default class AfflictionManager {
     }
   }
 
-  getPoisoned(bonusDmg?: number) {
+  getPoisoned() {
     if (!this.isPoisoned) {
       this.isPoisoned = true;
       store.dispatch(setPoisoned(true));
       store.dispatch(playText(['POISONED']));
       store.dispatch(playAnimation(VFX.PULSE_PURPLE));
-    } else if (bonusDmg) {
-      this.game.player.healthManager.buffered_dmg += bonusDmg;
     }
   }
 
@@ -221,7 +219,7 @@ export default class AfflictionManager {
             player.healthManager.takeDamage(20, { lastWhoDamagedMe: 'Deathmark' });
           } else if (relicManager.relic?.id === AUGMENTS.DEMON_SOUL) {
             store.dispatch(playAnimation(VFX.PULSE_GREEN));
-            player.healthManager.health += 20;
+            player.healthManager.health += 30;
           } else {
             store.dispatch(playAnimation(VFX.PULSE_RED));
             player.healthManager.health = -10;

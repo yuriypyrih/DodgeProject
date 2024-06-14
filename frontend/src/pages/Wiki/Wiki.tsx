@@ -322,7 +322,7 @@ const augmentsContent: ContentType[] = [
     Icon: <StopwatchIcon style={{ width: 30, height: 30 }} />,
     title: ['Stopwatch', ' (Active x1)', 'Rechargeable'],
     description: [
-      'Slows down the time for the enemies for 3s and heals you for 40% of your missing hp',
+      'Slows down the time for the enemies for 3s and heals you for 50% of your missing hp',
       '- You are Stabilized during this duration',
       '- Collecting a star will recharge the augment',
     ],
@@ -331,10 +331,10 @@ const augmentsContent: ContentType[] = [
     Icon: <WhatshotIcon style={{ width: 30, height: 30 }} />,
     title: 'Demon Soul (Passive ∞)',
     description: [
-      'You receive 50% MORE damage from hitting enemies, but..',
+      'You receive 25% MORE damage from hitting enemies, but..',
       '- Poison heals you instead of damaging you',
-      '- Deathmark heals you for 20hp instead of killing you',
-      '- Increased resistance to Burn (60%) and Explosions (75%)',
+      '- Deathmark heals you for 30hp instead of killing you',
+      '- Increased resistance to Burn and Explosions (75%)',
     ],
   },
   {

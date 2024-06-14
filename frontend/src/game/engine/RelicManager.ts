@@ -168,8 +168,9 @@ export default class RelicManager {
       if (this.relic.id === AUGMENTS.STOPWATCH) {
         this.stopwatchActivationTime = Date.now();
         store.dispatch(playAnimation(VFX.PULSE_LIGHT_BLUE));
-        const missingHp = calculateMissingHp(healthManager.health, 40);
+        const missingHp = calculateMissingHp(healthManager.health, 50);
         healthManager.health += missingHp;
+        this.game.player.resetMovement();
       }
     }
   }
