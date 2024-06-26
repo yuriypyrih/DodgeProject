@@ -135,7 +135,7 @@ const enemiesContent: ContentType[] = [
     Icon: <ColorfullSquare size={30} color1={COLOR.PURPLE} />,
     description: [
       'Getting hit by it will apply Poison to you',
-      '- Head: 10 dmg. If already poisoned it does 30 dmg instead',
+      '- Head: 5 dmg. If already poisoned it does 30 dmg instead',
       '- Poison Effect: Deals 3 dmg per second until you die',
     ],
   },
@@ -178,7 +178,7 @@ const enemiesContent: ContentType[] = [
     Icon: <ColorfullSquare size={30} color2={COLOR.DARK_GREEN} color1={COLOR.VENOM} />,
     description: [
       'When hit you get Hacked',
-      '- Does 25 dmg',
+      '- Does 20 dmg',
       '- Has completely random movement pattern but can be frightened',
       '- Hacked: disables your Augment',
     ],
@@ -295,6 +295,7 @@ const augmentsContent: ContentType[] = [
     title: 'Recall Beacon (Active ∞)',
     description: [
       'Press once to place a beacon. Press again to recall back to it',
+      '- If you have placed the Beacon for more than 6s you also scare the enemies away upon recalling',
       '- Recalling on top of a star fully heals you',
     ],
   },

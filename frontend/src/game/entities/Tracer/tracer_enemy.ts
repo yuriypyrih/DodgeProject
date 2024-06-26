@@ -17,6 +17,7 @@ export default class TracerEnemy extends GameObject {
   game: Game;
   maxSpeed: number;
   feared_timer: number;
+  skip_trail: number;
 
   constructor({ game, position, velX = 0, velY = 0 }: TracerEnemyProps) {
     super({
@@ -30,8 +31,9 @@ export default class TracerEnemy extends GameObject {
     });
 
     this.game = game;
-    this.maxSpeed = 3;
+    this.maxSpeed = 2.4;
     this.feared_timer = -1;
+    this.skip_trail = 0;
   }
 
   getBounds() {
@@ -67,20 +69,22 @@ export default class TracerEnemy extends GameObject {
     this.gameObject.position.y += this.feared_timer > -1 ? -this.gameObject.velY : this.gameObject.velY;
 
     // Creating a Trail particle and add it to the list
-
-    this.game.particleObjects.push(
-      new Trail({
-        x: this.gameObject.position.x,
-        y: this.gameObject.position.y,
-        reductor: 12,
-        color: COLOR.YELLOW,
-        width: this.gameObject.width,
-        height: this.gameObject.height,
-        life: 0.6,
-        minus: 0.008,
-        game: this.game,
-      }),
-    );
+    this.skip_trail++;
+    if (this.skip_trail % 4 === 0) {
+      this.game.particleObjects.push(
+        new Trail({
+          x: this.gameObject.position.x,
+          y: this.gameObject.position.y,
+          reductor: 12,
+          color: COLOR.YELLOW,
+          width: this.gameObject.width,
+          height: this.gameObject.height,
+          life: 0.7,
+          minus: 0.008,
+          game: this.game,
+        }),
+      );
+    }
 
     const diffY = Math.ceil(this.gameObject.position.y - (this.game.player.gameObject.position.y + 5));
     const diffX = Math.ceil(this.gameObject.position.x - (this.game.player.gameObject.position.x + 5));

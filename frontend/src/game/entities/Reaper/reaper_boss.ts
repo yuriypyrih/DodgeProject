@@ -63,7 +63,7 @@ export default class ReaperBoss extends GameObject {
 
   fireBullets() {
     this.bullet_timer++;
-    if (this.awaken && this.bullet_timer % 40 === 0) {
+    if (this.awaken && this.bullet_timer % 20 === 0) {
       const offset = this.gameObject.velX > 0 ? 20 : -20;
       const origin_x = this.gameObject.position.x + this.gameObject.width / 2 + offset;
       const origin_y = this.gameObject.position.y + this.gameObject.height - 5;
@@ -71,40 +71,6 @@ export default class ReaperBoss extends GameObject {
         new ReaperBullet({
           game: this.game,
           position: { x: origin_x, y: origin_y },
-          velX: -4,
-          velY: 3,
-        }),
-      );
-      this.game.gameObjects.push(
-        new ReaperBullet({
-          game: this.game,
-          position: { x: origin_x, y: origin_y },
-          velX: -3,
-          velY: 4,
-        }),
-      );
-      this.game.gameObjects.push(
-        new ReaperBullet({
-          game: this.game,
-          position: { x: origin_x, y: origin_y },
-          velX: 0,
-          velY: 5,
-        }),
-      );
-      this.game.gameObjects.push(
-        new ReaperBullet({
-          game: this.game,
-          position: { x: origin_x, y: origin_y },
-          velX: 3,
-          velY: 4,
-        }),
-      );
-      this.game.gameObjects.push(
-        new ReaperBullet({
-          game: this.game,
-          position: { x: origin_x, y: origin_y },
-          velX: 4,
-          velY: 3,
         }),
       );
     }

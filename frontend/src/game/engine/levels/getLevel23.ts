@@ -1,6 +1,6 @@
-import { playText } from '../../../redux/slices/vfxSlice';
+import { playText } from 'redux/slices/vfxSlice';
 import store from '../../../redux/store';
-import { sec } from '../../../utils/deltaTime';
+import { sec } from 'utils/deltaTime';
 import { Stars } from '../../types/Stars';
 import Game from '../game';
 import Star from '../../entities/star.ts';

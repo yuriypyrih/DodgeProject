@@ -63,7 +63,7 @@ export default class GhostBoss extends GameObject {
 
   fireBullets() {
     this.bullet_timer++;
-    if (this.awaken && this.bullet_timer % 20 === 0) {
+    if (this.awaken && this.bullet_timer % 15 === 0) {
       const offset = this.gameObject.velX > 0 ? 20 : -20;
       const origin_x = this.gameObject.position.x + this.gameObject.width / 2 + offset;
       const origin_y = this.gameObject.position.y + this.gameObject.height - 5;

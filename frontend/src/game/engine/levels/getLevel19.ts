@@ -1,6 +1,6 @@
-import { playText } from '../../../redux/slices/vfxSlice';
+import { playText } from 'redux/slices/vfxSlice';
 import store from '../../../redux/store';
-import { sec } from '../../../utils/deltaTime';
+import { sec } from 'utils/deltaTime';
 import { Stars } from '../../types/Stars';
 import Game from '../game';
 import Star from '../../entities/star.ts';
@@ -11,7 +11,7 @@ import InfernoEnemy from '../../entities/Inferno/inferno_enemy.ts';
 import FrostyEnemy from '../../entities/Frosty/frosty_enemy.ts';
 import ReaperBoss from '../../entities/Reaper/reaper_boss.ts';
 
-export const level19Stars: Stars = [10, 42, 52];
+export const level19Stars: Stars = [10, 42, 60];
 const levelStars = level19Stars;
 
 export const getLevel19 = (game: Game): null => {

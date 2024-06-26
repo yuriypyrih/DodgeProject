@@ -136,7 +136,7 @@ export default class Game {
   }
 
   getDarkness() {
-    const MAX_DARKNESS = this.player.relicManager.relic?.id === AUGMENTS.NIGHT_VISION ? 0.6 : 1;
+    const MAX_DARKNESS = this.player.relicManager.relic?.id === AUGMENTS.NIGHT_VISION ? 0.5 : 1;
     return getMinMax(0, MAX_DARKNESS, this.darkness / 100);
   }
 

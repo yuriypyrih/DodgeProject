@@ -11,6 +11,8 @@ type VenomEnemyProps = {
   position: { x: number; y: number };
   velX?: number;
   velY?: number;
+  horizontalToRight?: boolean;
+  verticalToBottom?: boolean;
 };
 
 export default class VenomEnemy extends GameObject {
@@ -22,7 +24,14 @@ export default class VenomEnemy extends GameObject {
   velY_min: number;
   velY_max: number;
 
-  constructor({ game, position, velX = 5, velY = 7 }: VenomEnemyProps) {
+  constructor({
+    game,
+    position,
+    velX = 2,
+    velY = 6,
+    horizontalToRight = true,
+    verticalToBottom = true,
+  }: VenomEnemyProps) {
     super({
       id: ENTITY_ID.VENOM,
       width: 20,
@@ -35,10 +44,10 @@ export default class VenomEnemy extends GameObject {
     this.game = game;
     this.zigTimer = 0;
     this.swapTimer = 0;
-    this.velX_max = 6;
-    this.velX_min = 2;
-    this.velY_max = 6;
-    this.velY_min = 2;
+    this.velX_max = horizontalToRight ? 6 : -6;
+    this.velX_min = horizontalToRight ? 2 : -2;
+    this.velY_max = verticalToBottom ? 6 : -6;
+    this.velY_min = verticalToBottom ? 2 : -2;
   }
 
   getBounds() {

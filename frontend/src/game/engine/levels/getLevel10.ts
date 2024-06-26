@@ -1,6 +1,6 @@
-import { playText } from '../../../redux/slices/vfxSlice';
+import { playText } from 'redux/slices/vfxSlice';
 import store from '../../../redux/store';
-import { sec } from '../../../utils/deltaTime';
+import { sec } from 'utils/deltaTime';
 import { Stars } from '../../types/Stars';
 import Game from '../game';
 import GhostEnemy from '../../entities/Ghost/ghost_enemy.ts';
@@ -8,7 +8,7 @@ import Star from '../../entities/star';
 import GhostBoss from '../../entities/Ghost/ghost_boss.ts';
 import WormEnemy from '../../entities/Worm/worm_enemy.ts';
 
-export const level10Stars: Stars = [7, 35, 50];
+export const level10Stars: Stars = [7, 35, 55];
 
 const levelStars = level10Stars;
 

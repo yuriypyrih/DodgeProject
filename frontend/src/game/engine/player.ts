@@ -318,7 +318,11 @@ export default class Player extends GameObject {
           );
         }
         if (object.gameObject.id === ENTITY_ID.FROSTY) {
-          this.getHitByBodyAura(object, 25, 'Frosty Enemy');
+          this.getHitByBodyAura(object, 25, 'Frosty Enemy', () => {
+            if (!this.relicManager.berserkIsActive && !this.relicManager.isStabilized) {
+              this.afflictionManager.frostIntensity = this.relicManager.relic?.id === AUGMENTS.NIGHT_VISION ? 50 : 100;
+            }
+          });
           const isNightHunter = this.relicManager.relic?.id === AUGMENTS.NIGHT_VISION;
           const MAX_FROST_INTENSITY = isNightHunter ? 35 : 60;
           if (
@@ -334,7 +338,8 @@ export default class Player extends GameObject {
             lastWhoDamagedMe: 'a Bullet',
             callback: () => {
               if (!this.relicManager.berserkIsActive && !this.relicManager.isStabilized) {
-                this.afflictionManager.frostIntensity = 160;
+                this.afflictionManager.frostIntensity =
+                  this.relicManager.relic?.id === AUGMENTS.NIGHT_VISION ? 80 : 160;
               }
               this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
             },
@@ -349,14 +354,14 @@ export default class Player extends GameObject {
           });
         }
         if (object.gameObject.id === ENTITY_ID.VENOM) {
-          this.healthManager.takeDamage(this.afflictionManager.isPoisoned ? 30 : 10, {
+          this.healthManager.takeDamage(this.afflictionManager.isPoisoned ? 30 : 5, {
             lastWhoDamagedMe: 'Venom Enemy',
             disableDefaultPulse: !this.afflictionManager.isPoisoned,
             bypassCallback: () => this.afflictionManager.getPoisoned(),
           });
         }
         if (object.gameObject.id === ENTITY_ID.HACKER) {
-          this.healthManager.takeDamage(25, {
+          this.healthManager.takeDamage(20, {
             disableDefaultPulse: true,
             lastWhoDamagedMe: 'Hacker Enemy',
             bypassCallback: () => {
@@ -433,7 +438,7 @@ export default class Player extends GameObject {
     }
   }
 
-  getHitByBodyAura(obj: GameObject, damage: number, lastWhoDamagedMe?: string) {
+  getHitByBodyAura(obj: GameObject, damage: number, lastWhoDamagedMe?: string, callback?: () => void) {
     if (!this.healthManager.isImmune && !this.relicManager.isImmune) {
       if (
         this.collision({
@@ -443,7 +448,7 @@ export default class Player extends GameObject {
           height: obj.gameObject.height,
         })
       ) {
-        this.healthManager.takeDamage(damage, { lastWhoDamagedMe });
+        this.healthManager.takeDamage(damage, { lastWhoDamagedMe, callback });
       }
     }
   }

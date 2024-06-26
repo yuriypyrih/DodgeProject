@@ -14,8 +14,10 @@ type TProps = {
 
 export default class ReaperBullet extends GameObject {
   game: Game;
+  angle: number;
+  initX: number;
 
-  constructor({ game, position, velX = 5, velY = 5 }: TProps) {
+  constructor({ game, position, velX = 0, velY = 2 }: TProps) {
     super({
       id: ENTITY_ID.REAPER,
       width: 5,
@@ -26,6 +28,8 @@ export default class ReaperBullet extends GameObject {
     });
 
     this.game = game;
+    this.angle = 180;
+    this.initX = this.gameObject.position.x;
   }
 
   getBounds() {
@@ -58,8 +62,9 @@ export default class ReaperBullet extends GameObject {
 
   update(_deltaTime: number) {
     // Updating the entity's position based on its velocity (if it has one)
-    this.gameObject.position.x += this.gameObject.velX;
     this.gameObject.position.y += this.gameObject.velY;
+    this.gameObject.position.x = this.initX + Math.cos(this.angle) * 60;
+    this.angle += 0.1;
 
     // Creating a Trail particle and add it to the list
     this.game.particleObjects.push(

@@ -17,11 +17,12 @@ type ShadowEnemyProps = {
 export default class ShadowEnemy extends GameObject {
   game: Game;
   readonly MAX_AURA_RADIUS: number;
+  readonly MAX_VFX_AURA_RADIUS: number;
   aura_radius_1: number;
   aura_radius_2: number;
   disableWallCollision: boolean;
 
-  constructor({ game, position, velX = 5, velY = 5, maxRadius = 300, disableWallCollision = false }: ShadowEnemyProps) {
+  constructor({ game, position, velX = 5, velY = 5, maxRadius = 260, disableWallCollision = false }: ShadowEnemyProps) {
     super({
       id: ENTITY_ID.SHADOW_AURA,
       width: 20,
@@ -33,8 +34,9 @@ export default class ShadowEnemy extends GameObject {
 
     this.game = game;
     this.MAX_AURA_RADIUS = maxRadius;
-    this.aura_radius_1 = this.MAX_AURA_RADIUS;
-    this.aura_radius_2 = this.MAX_AURA_RADIUS / 2;
+    this.MAX_VFX_AURA_RADIUS = 120;
+    this.aura_radius_1 = 0;
+    this.aura_radius_2 = this.MAX_VFX_AURA_RADIUS / 2;
     this.disableWallCollision = disableWallCollision;
   }
 
@@ -64,47 +66,31 @@ export default class ShadowEnemy extends GameObject {
       this.gameObject.width,
       this.gameObject.height,
     );
-    //
-    // context.strokeStyle = COLOR.BLACK;
-    // context.globalAlpha = 0.2;
-    // context.beginPath();
-    // context.arc(
-    //   this.gameObject.position.x + this.gameObject.width / 2,
-    //   this.gameObject.position.y + this.gameObject.height / 2,
-    //   this.MAX_AURA_RADIUS / Math.sqrt(2),
-    //   0,
-    //   2 * Math.PI
-    // );
-    // context.stroke();
-    // const multiplier_1 = Math.min(
-    //   (this.MAX_AURA_RADIUS - this.aura_radius_1) / this.MAX_AURA_RADIUS,
-    //   1
-    // );
-    // context.globalAlpha = 1 * multiplier_1;
-    // context.beginPath();
-    // context.arc(
-    //   this.gameObject.position.x + this.gameObject.width / 2,
-    //   this.gameObject.position.y + this.gameObject.height / 2,
-    //   this.aura_radius_1 / Math.sqrt(2),
-    //   0,
-    //   2 * Math.PI
-    // );
-    // context.stroke();
-    // const multiplier_2 = Math.min(
-    //   (this.MAX_AURA_RADIUS - this.aura_radius_2) / this.MAX_AURA_RADIUS,
-    //   1
-    // );
-    // context.globalAlpha = 1 * multiplier_2;
-    // context.beginPath();
-    // context.arc(
-    //   this.gameObject.position.x + this.gameObject.width / 2,
-    //   this.gameObject.position.y + this.gameObject.height / 2,
-    //   this.aura_radius_2 / Math.sqrt(2),
-    //   0,
-    //   2 * Math.PI
-    // );
-    // context.stroke();
-    // context.globalAlpha = 1;
+
+    context.strokeStyle = COLOR.BLACK;
+    const multiplier_1 = Math.min((this.MAX_VFX_AURA_RADIUS - this.aura_radius_1) / this.MAX_VFX_AURA_RADIUS, 1);
+    context.globalAlpha = 1 * multiplier_1;
+    context.beginPath();
+    context.arc(
+      this.gameObject.position.x + this.gameObject.width / 2,
+      this.gameObject.position.y + this.gameObject.height / 2,
+      this.aura_radius_1 / Math.sqrt(2),
+      0,
+      2 * Math.PI,
+    );
+    context.stroke();
+    const multiplier_2 = Math.min((this.MAX_VFX_AURA_RADIUS - this.aura_radius_2) / this.MAX_VFX_AURA_RADIUS, 1);
+    context.globalAlpha = 1 * multiplier_2;
+    context.beginPath();
+    context.arc(
+      this.gameObject.position.x + this.gameObject.width / 2,
+      this.gameObject.position.y + this.gameObject.height / 2,
+      this.aura_radius_2 / Math.sqrt(2),
+      0,
+      2 * Math.PI,
+    );
+    context.stroke();
+    context.globalAlpha = 1;
   }
 
   update(_deltaTime: number) {
@@ -112,10 +98,10 @@ export default class ShadowEnemy extends GameObject {
     this.gameObject.position.x += this.gameObject.velX;
     this.gameObject.position.y += this.gameObject.velY;
 
-    this.aura_radius_1 += 4;
-    this.aura_radius_2 += 4;
-    if (this.aura_radius_1 >= this.MAX_AURA_RADIUS) this.aura_radius_1 = 0;
-    if (this.aura_radius_2 >= this.MAX_AURA_RADIUS) this.aura_radius_2 = 0;
+    this.aura_radius_1 += 2;
+    this.aura_radius_2 += 2;
+    if (this.aura_radius_1 >= this.MAX_VFX_AURA_RADIUS) this.aura_radius_1 = 0;
+    if (this.aura_radius_2 >= this.MAX_VFX_AURA_RADIUS) this.aura_radius_2 = 0;
 
     // Creating a Trail particle and add it to the list
     this.game.particleObjects.push(

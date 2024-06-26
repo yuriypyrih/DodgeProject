@@ -1,10 +1,9 @@
 import React from 'react';
 import { Box } from '@mui/material';
-
-import { ScoreRecord } from '../../Models/ScoreRecord.ts';
+import { ScoreRecord } from 'Models/ScoreRecord.ts';
 import styles from './styles.module.scss';
 import DefaultIcon from '@mui/icons-material/Description';
-import { relics } from '../../game/engine/relics/relics_collection.ts';
+import { relics } from 'game/engine/relics/relics_collection.ts';
 import USerIcon from '@mui/icons-material/AccountCircle';
 import clsx from 'clsx';
 
@@ -22,7 +21,7 @@ const LeaderboardItem: React.FC<TProps> = ({ scoreRecord, index, lastPlaced, hig
     if (foundRelic) {
       Icon = foundRelic.Icon;
     }
-    return <Icon className={styles.augmentIcon} />;
+    return <Icon className={styles.augmentIcon} style={{ color: 'white' }} />;
   };
 
   const getPlace = () => {
@@ -77,7 +76,7 @@ const LeaderboardItem: React.FC<TProps> = ({ scoreRecord, index, lastPlaced, hig
             <Box sx={{ color: 'white' }}>{scoreRecord.userName}</Box>
           </Box>
           <Box sx={{ flex: 1, textAlign: 'right', pr: 2 }}>
-            <Box sx={{ color: 'white' }}>{scoreRecord.score}</Box>
+            <Box sx={{ color: 'white' }}>{scoreRecord.score.toFixed(2)} s</Box>
           </Box>
           <Box sx={{ flex: 0, width: '40px', display: 'flex', alignItems: 'center' }}>{getAugmentIcon()}</Box>
         </Box>

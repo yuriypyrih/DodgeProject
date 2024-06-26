@@ -23,6 +23,8 @@ const BERSERK_TOTAL: number = 1000;
 const PORTAL_STABILIZED_TOTAL: number = 1000;
 const STOPWATCH_TOTAL: number = 3000;
 
+const BEACON_DELAY: number = 6000;
+
 const REGEN_INTERVAL_TOTAL: number = 1;
 
 export default class RelicManager {
@@ -41,6 +43,7 @@ export default class RelicManager {
   berserkIsActive: boolean;
   berserkTickTimer: number;
   beaconPlaced: XY | null;
+  beaconPlacedTime: number;
 
   constructor({ game }: TProps) {
     this.game = game;
@@ -58,6 +61,7 @@ export default class RelicManager {
     this.berserkIsActive = false;
     this.berserkTickTimer = 0;
     this.beaconPlaced = null;
+    this.beaconPlacedTime = 0;
   }
 
   assignRelic(relic: Relic | null, saveOriginal: boolean = false) {
@@ -111,6 +115,7 @@ export default class RelicManager {
     const player = this.game.player;
     const healthManager = player.healthManager;
     const afflictionManager = player.afflictionManager;
+    const now = this.game.now;
 
     console.log('useActiveRelic ,', this.game.birthday);
     if (this.relic && this.available_uses > 0 && this.relic.type === RELIC_TYPE.ACTIVE) {
@@ -144,6 +149,7 @@ export default class RelicManager {
             x: player.gameObject.position.x + 8,
             y: player.gameObject.position.y + 8,
           };
+          this.beaconPlacedTime = Date.now();
         } else {
           this.game.gameObjects.forEach((object: GameObject) => {
             // Very forgiving Bounds while recalling for collecting a star
@@ -162,6 +168,9 @@ export default class RelicManager {
           });
           player.gameObject.position.x = this.beaconPlaced.x - 8;
           player.gameObject.position.y = this.beaconPlaced.y - 8;
+          if (this.beaconPlacedTime < now - BEACON_DELAY) {
+            this.applyFear();
+          }
           this.beaconPlaced = null;
         }
       }
@@ -240,6 +249,20 @@ export default class RelicManager {
     if (this.relic?.id === AUGMENTS.RECALL_BEACON && this.beaconPlaced) {
       context.fillStyle = COLOR.WHITE;
       context.fillRect(this.beaconPlaced.x, this.beaconPlaced.y, 8, 8);
+
+      if (this.beaconPlacedTime < now - BEACON_DELAY) {
+        context.strokeStyle = COLOR.ORANGE;
+        context.lineWidth = 1;
+        context.strokeRect(this.beaconPlaced.x - 4, this.beaconPlaced.y - 4, 16, 16);
+        context.beginPath();
+        context.rect(
+          player.gameObject.position.x - 4,
+          player.gameObject.position.y - 4,
+          player.gameObject.width + 8,
+          player.gameObject.height + 8,
+        );
+        context.stroke();
+      }
     }
   }
 

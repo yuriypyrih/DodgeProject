@@ -15,6 +15,9 @@ type TProps = {
 export default class FrostyEnemy extends GameObject {
   game: Game;
   readonly MAX_AURA_RADIUS: number;
+  readonly MAX_VFX_AURA_RADIUS: number;
+  aura_radius_1: number;
+  aura_radius_2: number;
 
   constructor({ game, position, velX = 5, velY = 5 }: TProps) {
     super({
@@ -26,7 +29,10 @@ export default class FrostyEnemy extends GameObject {
       velX,
     });
 
-    this.MAX_AURA_RADIUS = 240;
+    this.MAX_AURA_RADIUS = 220;
+    this.MAX_VFX_AURA_RADIUS = 120;
+    this.aura_radius_1 = 0;
+    this.aura_radius_2 = this.MAX_VFX_AURA_RADIUS / 2;
     this.game = game;
   }
 
@@ -56,15 +62,41 @@ export default class FrostyEnemy extends GameObject {
       this.gameObject.width,
       this.gameObject.height,
     );
-    // context.strokeStyle = COLOR.LIGHT_BLUE;
-    // const bounds = this.getBounds();
-    // context.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
+    context.strokeStyle = COLOR.LIGHT_BLUE;
+    const multiplier_1 = Math.min((this.MAX_VFX_AURA_RADIUS - this.aura_radius_1) / this.MAX_VFX_AURA_RADIUS, 1);
+    context.globalAlpha = 0.3 * multiplier_1;
+    context.beginPath();
+    context.arc(
+      this.gameObject.position.x + this.gameObject.width / 2,
+      this.gameObject.position.y + this.gameObject.height / 2,
+      this.aura_radius_1 / Math.sqrt(2),
+      0,
+      2 * Math.PI,
+    );
+    context.stroke();
+    const multiplier_2 = Math.min((this.MAX_VFX_AURA_RADIUS - this.aura_radius_2) / this.MAX_VFX_AURA_RADIUS, 1);
+    context.globalAlpha = 0.3 * multiplier_2;
+    context.beginPath();
+    context.arc(
+      this.gameObject.position.x + this.gameObject.width / 2,
+      this.gameObject.position.y + this.gameObject.height / 2,
+      this.aura_radius_2 / Math.sqrt(2),
+      0,
+      2 * Math.PI,
+    );
+    context.stroke();
+    context.globalAlpha = 1;
   }
 
   update(_deltaTime: number) {
     // Updating the entity's position based on its velocity (if it has one)
     this.gameObject.position.x += this.gameObject.velX;
     this.gameObject.position.y += this.gameObject.velY;
+
+    this.aura_radius_1 += 2;
+    this.aura_radius_2 += 2;
+    if (this.aura_radius_1 >= this.MAX_VFX_AURA_RADIUS) this.aura_radius_1 = 0;
+    if (this.aura_radius_2 >= this.MAX_VFX_AURA_RADIUS) this.aura_radius_2 = 0;
 
     // Creating a Trail particle and add it to the list
     this.game.particleObjects.push(
