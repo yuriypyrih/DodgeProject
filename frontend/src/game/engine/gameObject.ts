@@ -9,6 +9,7 @@ type GameObjectProps = {
   velX: number;
   velY: number;
   name?: string;
+  symbiosisName?: string;
 };
 
 export default abstract class GameObject {

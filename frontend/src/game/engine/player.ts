@@ -102,6 +102,7 @@ export default class Player extends GameObject {
     this.relicManager.reset();
     this.afflictionManager.reset();
     this.personalParticles = [];
+    this.game.keyLastTimePressed = this.game.now;
   }
 
   getBounds() {
@@ -148,7 +149,7 @@ export default class Player extends GameObject {
   }
 
   victoryConditionCheck() {
-    const maxStars = this.game.spawner.levelStars[this.game.level - 1];
+    const maxStars = this.game.spawner.levelStars[this.game.level];
     if (this.stars >= maxStars.length) {
       this.game.dispatchVictory(this.stars);
       return true;
@@ -280,6 +281,17 @@ export default class Player extends GameObject {
 
         if (object.gameObject.id === ENTITY_ID.BASIC_ENEMY) {
           this.healthManager.takeDamage(25, { lastWhoDamagedMe: object.gameObject.name });
+        }
+
+        if (object.gameObject.id === ENTITY_ID.BIPOLAR && 'aggressive' in object) {
+          if (object.aggressive) {
+            this.healthManager.takeDamage(25, { lastWhoDamagedMe: object.gameObject.name });
+          } else {
+            this.healthManager.lastTimeDamaged = this.game.now;
+            this.healthManager.health += this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? 20 : 10;
+            store.dispatch(playAnimation(VFX.PULSE_GREEN));
+            object.aggressive = true;
+          }
         }
 
         if (object.gameObject.id === ENTITY_ID.REAPER) {

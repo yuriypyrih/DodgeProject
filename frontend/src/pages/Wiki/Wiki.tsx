@@ -335,6 +335,7 @@ const augmentsContent: ContentType[] = [
       'You receive 25% MORE damage from hitting enemies, but..',
       '- Poison heals you instead of damaging you',
       '- Deathmark heals you for 30hp instead of killing you',
+      '- Bipolar heals for 200%',
       '- Increased resistance to Burn and Explosions (75%)',
     ],
   },

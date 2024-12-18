@@ -3,4 +3,5 @@ export enum LEVEL_STATUS {
   LOCKED = 'LOCKED',
   DISABLED = 'DISABLED',
   COMING_SOON = 'COMING_SOON',
+  DEV = 'DEV',
 }

@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PATCH_NOTES } from '../../Models/data/PatchNotes.ts';
+import { PATCH_NOTES } from 'Models/data/PatchNotes.ts';
 import styles from './index.module.scss';
 import FeedbackButton from '../../components/FeedbackButton';
 import CustomButton from '../../components/CustomButton';

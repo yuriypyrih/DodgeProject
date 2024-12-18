@@ -88,12 +88,23 @@ export default class HealthManager {
     if (options?.bypassCallback) {
       options.bypassCallback();
     }
+    if (this.game.player.relicManager.relic?.id === AUGMENTS.MEDITATE) {
+      this.game.keyLastTimePressed = this.game.now;
+      this.game.player.relicManager.available_uses = this.game.player.relicManager.relic?.max_uses;
+      this.game.player.relicManager.updateRelic();
+    }
   }
 
   reset() {
     this.health = 100;
     this.lastTimeDamaged = Date.now();
     this.buffered_dmg = 0;
+    if (this.game.player.relicManager.relic?.id === AUGMENTS.HARVESTER) {
+      this.health = 1;
+    }
+    if (this.game.player.relicManager.relic?.id === AUGMENTS.MEDITATE) {
+      this.health = 60;
+    }
   }
 
   update(_deltaNumber: number) {

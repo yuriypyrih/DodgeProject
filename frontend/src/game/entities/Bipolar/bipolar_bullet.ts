@@ -12,19 +12,17 @@ type TProps = {
   velY?: number;
 };
 
-export default class BasicEnemy extends GameObject {
+export default class BipolarBullet extends GameObject {
   game: Game;
 
   constructor({ game, position, velX = 5, velY = 5 }: TProps) {
     super({
-      id: ENTITY_ID.BASIC_ENEMY,
-      width: 20,
-      height: 20,
+      id: ENTITY_ID.BULLET,
+      width: 5,
+      height: 5,
       position,
       velY,
       velX,
-      name: 'Scout Enemy',
-      symbiosisName: 'Scout',
     });
 
     this.game = game;
@@ -68,34 +66,27 @@ export default class BasicEnemy extends GameObject {
       new Trail({
         x: this.gameObject.position.x,
         y: this.gameObject.position.y,
-        reductor: 12,
+        reductor: 0,
         color: COLOR.RED,
         width: this.gameObject.width,
         height: this.gameObject.height,
-        life: 0.7,
-        minus: 0.02,
+        life: 0.8,
+        minus: 0.04,
         game: this.game,
       }),
     );
 
-    if (this.gameObject.position.y <= 0) {
-      this.gameObject.velY *= -1;
-      this.gameObject.position.y = 1;
+    if (
+      this.gameObject.position.y <= 0 ||
+      this.gameObject.position.y >= this.game.canvas.canvasHeight - this.gameObject.height
+    ) {
+      this.game.gameObjects.splice(this.game.gameObjects.indexOf(this), 1);
     }
-
-    if (this.gameObject.position.y >= this.game.canvas.canvasHeight - this.gameObject.height) {
-      this.gameObject.velY *= -1;
-      this.gameObject.position.y = this.game.canvas.canvasHeight - (this.gameObject.height + 1);
-    }
-
-    if (this.gameObject.position.x <= 0) {
-      this.gameObject.velX *= -1;
-      this.gameObject.position.x = 1;
-    }
-
-    if (this.gameObject.position.x >= this.game.canvas.canvasWidth - this.gameObject.width) {
-      this.gameObject.velX *= -1;
-      this.gameObject.position.x = this.game.canvas.canvasWidth - (this.gameObject.width + 1);
+    if (
+      this.gameObject.position.x <= 0 ||
+      this.gameObject.position.x >= this.game.canvas.canvasWidth - this.gameObject.width
+    ) {
+      this.game.gameObjects.splice(this.game.gameObjects.indexOf(this), 1);
     }
   }
 }

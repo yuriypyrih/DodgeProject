@@ -1,5 +1,5 @@
 import { RELIC_TYPE } from '../enum/relic_type';
-import { LEVEL_STATUS } from '../../Models/enum/LEVEL_STATUS';
+import { LEVEL_STATUS } from 'Models/enum/LEVEL_STATUS.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
 
 export type Relic = {

@@ -12,22 +12,24 @@ type TProps = {
   velY?: number;
 };
 
-export default class BasicEnemy extends GameObject {
+export default class BipolarEnemy extends GameObject {
   game: Game;
+  aggressive: boolean;
 
   constructor({ game, position, velX = 5, velY = 5 }: TProps) {
     super({
-      id: ENTITY_ID.BASIC_ENEMY,
+      id: ENTITY_ID.BIPOLAR,
       width: 20,
       height: 20,
       position,
       velY,
       velX,
-      name: 'Scout Enemy',
-      symbiosisName: 'Scout',
+      name: 'Bipolar Enemy',
+      symbiosisName: 'Bipolar',
     });
 
     this.game = game;
+    this.aggressive = true;
   }
 
   getBounds() {
@@ -49,12 +51,19 @@ export default class BasicEnemy extends GameObject {
   }
 
   draw(context: any) {
-    context.fillStyle = COLOR.RED;
+    context.fillStyle = this.aggressive ? COLOR.RED : COLOR.PRIMARY;
     context.fillRect(
       this.gameObject.position.x,
       this.gameObject.position.y,
       this.gameObject.width,
       this.gameObject.height,
+    );
+    context.fillStyle = this.aggressive ? COLOR.PRIMARY : COLOR.RED;
+    context.fillRect(
+      this.gameObject.position.x + 6,
+      this.gameObject.position.y + 6,
+      this.gameObject.width - 12,
+      this.gameObject.height - 12,
     );
   }
 
@@ -69,7 +78,7 @@ export default class BasicEnemy extends GameObject {
         x: this.gameObject.position.x,
         y: this.gameObject.position.y,
         reductor: 12,
-        color: COLOR.RED,
+        color: this.aggressive ? COLOR.RED : COLOR.PRIMARY,
         width: this.gameObject.width,
         height: this.gameObject.height,
         life: 0.7,
@@ -81,21 +90,25 @@ export default class BasicEnemy extends GameObject {
     if (this.gameObject.position.y <= 0) {
       this.gameObject.velY *= -1;
       this.gameObject.position.y = 1;
+      this.aggressive = !this.aggressive;
     }
 
     if (this.gameObject.position.y >= this.game.canvas.canvasHeight - this.gameObject.height) {
       this.gameObject.velY *= -1;
       this.gameObject.position.y = this.game.canvas.canvasHeight - (this.gameObject.height + 1);
+      this.aggressive = !this.aggressive;
     }
 
     if (this.gameObject.position.x <= 0) {
       this.gameObject.velX *= -1;
       this.gameObject.position.x = 1;
+      this.aggressive = !this.aggressive;
     }
 
     if (this.gameObject.position.x >= this.game.canvas.canvasWidth - this.gameObject.width) {
       this.gameObject.velX *= -1;
       this.gameObject.position.x = this.game.canvas.canvasWidth - (this.gameObject.width + 1);
+      this.aggressive = !this.aggressive;
     }
   }
 }

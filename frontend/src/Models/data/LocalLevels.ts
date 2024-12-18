@@ -1,11 +1,18 @@
 import { Level } from '../level';
 import { LEVEL_STATUS } from '../enum/LEVEL_STATUS';
 import Game from '../../game/engine/game';
-import { Relic } from '../../game/types/Relic.ts';
-import { GAME_STATE } from '../../game/enum/game_state';
-import { relics } from '../../game/engine/relics/relics_collection';
+import { Relic } from 'game/types/Relic.ts';
+import { GAME_STATE } from 'game/enum/game_state.ts';
+import { relics } from 'game/engine/relics/relics_collection.ts';
 
 export const LocalLevels: Level[] = [
+  {
+    level: 0,
+    levelId: 'LVL_0',
+    description: 'Dev',
+    status: LEVEL_STATUS.UNLOCKED,
+    cost: 0,
+  },
   {
     level: 1,
     levelId: 'LVL_1',

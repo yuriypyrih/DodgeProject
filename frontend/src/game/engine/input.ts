@@ -21,15 +21,19 @@ const keyDownEvents = (event: any, game: Game) => {
 
   switch (event.code) {
     case actualBinding[0]:
+      game.keyPressed();
       game.player.moveLeft();
       break;
     case actualBinding[1]:
+      game.keyPressed();
       game.player.moveUp();
       break;
     case actualBinding[2]:
+      game.keyPressed();
       game.player.moveRight();
       break;
     case actualBinding[3]:
+      game.keyPressed();
       game.player.moveDown();
       break;
     case actualBinding[4]:
@@ -49,15 +53,19 @@ const keyUpEvents = (event: any, game: Game) => {
 
   switch (event.code) {
     case actualBinding[0]:
+      game.keyPressed();
       if (game.player.gameObject.velX < 0) game.player.stopX();
       break;
     case actualBinding[1]:
+      game.keyPressed();
       if (game.player.gameObject.velY < 0) game.player.stopY();
       break;
     case actualBinding[2]:
+      game.keyPressed();
       if (game.player.gameObject.velX > 0) game.player.stopX();
       break;
     case actualBinding[3]:
+      game.keyPressed();
       if (game.player.gameObject.velY > 0) game.player.stopY();
       break;
   }

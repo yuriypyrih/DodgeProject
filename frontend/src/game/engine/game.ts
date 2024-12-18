@@ -34,6 +34,7 @@ export default class Game {
   birthday: number;
   darkness: number; // 0 to 100;
   timeScale: number; // 1 means normal, 2 means half the speed etc
+  keyLastTimePressed: number;
   updateTimeCounter: number;
 
   constructor({ canvasHeight, canvasWidth }: GameProps) {
@@ -44,7 +45,7 @@ export default class Game {
 
     this.level = 1;
     // Dev option for debugging
-    this.dev = false; // process.env.NODE_ENV === 'development';
+    this.dev = true; // process.env.NODE_ENV === 'development';
     /**
      * gameObjects -> Player can interact with (Player excluded)
      * particleObject -> Player usually cannot interact with
@@ -68,6 +69,7 @@ export default class Game {
     this.inputHandler.initEvents();
     this.darkness = 0;
     this.timeScale = 1;
+    this.keyLastTimePressed = this.now;
     this.updateTimeCounter = 0;
   }
 
@@ -163,6 +165,10 @@ export default class Game {
       this.gameState = GAME_STATE.PAUSED;
     }
     store.dispatch(setGameState(this.gameState));
+  }
+
+  keyPressed() {
+    this.keyLastTimePressed = this.now;
   }
 
   update(deltaTime: number) {

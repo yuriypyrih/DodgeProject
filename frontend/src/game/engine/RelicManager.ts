@@ -39,11 +39,13 @@ export default class RelicManager {
   immunityActivationTime: number;
   guardianActivationTime: number;
   stopwatchActivationTime: number;
+  meditationIntervalTime: number;
   regenIntervalTime: number;
   berserkIsActive: boolean;
   berserkTickTimer: number;
   beaconPlaced: XY | null;
   beaconPlacedTime: number;
+  symbioticLinked: string | null;
 
   constructor({ game }: TProps) {
     this.game = game;
@@ -57,11 +59,13 @@ export default class RelicManager {
     this.immunityActivationTime = 0;
     this.guardianActivationTime = 0;
     this.stopwatchActivationTime = 0;
+    this.meditationIntervalTime = 0;
     this.regenIntervalTime = 0;
     this.berserkIsActive = false;
     this.berserkTickTimer = 0;
     this.beaconPlaced = null;
     this.beaconPlacedTime = 0;
+    this.symbioticLinked = null;
   }
 
   assignRelic(relic: Relic | null, saveOriginal: boolean = false) {
@@ -101,6 +105,7 @@ export default class RelicManager {
       this.immunityActivationTime = 0;
       this.guardianActivationTime = 0;
       this.stopwatchActivationTime = 0;
+      this.meditationIntervalTime = 0;
       this.regenIntervalTime = 0;
       this.berserkIsActive = false;
       this.berserkTickTimer = 0;
@@ -294,7 +299,7 @@ export default class RelicManager {
     if (this.relic?.id === AUGMENTS.REGENERATION) {
       this.regenIntervalTime++;
 
-      if (getSec(this.regenIntervalTime, 2) > REGEN_INTERVAL_TOTAL) {
+      if (getSec(this.regenIntervalTime, 2) >= 2) {
         healthManager.health += 2;
         this.regenIntervalTime = 0;
       }
@@ -311,6 +316,29 @@ export default class RelicManager {
 
     if (this.relic?.id === AUGMENTS.HARVESTER && healthManager.health > 1) {
       healthManager.health = 1;
+    }
+
+    if (this.relic?.id === AUGMENTS.MEDITATE) {
+      const HEAL_PER_SEC = 8;
+      this.meditationIntervalTime++;
+      const isMeditating =
+        now - this.game.keyLastTimePressed > 1000 &&
+        this.available_uses > 0 &&
+        healthManager.health < 100 &&
+        this.game.player.gameObject.velY === 0 &&
+        this.game.player.gameObject.velX === 0;
+
+      this.isStabilized = isMeditating;
+
+      if (isMeditating && getSec(this.meditationIntervalTime, 2) > REGEN_INTERVAL_TOTAL) {
+        healthManager.health += HEAL_PER_SEC;
+        this.available_uses -= HEAL_PER_SEC;
+        if (this.available_uses < 0) {
+          this.available_uses = 0;
+        }
+        this.meditationIntervalTime = 0;
+        this.updateRelic();
+      }
     }
   }
 }

@@ -13,6 +13,8 @@ import AngelIcon from '../../../assets/svg/relic_angel.svg?react';
 import StabilizerIcon from '../../../assets/svg/relic_stabilizer.svg?react';
 import StopwatchIcon from '../../../assets/svg/stopwatch.svg?react';
 import CenterFocusWeakIcon from '@mui/icons-material/CenterFocusWeak';
+import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
+import LinkIcon from '@mui/icons-material/Link';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import SkullIcon from 'assets/svg/skull.svg?react';
 import BlockIcon from '@mui/icons-material/Block';
@@ -167,6 +169,26 @@ export const relics: Relic[] = [
     max_uses: Number.POSITIVE_INFINITY,
     cost: 1,
     Icon: SkullIcon,
+    cooldown: -1,
+  },
+  {
+    id: AUGMENTS.SYMBIOTIC_LINK,
+    name: 'Symbiotic Link',
+    type: RELIC_TYPE.ACTIVE,
+    state: LEVEL_STATUS.UNLOCKED,
+    max_uses: 5,
+    cost: 1,
+    Icon: LinkIcon,
+    cooldown: -1,
+  },
+  {
+    id: AUGMENTS.MEDITATE,
+    name: 'Meditation',
+    type: RELIC_TYPE.ACTIVE,
+    state: LEVEL_STATUS.UNLOCKED,
+    max_uses: 40,
+    cost: 1,
+    Icon: SelfImprovementIcon,
     cooldown: -1,
   },
 ];

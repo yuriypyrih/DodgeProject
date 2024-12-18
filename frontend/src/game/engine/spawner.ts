@@ -2,6 +2,7 @@ import Game from './game';
 import store from '../../redux/store';
 import { getSec, sec } from '../../utils/deltaTime';
 import { setChaosTimer, setCurrentTimer, setProgress } from '../../redux/slices/gameSlice';
+import { getLevel0, level0Stars } from './levels/getLevel0';
 import { getLevel1, level1Stars } from './levels/getLevel1';
 import { getLevel2, level2Stars } from './levels/getLevel2';
 import { getLevel3, level3Stars } from './levels/getLevel3';
@@ -12,7 +13,6 @@ import { getLevel7, level7Stars } from './levels/getLevel7';
 import { getLevel8, level8Stars } from './levels/getLevel8';
 import { getLevel9, level9Stars } from './levels/getLevel9';
 import { getLevel10, level10Stars } from './levels/getLevel10';
-import { getLevel0, level0Stars } from './levels/getLevel0';
 import { getLevel11, level11Stars } from './levels/getLevel11';
 import { getLevel12, level12Stars } from './levels/getLevel12';
 import { getLevel13, level13Stars } from './levels/getLevel13';
@@ -51,6 +51,7 @@ export default class Spawner {
     this.chaosRoundTimer = 0;
     this.timerInterval = 0;
     this.levelStars = [
+      level0Stars,
       level1Stars,
       level2Stars,
       level3Stars,
@@ -106,9 +107,9 @@ export default class Spawner {
     } else {
       store.dispatch(
         setProgress({
-          max_stars: this.levelStars[this.game.level - 1].length,
+          max_stars: this.levelStars[this.game.level].length,
           total_stars_collected: this.game.player.stars,
-          star_timers: this.levelStars[this.game.level - 1],
+          star_timers: this.levelStars[this.game.level],
         }),
       );
     }
@@ -119,7 +120,7 @@ export default class Spawner {
     if (this.game.player.isChaosActive) this.chaosRoundTimer++;
 
     if (isChaosDungeon(this.game.level) && !this.game.player.isChaosActive) {
-      const max_stars_minus_1 = this.levelStars[this.game.level - 1].length - 1;
+      const max_stars_minus_1 = this.levelStars[this.game.level].length - 1;
       const total_stars_collected = this.game.player.stars;
       if (max_stars_minus_1 === total_stars_collected) {
         this.game.player.isChaosActive = true;
