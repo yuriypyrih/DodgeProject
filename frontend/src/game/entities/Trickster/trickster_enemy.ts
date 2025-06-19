@@ -12,21 +12,21 @@ type TProps = {
   velY?: number;
 };
 
-export default class HackerEnemy extends GameObject {
+export default class TricksterEnemy extends GameObject {
   game: Game;
   randomizeMovement: number;
   feared_timer: number;
 
-  constructor({ game, position, velX = 5, velY = 0 }: TProps) {
+  constructor({ game, position, velX = 4, velY = 4 }: TProps) {
     super({
-      id: ENTITY_ID.HACKER,
+      id: ENTITY_ID.TRICKSTER,
       width: 20,
       height: 20,
       position,
       velY,
       velX,
-      name: 'Hacker Enemy',
-      symbiosisName: 'Hacker',
+      name: 'Trickster Enemy',
+      symbiosisName: 'Trickster',
     });
 
     this.game = game;
@@ -49,7 +49,7 @@ export default class HackerEnemy extends GameObject {
   }
 
   draw(context: any) {
-    context.fillStyle = COLOR.DARK_GREEN;
+    context.fillStyle = COLOR.PINK;
     context.fillRect(
       this.gameObject.position.x,
       this.gameObject.position.y,
@@ -73,7 +73,7 @@ export default class HackerEnemy extends GameObject {
         x: this.gameObject.position.x,
         y: this.gameObject.position.y,
         reductor: 12,
-        color: COLOR.VENOM,
+        color: COLOR.PURPLE,
         width: this.gameObject.width,
         height: this.gameObject.height,
         life: 0.7,
@@ -84,7 +84,7 @@ export default class HackerEnemy extends GameObject {
 
     this.randomizeMovement -= 1;
     if (this.randomizeMovement <= 0) {
-      const MAX = 30;
+      const MAX = 50;
       const MIN = 2;
       this.randomizeMovement = Math.floor(Math.random() * (MAX - MIN + 1)) + MIN;
       const rand = Math.floor(Math.random() * 2);
@@ -99,11 +99,11 @@ export default class HackerEnemy extends GameObject {
         }
       } else {
         if (this.gameObject.velY === 0) {
-          this.gameObject.velY = rand === 0 ? 6 : -6;
-          this.gameObject.velX = 0;
+          this.gameObject.velY = rand === 0 ? 4 : -4;
+          // this.gameObject.velX = 0;
         } else {
-          this.gameObject.velX = rand === 0 ? 6 : -6;
-          this.gameObject.velY = 0;
+          this.gameObject.velX = rand === 0 ? 4 : -4;
+          // this.gameObject.velY = 0;
         }
       }
     }

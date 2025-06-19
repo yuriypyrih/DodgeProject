@@ -21,8 +21,9 @@ import { API_LEVEL } from 'Models/enum/API_LEVEL.ts';
 import CustomButton from '../../components/CustomButton';
 
 const Selection: React.FC<unknown> = () => {
-  const MAX_PAGE_SIZE = 12;
-  const MAX_CHAOS_SIZE = 3;
+  const NORMAL_PAGE_SIZE = 12;
+  const CHAOS_PAGE_SIZE = 3;
+
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const { search } = useLocation();
@@ -47,15 +48,19 @@ const Selection: React.FC<unknown> = () => {
     }
   }, [query]);
 
-  const getPageLevels = () => {
-    // return levels.slice((page - 1) * MAX_PAGE_SIZE, page * MAX_PAGE_SIZE);
-    if (page <= 2) {
-      return levels.slice((page - 1) * MAX_PAGE_SIZE, page * MAX_PAGE_SIZE);
-    } else {
-      const previousNormalLevels = MAX_PAGE_SIZE * 2;
-      return levels.slice(previousNormalLevels, previousNormalLevels + (page - 2) * MAX_CHAOS_SIZE);
+  const pages = useMemo<Level[][]>(() => {
+    const out: Level[][] = [];
+    for (let i = 0; i < levels.length; ) {
+      const isChaos = Boolean(levels[i].chaosDungeon);
+      const size = isChaos ? CHAOS_PAGE_SIZE : NORMAL_PAGE_SIZE;
+      out.push(levels.slice(i, i + size));
+      i += size;
     }
-  };
+    return out;
+  }, [levels]);
+
+  const currentLevels = pages[page - 1] ?? []; // page is 1-based
+  const chaosPage = currentLevels.every((l) => l.chaosDungeon);
 
   const isFirstPage = () => {
     return page === 1;
@@ -63,7 +68,7 @@ const Selection: React.FC<unknown> = () => {
 
   const isLastPage = () => {
     // return levels.length <= page * MAX_PAGE_SIZE;
-    return page === 3;
+    return page === 5;
   };
 
   const nextPage = () => {
@@ -120,21 +125,21 @@ const Selection: React.FC<unknown> = () => {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: page === 3 ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
+            gridTemplateColumns: chaosPage ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
             rowGap: '32px',
           }}
           className={styles.container}
         >
-          {getPageLevels().map((item, key) => (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }} key={'level' + key + item.level}>
-              {item.level <= 24 ? (
-                <CubePlayButton
-                  level={item}
-                  clickBuy={() => setBuyLevel(item)}
-                  complete={completeLevels.includes(item.levelId as API_LEVEL)}
-                />
+          {currentLevels.map((level) => (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }} key={`level-${level.levelId}`}>
+              {level.chaosDungeon ? (
+                <ChaosPlayButton level={level} clickBuy={() => setBuyLevel(level)} />
               ) : (
-                <ChaosPlayButton level={item} clickBuy={() => setBuyLevel(item)} />
+                <CubePlayButton
+                  level={level}
+                  clickBuy={() => setBuyLevel(level)}
+                  complete={completeLevels.includes(level.levelId as API_LEVEL)}
+                />
               )}
             </Box>
           ))}

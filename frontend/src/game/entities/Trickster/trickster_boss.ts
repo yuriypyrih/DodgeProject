@@ -3,7 +3,7 @@ import { COLOR } from 'game/enum/colors.ts';
 import GameObject from 'game/engine/gameObject.ts';
 import { Rectangle } from 'game/types/Rectangle.ts';
 import Game from 'game/engine/game.ts';
-import BipolarBullet from 'game/entities/Bipolar/bipolar_bullet.ts';
+import TricksterBullet from 'game/entities/Trickster/trickster_bullet.ts';
 
 type TProps = {
   game: Game;
@@ -13,7 +13,7 @@ type TProps = {
   skipAwakening?: boolean;
 };
 
-export default class BipolarBoss extends GameObject {
+export default class TricksterBoss extends GameObject {
   game: Game;
   awaken: boolean;
   bullet_timer: number;
@@ -58,49 +58,42 @@ export default class BipolarBoss extends GameObject {
       this.awaken = true;
       this.gameObject.velY = 0;
       this.gameObject.velX = 5;
+    } else if (!this.awaken && !this.game.player.afflictionManager.isHacked && this.gameObject.position.y >= 0) {
+      this.game.player.afflictionManager.getHacked();
     }
   }
 
   fireBullets() {
     this.bullet_timer++;
-    if (this.awaken && this.bullet_timer % 40 === 0) {
+    if (this.awaken && this.bullet_timer % 25 === 0) {
       const offset = this.gameObject.velX > 0 ? 20 : -20;
       const origin_x = this.gameObject.position.x + this.gameObject.width / 2 + offset;
       const origin_y = this.gameObject.position.y + this.gameObject.height - 5;
       this.game.gameObjects.push(
-        new BipolarBullet({
-          game: this.game,
-          position: { x: origin_x, y: origin_y },
-          velX: -3,
-          velY: 4,
-        }),
-      );
-      this.game.gameObjects.push(
-        new BipolarBullet({
+        new TricksterBullet({
           game: this.game,
           position: { x: origin_x, y: origin_y },
           velX: 0,
-          velY: 5,
-        }),
-      );
-      this.game.gameObjects.push(
-        new BipolarBullet({
-          game: this.game,
-          position: { x: origin_x, y: origin_y },
-          velX: 3,
-          velY: 4,
+          velY: 6,
         }),
       );
     }
   }
 
   draw(context: any) {
-    context.fillStyle = COLOR.RED;
+    context.fillStyle = COLOR.PINK;
     context.fillRect(
       this.gameObject.position.x,
       this.gameObject.position.y,
       this.gameObject.width,
       this.gameObject.height,
+    );
+    context.fillStyle = COLOR.PURPLE;
+    context.fillRect(
+      this.gameObject.position.x + 4,
+      this.gameObject.position.y + 4,
+      this.gameObject.width - 8,
+      this.gameObject.height - 8,
     );
   }
 

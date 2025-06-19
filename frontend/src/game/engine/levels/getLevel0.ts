@@ -4,8 +4,7 @@ import { sec } from 'utils/deltaTime.ts';
 import { Stars } from '../../types/Stars';
 import Game from '../game';
 import Star from '../../entities/star';
-import BipolarEnemy from 'game/entities/Bipolar/bipolar_enemy.ts';
-import BasicEnemy from 'game/entities/Basic/basic_enemy.ts';
+import RadioactiveEnemy from 'game/entities/Radioactive/radiactive_enemy.ts';
 
 export const level0Stars: Stars = [3, 15, 30];
 
@@ -14,7 +13,7 @@ export const getLevel0 = (game: Game): null => {
     if (game.spawner.roundTimer === sec(0.1)) {
       store.dispatch(playText(['LEVEL 0', 'Dev']));
       game.gameObjects.push(
-        new BipolarEnemy({
+        new RadioactiveEnemy({
           game,
           position: { x: 10, y: 40 },
         }),

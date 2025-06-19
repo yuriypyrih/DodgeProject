@@ -50,6 +50,7 @@ export default class HealthManager {
     const CHAOS_EXTRA_DMG = 5;
     const calculatedDmg = this.game.player.isChaosActive ? damage + CHAOS_EXTRA_DMG : damage;
 
+    console.log('TAKE DAMAGE', damage, options?.lastWhoDamagedMe);
     if (options && options.isSecondaryDamage) {
       if (!this.isImmuneSecondary && !this.game.player.relicManager.isImmune) {
         this.lastTimeDamagedSecondary = this.game.now + immunityShit;

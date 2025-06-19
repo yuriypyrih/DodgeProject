@@ -50,23 +50,39 @@ const keyDownEvents = (event: any, game: Game) => {
 
 const keyUpEvents = (event: any, game: Game) => {
   const actualBinding = isKeyBindingsArrows() ? arrowsBindings : awsdBindings;
-
+  const player = game.player;
   switch (event.code) {
     case actualBinding[0]:
       game.keyPressed();
-      if (game.player.gameObject.velX < 0) game.player.stopX();
+      if (
+        (player.gameObject.velX < 0 && !player.afflictionManager.isTricked) ||
+        (player.gameObject.velX > 0 && player.afflictionManager.isTricked)
+      )
+        game.player.stopX();
       break;
     case actualBinding[1]:
       game.keyPressed();
-      if (game.player.gameObject.velY < 0) game.player.stopY();
+      if (
+        (player.gameObject.velY < 0 && !player.afflictionManager.isTricked) ||
+        (player.gameObject.velY > 0 && player.afflictionManager.isTricked)
+      )
+        game.player.stopY();
       break;
     case actualBinding[2]:
       game.keyPressed();
-      if (game.player.gameObject.velX > 0) game.player.stopX();
+      if (
+        (player.gameObject.velX > 0 && !player.afflictionManager.isTricked) ||
+        (player.gameObject.velX < 0 && player.afflictionManager.isTricked)
+      )
+        game.player.stopX();
       break;
     case actualBinding[3]:
       game.keyPressed();
-      if (game.player.gameObject.velY > 0) game.player.stopY();
+      if (
+        (player.gameObject.velY > 0 && !player.afflictionManager.isTricked) ||
+        (player.gameObject.velY < 0 && player.afflictionManager.isTricked)
+      )
+        game.player.stopY();
       break;
   }
 };

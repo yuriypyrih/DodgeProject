@@ -31,6 +31,11 @@ import { getLevel25, level25Stars } from './levels/getLevel25.ts';
 import { getLevel26, level26Stars } from './levels/getLevel26.ts';
 import { getLevel27, level27Stars } from './levels/getLevel27.ts';
 import { isChaosDungeon } from '../../utils/isChaosDungeon.ts';
+import { getLevel28, level28Stars } from 'game/engine/levels/getLevel28.ts';
+import { getLevel29, level29Stars } from 'game/engine/levels/getLevel29.ts';
+import { getLevel30, level30Stars } from 'game/engine/levels/getLevel30.ts';
+import { getLevel31, level31Stars } from 'game/engine/levels/getLevel31.ts';
+import { getLevel32, level32Stars } from 'game/engine/levels/getLevel32.ts';
 
 type SpawnerProps = {
   game: Game;
@@ -79,12 +84,17 @@ export default class Spawner {
       level25Stars,
       level26Stars,
       level27Stars,
+      level28Stars,
+      level29Stars,
+      level30Stars,
+      level31Stars,
+      level32Stars,
     ];
   }
 
   reset() {
-    this.executionSequence = 0; // 3, after the star
-    this.roundTimer = sec(0);
+    this.executionSequence = 4; // 3, after the star
+    this.roundTimer = sec(40);
     this.chaosRoundTimer = 0;
     this.timerInterval = 0;
   }
@@ -196,6 +206,16 @@ export default class Spawner {
       getLevel26(this.game);
     } else if (this.game.level === 27) {
       getLevel27(this.game);
+    } else if (this.game.level === 28) {
+      getLevel28(this.game);
+    } else if (this.game.level === 29) {
+      getLevel29(this.game);
+    } else if (this.game.level === 30) {
+      getLevel30(this.game);
+    } else if (this.game.level === 31) {
+      getLevel31(this.game);
+    } else if (this.game.level === 32) {
+      getLevel32(this.game);
     }
   }
 }

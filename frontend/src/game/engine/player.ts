@@ -49,7 +49,7 @@ export default class Player extends GameObject {
     this.personalParticles = [];
     this.stars = 0;
     this.milestone = false;
-    this.developerMode = false;
+    this.developerMode = true;
     this.isChaosActive = false;
 
     this.gameObject.position = {
@@ -67,19 +67,35 @@ export default class Player extends GameObject {
   }
 
   moveLeft() {
-    this.gameObject.velX = -this.maxSpeed;
+    if (!this.afflictionManager.isTricked) {
+      this.gameObject.velX = -this.maxSpeed;
+    } else {
+      this.gameObject.velX = this.maxSpeed;
+    }
   }
 
   moveRight() {
-    this.gameObject.velX = this.maxSpeed;
+    if (!this.afflictionManager.isTricked) {
+      this.gameObject.velX = this.maxSpeed;
+    } else {
+      this.gameObject.velX = -this.maxSpeed;
+    }
   }
 
   moveUp() {
-    this.gameObject.velY = -this.maxSpeed;
+    if (!this.afflictionManager.isTricked) {
+      this.gameObject.velY = -this.maxSpeed;
+    } else {
+      this.gameObject.velY = this.maxSpeed;
+    }
   }
 
   moveDown() {
-    this.gameObject.velY = this.maxSpeed;
+    if (!this.afflictionManager.isTricked) {
+      this.gameObject.velY = this.maxSpeed;
+    } else {
+      this.gameObject.velY = -this.maxSpeed;
+    }
   }
 
   stopX() {
@@ -183,6 +199,7 @@ export default class Player extends GameObject {
         this.relicManager.guardianActivationTime = this.game.now;
         this.afflictionManager.removePoison();
         this.afflictionManager.frostIntensity = 0;
+        this.afflictionManager.radioBuildup = 0;
         this.game.darkness = 0;
         this.relicManager.available_uses--;
         this.relicManager.updateRelic();
@@ -285,11 +302,15 @@ export default class Player extends GameObject {
 
         if (object.gameObject.id === ENTITY_ID.BIPOLAR && 'aggressive' in object) {
           if (object.aggressive) {
-            this.healthManager.takeDamage(25, { lastWhoDamagedMe: object.gameObject.name });
+            this.healthManager.takeDamage(300, { lastWhoDamagedMe: object.gameObject.name });
           } else {
+            if (this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL) {
+              this.afflictionManager.getPoisoned();
+            } else {
+              this.healthManager.health += 100;
+              store.dispatch(playAnimation(VFX.PULSE_GREEN));
+            }
             this.healthManager.lastTimeDamaged = this.game.now;
-            this.healthManager.health += this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? 20 : 10;
-            store.dispatch(playAnimation(VFX.PULSE_GREEN));
             object.aggressive = true;
           }
         }
@@ -346,7 +367,7 @@ export default class Player extends GameObject {
           }
         }
         if (object.gameObject.id === ENTITY_ID.FROSTY_BULLET) {
-          this.healthManager.takeDamage(10, {
+          this.healthManager.takeDamage(15, {
             lastWhoDamagedMe: 'a Bullet',
             callback: () => {
               if (!this.relicManager.berserkIsActive && !this.relicManager.isStabilized) {
@@ -356,9 +377,12 @@ export default class Player extends GameObject {
               this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
             },
           });
+        } else if (object.gameObject.id === ENTITY_ID.LIFELINE_BULLET) {
+          this.healthManager.health += 15;
+          this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
         }
         if (object.gameObject.id === ENTITY_ID.BULLET) {
-          this.healthManager.takeDamage(10, {
+          this.healthManager.takeDamage(15, {
             lastWhoDamagedMe: 'a Bullet',
             callback: () => {
               this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
@@ -383,7 +407,26 @@ export default class Player extends GameObject {
             },
           });
         }
-
+        if (object.gameObject.id === ENTITY_ID.TRICKSTER) {
+          this.healthManager.takeDamage(20, {
+            disableDefaultPulse: true,
+            lastWhoDamagedMe: 'Trickster Enemy',
+            bypassCallback: () => {
+              if (!this.afflictionManager.isTricked) {
+                this.afflictionManager.getTricked();
+              }
+            },
+          });
+        }
+        if (object.gameObject.id === ENTITY_ID.TRICKSTER_BULLET) {
+          this.healthManager.takeDamage(15, {
+            lastWhoDamagedMe: 'a Bullet',
+            callback: () => {
+              this.afflictionManager.getTricked();
+              this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
+            },
+          });
+        }
         if (object.gameObject.id === ENTITY_ID.VENOM_BULLET) {
           this.healthManager.takeDamage(15, {
             disableDefaultPulse: !this.afflictionManager.isPoisoned,
@@ -406,6 +449,40 @@ export default class Player extends GameObject {
         if (object.gameObject.id === ENTITY_ID.MAGNET_AURA_MINUS) {
           this.afflictionManager.applyMagneticForce(object, 'minus');
         }
+        if (object.gameObject.id === ENTITY_ID.RADIOACTIVE_AURA) {
+          const radioationDmg =
+            this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL
+              ? this.afflictionManager.radioBuildup * 0.25
+              : this.afflictionManager.radioBuildup;
+          this.healthManager.takeDamage(!this.relicManager.berserkIsActive ? radioationDmg : -4, {
+            isTrueDmg: true,
+            lastWhoDamagedMe: 'Radiation',
+            ImmunityShiftInMS: -200,
+            isSecondaryDamage: true,
+            disableDefaultPulse: Boolean(this.afflictionManager.radioBuildup < 6 || this.relicManager.berserkIsActive),
+            callback: () => {
+              this.afflictionManager.radioBuildup += 0.5;
+            },
+          });
+          this.getHitByBodyAura(object, 25, 'Radioactive Enemy');
+        }
+        if (object.gameObject.id === ENTITY_ID.RADIO_BULLET) {
+          const radioationDmg =
+            this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL
+              ? (this.afflictionManager.radioBuildup + 10) * 0.25
+              : this.afflictionManager.radioBuildup + 10;
+          this.healthManager.takeDamage(!this.relicManager.berserkIsActive ? radioationDmg : -4, {
+            isTrueDmg: true,
+            lastWhoDamagedMe: 'Radiation Bullet',
+            ImmunityShiftInMS: -200,
+            isSecondaryDamage: true,
+            disableDefaultPulse: Boolean(this.afflictionManager.radioBuildup < 6 || this.relicManager.berserkIsActive),
+            callback: () => {
+              this.afflictionManager.radioBuildup += 0.5;
+              this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
+            },
+          });
+        }
       } else {
         //console.log(object);
         //console.log("No collision");
@@ -422,6 +499,7 @@ export default class Player extends GameObject {
         store.dispatch(playAnimation(VFX.PULSE_PORTAL));
         this.gameObject.position.x = gameWidth - this.gameObject.width;
         this.relicManager.tempStabilizedTime = Date.now();
+        this.afflictionManager.isTricked = false;
         this.game.player.resetMovement();
       }
       // Player Collision with right wall
@@ -429,24 +507,33 @@ export default class Player extends GameObject {
         store.dispatch(playAnimation(VFX.PULSE_PORTAL));
         this.gameObject.position.x = 0;
         this.relicManager.tempStabilizedTime = Date.now();
+        this.afflictionManager.isTricked = false;
         this.game.player.resetMovement();
       }
     } else {
       // Player Collision with left wall
-      if (this.gameObject.position.x < 0) this.gameObject.position.x = 0;
+      if (this.gameObject.position.x < 0) {
+        this.gameObject.position.x = 0;
+        this.afflictionManager.isTricked = false;
+      }
 
       // Player Collision with right wall
       if (this.gameObject.position.x + this.gameObject.width > gameWidth) {
         this.gameObject.position.x = gameWidth - this.gameObject.width;
+        this.afflictionManager.isTricked = false;
       }
     }
 
     // Player Collision with top wall
-    if (this.gameObject.position.y < 0) this.gameObject.position.y = 0;
+    if (this.gameObject.position.y < 0) {
+      this.gameObject.position.y = 0;
+      this.afflictionManager.isTricked = false;
+    }
 
     // Player Collision with bottom wall
     if (this.gameObject.position.y + this.gameObject.height > gameHeight) {
       this.gameObject.position.y = gameHeight - this.gameObject.height;
+      this.afflictionManager.isTricked = false;
     }
   }
 

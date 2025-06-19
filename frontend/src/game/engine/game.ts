@@ -124,7 +124,10 @@ export default class Game {
         this.gameObjects[i].gameObject.id === ENTITY_ID.SNOWFLAKE ||
         this.gameObjects[i].gameObject.id === ENTITY_ID.FROSTY ||
         this.gameObjects[i].gameObject.id === ENTITY_ID.HACKER ||
-        this.gameObjects[i].gameObject.id === ENTITY_ID.REAPER
+        this.gameObjects[i].gameObject.id === ENTITY_ID.REAPER ||
+        this.gameObjects[i].gameObject.id === ENTITY_ID.BIPOLAR ||
+        this.gameObjects[i].gameObject.id === ENTITY_ID.TRICKSTER ||
+        this.gameObjects[i].gameObject.id === ENTITY_ID.RADIOACTIVE_AURA
       ) {
         this.gameObjects.splice(i, 1);
         i--;

@@ -12,12 +12,13 @@ type TProps = {
   velY?: number;
 };
 
-export default class BipolarBullet extends GameObject {
+export default class TricksterBullet extends GameObject {
   game: Game;
+  randomizeMovement: number;
 
   constructor({ game, position, velX = 5, velY = 5 }: TProps) {
     super({
-      id: ENTITY_ID.BULLET,
+      id: ENTITY_ID.TRICKSTER_BULLET,
       width: 5,
       height: 5,
       position,
@@ -26,6 +27,7 @@ export default class BipolarBullet extends GameObject {
     });
 
     this.game = game;
+    this.randomizeMovement = 30;
   }
 
   getBounds() {
@@ -47,7 +49,7 @@ export default class BipolarBullet extends GameObject {
   }
 
   draw(context: any) {
-    context.fillStyle = COLOR.RED;
+    context.fillStyle = COLOR.PINK;
     context.fillRect(
       this.gameObject.position.x,
       this.gameObject.position.y,
@@ -67,7 +69,7 @@ export default class BipolarBullet extends GameObject {
         x: this.gameObject.position.x,
         y: this.gameObject.position.y,
         reductor: 0,
-        color: COLOR.RED,
+        color: COLOR.PURPLE,
         width: this.gameObject.width,
         height: this.gameObject.height,
         life: 0.8,
@@ -76,17 +78,43 @@ export default class BipolarBullet extends GameObject {
       }),
     );
 
+    this.randomizeMovement -= 1;
+    if (this.randomizeMovement <= 0) {
+      const MAX = 30;
+      const MIN = 2;
+      this.randomizeMovement = Math.floor(Math.random() * (MAX - MIN + 1)) + MIN;
+      const rand = Math.floor(Math.random() * 2);
+
+      if (this.gameObject.velY === 0) {
+        this.gameObject.velY = rand === 0 ? 5 : -5;
+        this.gameObject.velX = 0;
+      } else {
+        this.gameObject.velX = rand === 0 ? 5 : -5;
+        this.gameObject.velY = 0;
+      }
+    }
+
+    if (
+      this.gameObject.position.y <= 0 ||
+      this.gameObject.position.y >= this.game.canvas.canvasHeight - this.gameObject.height
+    )
+      this.gameObject.velY *= -1;
+    if (
+      this.gameObject.position.x <= 0 ||
+      this.gameObject.position.x >= this.game.canvas.canvasWidth - this.gameObject.width
+    )
+      this.gameObject.velX *= -1;
+
     if (
       this.gameObject.position.y <= 0 ||
       this.gameObject.position.y >= this.game.canvas.canvasHeight - this.gameObject.height
     ) {
       this.game.gameObjects.splice(this.game.gameObjects.indexOf(this), 1);
     }
-    if (
-      this.gameObject.position.x <= 0 ||
-      this.gameObject.position.x >= this.game.canvas.canvasWidth - this.gameObject.width
-    ) {
-      this.game.gameObjects.splice(this.game.gameObjects.indexOf(this), 1);
+    if (this.gameObject.position.x <= 0) {
+      this.gameObject.position.x = 1;
+    } else if (this.gameObject.position.x >= this.game.canvas.canvasWidth - this.gameObject.width) {
+      this.gameObject.position.x = this.game.canvas.canvasWidth - this.gameObject.width - 1;
     }
   }
 }

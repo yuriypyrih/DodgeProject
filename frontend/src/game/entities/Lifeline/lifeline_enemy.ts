@@ -10,13 +10,21 @@ type TProps = {
   position: { x: number; y: number };
   velX?: number;
   velY?: number;
+  horizontalToRight?: boolean;
+  verticalToBottom?: boolean;
 };
 
-export default class BipolarEnemy extends GameObject {
+export default class LifelineEnemy extends GameObject {
   game: Game;
   aggressive: boolean;
+  zigTimer: number;
+  swapTimer: number;
+  velX_max: number;
+  velX_min: number;
+  velY_min: number;
+  velY_max: number;
 
-  constructor({ game, position, velX = 5, velY = 5 }: TProps) {
+  constructor({ game, position, velX = 2, velY = 6, horizontalToRight = true, verticalToBottom = true }: TProps) {
     super({
       id: ENTITY_ID.BIPOLAR,
       width: 20,
@@ -24,12 +32,18 @@ export default class BipolarEnemy extends GameObject {
       position,
       velY,
       velX,
-      name: 'Bipolar Enemy',
-      symbiosisName: 'Bipolar',
+      name: 'Lifeline Enemy',
+      symbiosisName: 'Lifeline',
     });
 
     this.game = game;
-    this.aggressive = true;
+    this.aggressive = false;
+    this.zigTimer = 0;
+    this.swapTimer = 0;
+    this.velX_max = horizontalToRight ? 6 : -6;
+    this.velX_min = horizontalToRight ? 2 : -2;
+    this.velY_max = verticalToBottom ? 6 : -6;
+    this.velY_min = verticalToBottom ? 2 : -2;
   }
 
   getBounds() {
@@ -58,7 +72,7 @@ export default class BipolarEnemy extends GameObject {
       this.gameObject.width,
       this.gameObject.height,
     );
-    context.fillStyle = this.aggressive ? COLOR.PRIMARY : COLOR.RED;
+    context.fillStyle = this.aggressive ? COLOR.BLACK : COLOR.RED;
     context.fillRect(
       this.gameObject.position.x + 6,
       this.gameObject.position.y + 6,
@@ -67,7 +81,20 @@ export default class BipolarEnemy extends GameObject {
     );
   }
 
-  update(_deltaTime: number) {
+  update(deltaTime: number) {
+    this.swapTimer++;
+
+    this.zigTimer += deltaTime;
+    if (this.zigTimer < 120) {
+      this.gameObject.velX = this.velX_min;
+      this.gameObject.velY = this.velY_max;
+    } else if (this.zigTimer < 240) {
+      this.gameObject.velX = this.velX_max;
+      this.gameObject.velY = this.velY_min;
+    } else {
+      this.zigTimer = 0;
+    }
+
     // Updating the entity's position based on its velocity (if it has one)
     this.gameObject.position.x += this.gameObject.velX;
     this.gameObject.position.y += this.gameObject.velY;
@@ -81,34 +108,33 @@ export default class BipolarEnemy extends GameObject {
         color: this.aggressive ? COLOR.RED : COLOR.PRIMARY,
         width: this.gameObject.width,
         height: this.gameObject.height,
-        life: 0.7,
+        life: 1,
         minus: 0.02,
         game: this.game,
       }),
     );
 
     if (this.gameObject.position.y <= 0) {
-      this.gameObject.velY *= -1;
-      this.gameObject.position.y = 1;
-      this.aggressive = !this.aggressive;
+      this.gameObject.position.y = 0;
+      this.velY_max *= -1;
+      this.velY_min *= -1;
     }
 
     if (this.gameObject.position.y >= this.game.canvas.canvasHeight - this.gameObject.height) {
-      this.gameObject.velY *= -1;
-      this.gameObject.position.y = this.game.canvas.canvasHeight - (this.gameObject.height + 1);
-      this.aggressive = !this.aggressive;
-    }
-
-    if (this.gameObject.position.x <= 0) {
-      this.gameObject.velX *= -1;
-      this.gameObject.position.x = 1;
-      this.aggressive = !this.aggressive;
+      this.gameObject.position.y = this.game.canvas.canvasHeight - this.gameObject.height;
+      this.velY_max *= -1;
+      this.velY_min *= -1;
     }
 
     if (this.gameObject.position.x >= this.game.canvas.canvasWidth - this.gameObject.width) {
-      this.gameObject.velX *= -1;
-      this.gameObject.position.x = this.game.canvas.canvasWidth - (this.gameObject.width + 1);
-      this.aggressive = !this.aggressive;
+      this.gameObject.position.x = this.game.canvas.canvasWidth - this.gameObject.width;
+      this.velX_max *= -1;
+      this.velX_min *= -1;
+    }
+    if (this.gameObject.position.x <= 0) {
+      this.gameObject.position.x = 0;
+      this.velX_max *= -1;
+      this.velX_min *= -1;
     }
   }
 }

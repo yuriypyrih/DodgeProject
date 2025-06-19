@@ -220,6 +220,44 @@ const enemiesContent: ContentType[] = [
       '- Immune to Fear',
     ],
   },
+  {
+    title: 'Lifeline',
+    Icon: <ColorfullSquare size={30} color2={COLOR.RED} color1={COLOR.PRIMARY} edge={true} />,
+    description: [
+      'Has two states with different effects. Hitting the first time will swap its state',
+      '- Healing State: Fully heals you',
+      '- Damaging State: Kills you instantly',
+    ],
+  },
+  {
+    title: 'Radioactive',
+    Icon: <ColorfullSquare size={30} color2={COLOR.GREEN} color1={COLOR.ORANGE} />,
+    description: [
+      'Carries around an Aura that Applies Radiation buildup',
+      '- The more radiation buildup the more damage you take while being near it',
+      '- Head: 25 dmg',
+    ],
+  },
+  {
+    title: 'Trickster',
+    Icon: <ColorfullSquare size={30} color2={COLOR.PINK} color1={COLOR.PURPLE} />,
+    description: [
+      'When hit you get Tricked',
+      '- Does 20 dmg',
+      '- Has completely random movement pattern but can be frightened',
+      '- Tricked: reverses your controls until you hit a wall',
+    ],
+  },
+  {
+    title: 'Puppet',
+    Icon: <ColorfullSquare size={30} color2={COLOR.RED} color1={COLOR.WHITE} edge={true} />,
+    description: ['Mimics your control inputs when you change directions', '- Does 25 dmg'],
+  },
+  {
+    title: 'Tether',
+    Icon: <ColorfullSquare size={30} color2={COLOR.DARK_BLUE} color1={COLOR.PORTAL_BLUE} />,
+    description: ['Creates a damaging line to the center of the arena and itself', '- Head/Line: 25 dmg'],
+  },
 ];
 
 const augmentsContent: ContentType[] = [
@@ -251,9 +289,9 @@ const augmentsContent: ContentType[] = [
     Icon: <CureIcon style={{ width: 30, height: 30 }} />,
     title: ['Elixir of Vigor', '(Active x3)'],
     description: [
-      'Cleanses all negative effects like Poison, Deathmark, and Frost/Darkness buildup',
-      '- Also heals you 5hp + 5% of your missing hp + all the hp you lost from poison until then',
-      '- Stored poison is reused for subsequent healing making Elixir stronger each time',
+      'Cleanses all negative effects like Poison, Deathmark, and Frost/Darkness/Radiation buildup',
+      '- Also heals you 5hp + 5% of your missing hp + all the hp you lost from Poion/Radiation until then',
+      '- Stored Poison/Radiation is reused for subsequent healing making Elixir stronger each time',
     ],
   },
   {
@@ -305,7 +343,7 @@ const augmentsContent: ContentType[] = [
     description: [
       'The first time you are about to die, you gain 2 seconds of damage immunity instead',
       '- Raises your health to 35hp after saving you',
-      '- Also cures Poison and alleviates Frost/Darkness build up',
+      '- Also cures Poison and alleviates Frost/Darkness/Radiation build up',
     ],
   },
   {
@@ -316,6 +354,7 @@ const augmentsContent: ContentType[] = [
       '- During Berserk your life burns until you die (~ 27s before you run out of HP)',
       '- During Berserk you take 60% less damage',
       '- During Berserk you are immune to Frost/Darkness build up',
+      '- During Berserk damage from Radiation heals you instead (~ countering the self burn effect)',
       `- Damage reduction doesn't apply on Poison, Explosions, Deathmark and Burn effects`,
     ],
   },
@@ -335,8 +374,8 @@ const augmentsContent: ContentType[] = [
       'You receive 25% MORE damage from hitting enemies, but..',
       '- Poison heals you instead of damaging you',
       '- Deathmark heals you for 30hp instead of killing you',
-      '- Bipolar heals for 200%',
-      '- Increased resistance to Burn and Explosions (75%)',
+      '- Lifline applies Poison instead of healing you (which is a good thing)',
+      '- Increased resistance to Burn, Explosions and Radiation (75%)',
     ],
   },
   {
