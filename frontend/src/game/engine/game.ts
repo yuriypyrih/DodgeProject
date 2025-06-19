@@ -129,7 +129,7 @@ export default class Game {
         this.gameObjects[i].gameObject.id === ENTITY_ID.TRICKSTER ||
         this.gameObjects[i].gameObject.id === ENTITY_ID.RADIOACTIVE_AURA
       ) {
-        this.gameObjects.splice(i, 1);
+        this.removeGameObject(this.gameObjects[i]);
         i--;
       }
     }

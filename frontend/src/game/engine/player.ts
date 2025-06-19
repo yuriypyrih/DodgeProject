@@ -222,7 +222,7 @@ export default class Player extends GameObject {
     store.dispatch(playAnimation(VFX.PULSE_GOLD));
     //IMPORTANT: First update the stars and then the hudProgress
     this.game.spawner.updateHudProgress();
-    this.game.gameObjects.splice(this.game.gameObjects.indexOf(starObject), 1);
+    this.game.removeGameObject(starObject);
     this.milestone = true;
     this.healthManager.lastTimeDamaged = this.game.now;
   }
@@ -374,18 +374,18 @@ export default class Player extends GameObject {
                 this.afflictionManager.frostIntensity =
                   this.relicManager.relic?.id === AUGMENTS.NIGHT_VISION ? 80 : 160;
               }
-              this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
+              this.game.removeGameObject(object);
             },
           });
         } else if (object.gameObject.id === ENTITY_ID.LIFELINE_BULLET) {
           this.healthManager.health += 15;
-          this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
+          this.game.removeGameObject(object);
         }
         if (object.gameObject.id === ENTITY_ID.BULLET) {
           this.healthManager.takeDamage(15, {
             lastWhoDamagedMe: 'a Bullet',
             callback: () => {
-              this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
+              this.game.removeGameObject(object);
             },
           });
         }
@@ -423,7 +423,7 @@ export default class Player extends GameObject {
             lastWhoDamagedMe: 'a Bullet',
             callback: () => {
               this.afflictionManager.getTricked();
-              this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
+              this.game.removeGameObject(object);
             },
           });
         }
@@ -433,7 +433,7 @@ export default class Player extends GameObject {
             lastWhoDamagedMe: 'a Bullet',
             callback: () => {
               this.afflictionManager.getPoisoned();
-              this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
+              this.game.removeGameObject(object);
             },
           });
         }
@@ -479,7 +479,7 @@ export default class Player extends GameObject {
             disableDefaultPulse: Boolean(this.afflictionManager.radioBuildup < 6 || this.relicManager.berserkIsActive),
             callback: () => {
               this.afflictionManager.radioBuildup += 0.5;
-              this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
+              this.game.removeGameObject(object);
             },
           });
         }

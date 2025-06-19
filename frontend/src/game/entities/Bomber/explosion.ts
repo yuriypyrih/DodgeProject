@@ -88,7 +88,7 @@ export default class Explosion extends GameObject {
     if (this.explosionTimer >= this.MAX_EXPLOSION_RAD || this.explosionAddition <= 1) {
       // this.explosionTimer = 0;
       // this.explosionAddition = this.EXPLOSION_ADD;
-      this.game.gameObjects.splice(this.game.gameObjects.indexOf(this), 1);
+      this.game.removeGameObject(this);
     }
   }
 }

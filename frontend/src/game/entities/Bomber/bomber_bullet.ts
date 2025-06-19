@@ -91,7 +91,7 @@ export default class BomberBullet extends GameObject {
           },
         }),
       );
-      this.game.gameObjects.splice(this.game.gameObjects.indexOf(this), 1);
+      this.game.removeGameObject(this);
     }
     if (
       this.gameObject.position.x <= 0 ||
@@ -106,7 +106,7 @@ export default class BomberBullet extends GameObject {
           },
         }),
       );
-      this.game.gameObjects.splice(this.game.gameObjects.indexOf(this), 1);
+      this.game.removeGameObject(this);
     }
   }
 }

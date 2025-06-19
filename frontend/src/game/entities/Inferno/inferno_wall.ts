@@ -115,7 +115,7 @@ export default class InfernoWall extends GameObject {
       this.innerTimer++;
 
       if (this.innerTimer >= this.duration - 20) {
-        this.game.gameObjects.splice(this.game.gameObjects.indexOf(this), 1);
+        this.game.removeGameObject(this);
       }
     }
   }
