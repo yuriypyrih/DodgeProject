@@ -1,12 +1,9 @@
-import { playText } from '../../../redux/slices/vfxSlice';
-import store from '../../../redux/store';
-import { sec } from '../../../utils/deltaTime';
+import { playText } from 'redux/slices/vfxSlice';
+import store from 'redux/store';
+import { sec } from 'utils/deltaTime';
 import { Stars } from '../../types/Stars';
 import Game from '../game';
 import Star from '../../entities/star';
-import BasicEnemy from '../../entities/Basic/basic_enemy.ts';
-import SpeederBoss from '../../entities/Speeder/speeder_boss.ts';
-import RadioactiveEnemy from 'game/entities/Radioactive/radiactive_enemy.ts';
 import TricksterEnemy from 'game/entities/Trickster/trickster_enemy.ts';
 import HackerEnemy from 'game/entities/Hacker/hacker_enemy.ts';
 import WormEnemy from 'game/entities/Worm/worm_enemy.ts';

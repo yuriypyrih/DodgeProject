@@ -12,6 +12,7 @@ type TProps = {
   velX?: number;
   velY?: number;
   skipAwakening?: boolean;
+  frequency?: number;
 };
 
 export default class TetherBoss extends GameObject {
@@ -21,8 +22,9 @@ export default class TetherBoss extends GameObject {
   awakening_timer: number;
   skipAwakening: boolean;
   tetherLines: Array<{ x1: number; x2: number; y: number }>;
+  frequency: number;
 
-  constructor({ game, position, velX = 0, velY = 0.3, skipAwakening = false }: TProps) {
+  constructor({ game, position, velX = 0, velY = 0.3, skipAwakening = false, frequency = 40 }: TProps) {
     super({
       id: ENTITY_ID.BOSS,
       width: 50,
@@ -37,6 +39,7 @@ export default class TetherBoss extends GameObject {
     this.awakening_timer = 0;
     this.bullet_timer = 0;
     this.skipAwakening = skipAwakening;
+    this.frequency = frequency;
     this.tetherLines = [
       { x1: 0, x2: 600, y: 0 },
       { x1: 200, x2: 1200, y: -260 },
@@ -69,7 +72,7 @@ export default class TetherBoss extends GameObject {
 
   fireBullets() {
     this.bullet_timer++;
-    if (this.awaken && this.bullet_timer % 40 === 0) {
+    if (this.awaken && this.bullet_timer % this.frequency === 0) {
       const offset = this.gameObject.velX > 0 ? 20 : -20;
       const origin_x = this.gameObject.position.x + this.gameObject.width / 2 + offset;
       const origin_y = this.gameObject.position.y + this.gameObject.height - 5;

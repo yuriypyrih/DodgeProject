@@ -1,7 +1,7 @@
 import Game from './game';
 import store from '../../redux/store';
 import { getSec, sec } from '../../utils/deltaTime';
-import { setChaosTimer, setCurrentTimer, setProgress } from '../../redux/slices/gameSlice';
+import { setChaosTimer, setCurrentTimer, setProgress } from 'redux/slices/gameSlice.ts';
 import { getLevel0, level0Stars } from './levels/getLevel0';
 import { getLevel1, level1Stars } from './levels/getLevel1';
 import { getLevel2, level2Stars } from './levels/getLevel2';
@@ -36,6 +36,13 @@ import { getLevel29, level29Stars } from 'game/engine/levels/getLevel29.ts';
 import { getLevel30, level30Stars } from 'game/engine/levels/getLevel30.ts';
 import { getLevel31, level31Stars } from 'game/engine/levels/getLevel31.ts';
 import { getLevel32, level32Stars } from 'game/engine/levels/getLevel32.ts';
+import { getLevel33, level33Stars } from 'game/engine/levels/getLevel33.ts';
+import { getLevel34, level34Stars } from 'game/engine/levels/getLevel34.ts';
+import { getLevel35, level35Stars } from 'game/engine/levels/getLevel35.ts';
+import { getLevel36, level36Stars } from 'game/engine/levels/getLevel36.ts';
+import { getLevel37, level37Stars } from 'game/engine/levels/getLevel37.ts';
+import { getLevel38, level38Stars } from 'game/engine/levels/getLevel38.ts';
+import { getLevel39, level39Stars } from 'game/engine/levels/getLevel39.ts';
 
 type SpawnerProps = {
   game: Game;
@@ -89,12 +96,19 @@ export default class Spawner {
       level30Stars,
       level31Stars,
       level32Stars,
+      level33Stars,
+      level34Stars,
+      level35Stars,
+      level36Stars,
+      level37Stars,
+      level38Stars,
+      level39Stars,
     ];
   }
 
   reset() {
-    this.executionSequence = 4; // 3, after the star
-    this.roundTimer = sec(40);
+    this.executionSequence = 0; // 3, after the star
+    this.roundTimer = sec(0);
     this.chaosRoundTimer = 0;
     this.timerInterval = 0;
   }
@@ -216,6 +230,20 @@ export default class Spawner {
       getLevel31(this.game);
     } else if (this.game.level === 32) {
       getLevel32(this.game);
+    } else if (this.game.level === 33) {
+      getLevel33(this.game);
+    } else if (this.game.level === 34) {
+      getLevel34(this.game);
+    } else if (this.game.level === 35) {
+      getLevel35(this.game);
+    } else if (this.game.level === 36) {
+      getLevel36(this.game);
+    } else if (this.game.level === 37) {
+      getLevel37(this.game);
+    } else if (this.game.level === 38) {
+      getLevel38(this.game);
+    } else if (this.game.level === 39) {
+      getLevel39(this.game);
     }
   }
 }

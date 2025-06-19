@@ -74,7 +74,7 @@ export default class AfflictionManager {
   getTricked() {
     if (!this.isTricked) {
       this.isTricked = true;
-      store.dispatch(playText(['TRICKED']));
+      store.dispatch(playText(['PRANKED']));
       store.dispatch(playAnimation(VFX.PULSE_PORTAL));
     }
   }
@@ -226,6 +226,16 @@ export default class AfflictionManager {
       );
       context.stroke();
       context.globalAlpha = 1;
+    }
+    if (this.isTricked) {
+      context.strokeStyle = COLOR.PINK;
+      context.lineWidth = 4;
+      context.strokeRect(
+        player.gameObject.position.x,
+        player.gameObject.position.y,
+        player.gameObject.width,
+        player.gameObject.height,
+      );
     }
   }
 

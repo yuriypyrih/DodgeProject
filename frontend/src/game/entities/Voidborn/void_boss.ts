@@ -117,12 +117,19 @@ export default class VoidBoss extends GameObject {
   }
 
   draw(context: any) {
-    context.fillStyle = COLOR.PURPLE;
+    context.fillStyle = COLOR.VENOM;
     context.fillRect(
       this.gameObject.position.x,
       this.gameObject.position.y,
       this.gameObject.width,
       this.gameObject.height,
+    );
+    context.fillStyle = COLOR.PURPLE;
+    context.fillRect(
+      this.gameObject.position.x + 4,
+      this.gameObject.position.y + 4,
+      this.gameObject.width - 8,
+      this.gameObject.height - 8,
     );
   }
 

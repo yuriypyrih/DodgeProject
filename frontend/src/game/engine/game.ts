@@ -174,6 +174,13 @@ export default class Game {
     this.keyLastTimePressed = this.now;
   }
 
+  removeGameObject(gameObject: GameObject) {
+    const index = this.gameObjects.indexOf(gameObject);
+    if (index > -1) {
+      this.gameObjects.splice(index, 1);
+    }
+  }
+
   update(deltaTime: number) {
     if (this.gameState === GAME_STATE.PLAYING) {
       this.now = Date.now();

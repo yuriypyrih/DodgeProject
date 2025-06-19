@@ -271,7 +271,7 @@ const augmentsContent: ContentType[] = [
   },
   {
     Icon: <ImmunityIcon style={{ width: 30, height: 30 }} />,
-    title: ['Immunity', '(Active x3)'],
+    title: ['Immunity', '(Active x4)'],
     description: [
       'Grants damage immunity for 2 seconds and heals for 10hp',
       '- While immune you also cannot get Poisoned or Deathmarked',

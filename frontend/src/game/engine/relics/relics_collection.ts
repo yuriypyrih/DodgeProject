@@ -46,7 +46,7 @@ export const relics: Relic[] = [
     name: 'Immunity',
     type: RELIC_TYPE.ACTIVE,
     state: LEVEL_STATUS.LOCKED,
-    max_uses: 3,
+    max_uses: 4,
     cost: 4,
     Icon: ImmunityIcon,
     cooldown: -1,
