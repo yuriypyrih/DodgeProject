@@ -1,22 +1,9 @@
-import { playText } from '../../../redux/slices/vfxSlice';
+import { playText } from 'redux/slices/vfxSlice';
 import store from '../../../redux/store';
-import { sec } from '../../../utils/deltaTime';
+import { sec } from 'utils/deltaTime';
 import { Stars } from '../../types/Stars';
 import Game from '../game';
-import BomberEnemy from '../../entities/Bomber/bomber_enemy.ts';
-import SlimeEnemy from '../../entities/Slime/slime_enemy.ts';
-import BasicEnemy from '../../entities/Basic/basic_enemy.ts';
-import SpeederEnemy from '../../entities/Speeder/speeder_enemy.ts';
 import Star from '../../entities/star';
-import TracerEnemy from '../../entities/Tracer/tracer_enemy.ts';
-import WormEnemy from 'game/entities/Worm/worm_enemy.ts';
-import GhostEnemy from 'game/entities/Ghost/ghost_enemy.ts';
-import TetherEnemy from 'game/entities/Tether/tether_enemy.ts';
-import InfernoEnemy from 'game/entities/Inferno/inferno_enemy.ts';
-import HackerEnemy from 'game/entities/Hacker/hacker_enemy.ts';
-import TricksterEnemy from 'game/entities/Trickster/trickster_enemy.ts';
-import InfernoBoss from 'game/entities/Inferno/inferno_boss.ts';
-import TetherBoss from 'game/entities/Tether/tether_boss.ts';
 import SpeederBoss from 'game/entities/Speeder/speeder_boss.ts';
 import BasicBoss from 'game/entities/Basic/basic_boss.ts';
 

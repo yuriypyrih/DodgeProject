@@ -43,6 +43,9 @@ import { getLevel36, level36Stars } from 'game/engine/levels/getLevel36.ts';
 import { getLevel37, level37Stars } from 'game/engine/levels/getLevel37.ts';
 import { getLevel38, level38Stars } from 'game/engine/levels/getLevel38.ts';
 import { getLevel39, level39Stars } from 'game/engine/levels/getLevel39.ts';
+import { getLevel42, level42Stars } from 'game/engine/levels/getLevel42.ts';
+import { getLevel41, level41Stars } from 'game/engine/levels/getLevel41.ts';
+import { getLevel40, level40Stars } from 'game/engine/levels/getLevel40.ts';
 
 type SpawnerProps = {
   game: Game;
@@ -103,6 +106,9 @@ export default class Spawner {
       level37Stars,
       level38Stars,
       level39Stars,
+      level40Stars,
+      level41Stars,
+      level42Stars,
     ];
   }
 
@@ -131,7 +137,7 @@ export default class Spawner {
     } else {
       store.dispatch(
         setProgress({
-          max_stars: this.levelStars[this.game.level].length,
+          max_stars: isChaosDungeon(this.game.level) ? 12 : this.levelStars[this.game.level].length,
           total_stars_collected: this.game.player.stars,
           star_timers: this.levelStars[this.game.level],
         }),
@@ -141,14 +147,11 @@ export default class Spawner {
 
   update(_deltaTime: number) {
     this.roundTimer++;
-    if (this.game.player.isChaosActive) this.chaosRoundTimer++;
-
+    if (this.game.player.isChaosActive) {
+      this.chaosRoundTimer++;
+    }
     if (isChaosDungeon(this.game.level) && !this.game.player.isChaosActive) {
-      const max_stars_minus_1 = this.levelStars[this.game.level].length - 1;
-      const total_stars_collected = this.game.player.stars;
-      if (max_stars_minus_1 === total_stars_collected) {
-        this.game.player.isChaosActive = true;
-      }
+      this.game.player.isChaosActive = true;
     }
 
     this.timerInterval++;
@@ -244,6 +247,12 @@ export default class Spawner {
       getLevel38(this.game);
     } else if (this.game.level === 39) {
       getLevel39(this.game);
+    } else if (this.game.level === 40) {
+      getLevel40(this.game);
+    } else if (this.game.level === 41) {
+      getLevel41(this.game);
+    } else if (this.game.level === 42) {
+      getLevel42(this.game);
     }
   }
 }

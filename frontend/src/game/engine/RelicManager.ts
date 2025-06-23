@@ -12,6 +12,7 @@ import { AUGMENTS } from '../../lib/api/specs/api.ts';
 import { getSec } from 'utils/deltaTime.ts';
 import { ENTITY_ID } from 'game/enum/entitiy_id.ts';
 import { calculateMissingHp } from 'utils/calculateMissingHp.ts';
+import { relics } from 'game/engine/relics/relics_collection.tsx';
 
 type TProps = {
   game: Game;
@@ -35,6 +36,8 @@ export default class RelicManager {
   fear_animation_timer: number;
   isImmune: boolean;
   isStabilized: boolean;
+  isMedidating: boolean;
+  damagedNeedHealing: boolean;
   tempStabilizedTime: number;
   immunityActivationTime: number;
   guardianActivationTime: number;
@@ -66,6 +69,8 @@ export default class RelicManager {
     this.beaconPlaced = null;
     this.beaconPlacedTime = 0;
     this.symbioticLinked = null;
+    this.isMedidating = false;
+    this.damagedNeedHealing = false;
   }
 
   assignRelic(relic: Relic | null, saveOriginal: boolean = false) {
@@ -81,15 +86,20 @@ export default class RelicManager {
     }
   }
 
-  updateRelic() {
+  updateRelic(symbiosisName?: string) {
     if (this.relic) {
       store.dispatch(
         setSelectedRelic({
           relic: this.relic.id,
           relic_available_uses: this.available_uses,
+          symbiosisName,
         }),
       );
     }
+  }
+
+  isStopwatchActive() {
+    return this.game.now - this.stopwatchActivationTime < STOPWATCH_TOTAL;
   }
 
   reset() {
@@ -112,6 +122,9 @@ export default class RelicManager {
       this.beaconPlaced = null;
       this.game.timeScale = 1;
       this.game.updateTimeCounter = 0;
+      this.isMedidating = false;
+      this.damagedNeedHealing = false;
+      this.symbioticLinked = null;
       this.updateRelic();
     }
   }
@@ -124,8 +137,10 @@ export default class RelicManager {
 
     console.log('useActiveRelic ,', this.game.birthday);
     if (this.relic && this.available_uses > 0 && this.relic.type === RELIC_TYPE.ACTIVE) {
-      this.available_uses--;
-      this.updateRelic();
+      if (this.relic.id !== AUGMENTS.SYMBIOTIC_LINK) {
+        this.available_uses--;
+        this.updateRelic();
+      }
       if (this.relic.id === AUGMENTS.HEAL) {
         healthManager.health += 35;
         store.dispatch(playAnimation(VFX.PULSE_GREEN));
@@ -140,6 +155,7 @@ export default class RelicManager {
         const totalHealing = afflictionManager.poisonConsumed + 5 + missingHp;
         healthManager.health += totalHealing;
         afflictionManager.removePoison();
+        afflictionManager.radioBuildup = 0;
         afflictionManager.frostIntensity = -60;
         afflictionManager.isDeathmarked = false;
         this.game.darkness = 0;
@@ -181,10 +197,37 @@ export default class RelicManager {
       }
       if (this.relic.id === AUGMENTS.STOPWATCH) {
         this.stopwatchActivationTime = Date.now();
+        this.game.player.afflictionManager.isDeathmarked = false;
         store.dispatch(playAnimation(VFX.PULSE_LIGHT_BLUE));
-        const missingHp = calculateMissingHp(healthManager.health, 50);
+        const missingHp = calculateMissingHp(healthManager.health, 40);
         healthManager.health += missingHp;
         this.game.player.resetMovement();
+      }
+      if (this.relic.id === AUGMENTS.SYMBIOTIC_LINK && this.symbioticLinked === null) {
+        const { x: px, y: py } = player.gameObject.position;
+
+        let nearestName = null;
+        let nearestDistSq = Infinity;
+
+        this.game.gameObjects.forEach((gameObj) => {
+          const { symbiosisName, position } = gameObj.gameObject;
+          if (!symbiosisName) return; // skip ineligible objects
+
+          const dx = position.x - px;
+          const dy = position.y - py;
+          const distSq = dx * dx + dy * dy;
+
+          if (distSq < nearestDistSq) {
+            nearestDistSq = distSq;
+            nearestName = symbiosisName;
+          }
+        });
+
+        if (nearestName) {
+          this.symbioticLinked = nearestName;
+          store.dispatch(playAnimation(VFX.PULSE_LIGHT_BLUE));
+          this.updateRelic(this.symbioticLinked);
+        }
       }
     }
   }
@@ -199,6 +242,33 @@ export default class RelicManager {
         object.fear(player.gameObject.position.x + 12, player.gameObject.position.y + 12);
       }
     });
+  }
+
+  testSymbioticLink(object: GameObject): boolean {
+    if (object.gameObject.symbiosisName === this.symbioticLinked && this.symbioticLinked) {
+      if (this.available_uses === 0) {
+        return false;
+      }
+      const healthManager = this.game.player.healthManager;
+      healthManager.takeDamage(0, {
+        disableDefaultPulse: true,
+        callback: () => {
+          this.available_uses--;
+          // if (this.available_uses <= 0) {
+          //   const foundRelic = relics.find((r) => r.id === AUGMENTS.HACKED);
+          //   if (foundRelic) this.assignRelic(foundRelic, true);
+          // }
+        },
+      });
+      if (this.relic?.id === AUGMENTS.SYMBIOTIC_LINK) {
+        this.updateRelic(this.symbioticLinked);
+      }
+      return true;
+    } else {
+      this.available_uses = this.relic?.max_uses || 0;
+      this.updateRelic(this.symbioticLinked as string);
+      return false;
+    }
   }
 
   draw(context: CanvasRenderingContext2D) {
@@ -284,7 +354,7 @@ export default class RelicManager {
       now - this.immunityActivationTime < IMMUNITY_TOTAL || now - this.guardianActivationTime < GUARDIAN_TOTAL;
 
     // Control Stopwatch
-    if (now - this.stopwatchActivationTime < STOPWATCH_TOTAL) {
+    if (this.isStopwatchActive()) {
       this.game.timeScale = 3;
     } else {
       this.game.timeScale = 1;
@@ -319,23 +389,20 @@ export default class RelicManager {
     }
 
     if (this.relic?.id === AUGMENTS.MEDITATE) {
-      const HEAL_PER_SEC = 8;
+      const HEAL_PER_SEC = 4;
       this.meditationIntervalTime++;
       const isMeditating =
         now - this.game.keyLastTimePressed > 1000 &&
-        this.available_uses > 0 &&
         healthManager.health < 100 &&
         this.game.player.gameObject.velY === 0 &&
         this.game.player.gameObject.velX === 0;
 
       this.isStabilized = isMeditating;
+      this.isMedidating = isMeditating;
 
       if (isMeditating && getSec(this.meditationIntervalTime, 2) > REGEN_INTERVAL_TOTAL) {
-        healthManager.health += HEAL_PER_SEC;
-        this.available_uses -= HEAL_PER_SEC;
-        if (this.available_uses < 0) {
-          this.available_uses = 0;
-        }
+        healthManager.health += HEAL_PER_SEC + (this.damagedNeedHealing ? 6 : 0);
+        this.damagedNeedHealing = false;
         this.meditationIntervalTime = 0;
         this.updateRelic();
       }

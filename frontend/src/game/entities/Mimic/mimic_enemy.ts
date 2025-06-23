@@ -42,6 +42,7 @@ export default class MimicEnemy extends GameObject {
       velY,
       velX,
       name: 'Mimic Enemy',
+      symbiosisName: 'Mimic',
     });
 
     this.game = game;

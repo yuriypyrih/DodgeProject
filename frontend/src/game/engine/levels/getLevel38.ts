@@ -16,17 +16,17 @@ export const getLevel38 = (game: Game): null => {
     if (game.spawner.roundTimer === sec(0.1)) {
       store.dispatch(playText(['LEVEL 38', 'Marathon V11', 'Boss Edition']));
     } else if (game.spawner.roundTimer === sec(2)) {
-      // game.gameObjects.push(
-      //   new PortalBoss({
-      //     game,
-      //   }),
-      // );
-      // game.gameObjects.push(
-      //   new PortalBoss({
-      //     game,
-      //     reverted: true,
-      //   }),
-      // );
+      game.gameObjects.push(
+        new PortalBoss({
+          game,
+        }),
+      );
+      game.gameObjects.push(
+        new PortalBoss({
+          game,
+          reverted: true,
+        }),
+      );
     } else if (game.spawner.roundTimer === sec(4)) {
       game.gameObjects.push(
         new VenomBoss({

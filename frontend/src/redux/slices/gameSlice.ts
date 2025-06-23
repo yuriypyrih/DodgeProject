@@ -12,6 +12,7 @@ type gameSliceType = {
   selectedRelic: {
     relic: AUGMENTS;
     relic_available_uses: number;
+    symbiosisName?: string;
   } | null;
   isHacked: boolean;
   hp: number;

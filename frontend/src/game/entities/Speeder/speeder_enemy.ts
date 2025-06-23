@@ -25,6 +25,7 @@ export default class SpeederEnemy extends GameObject {
       velY,
       velX,
       name: 'Speeder Enemy',
+      symbiosisName: 'Speeder',
     });
 
     this.game = game;

@@ -12,7 +12,7 @@ import { Level } from 'Models/level.ts';
 import UnlockLevelModal from '../../components/UnlockLevelModal/UnlockLevelModal.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Selection.module.scss';
-import { relics } from 'game/engine/relics/relics_collection.ts';
+import { relics } from 'game/engine/relics/relics_collection.tsx';
 import ChaosPlayButton from '../../components/ChaosPlayButton';
 import { unlockLevel } from 'redux/slices/authSlice.ts';
 import ShopButton from '../../components/ShopButton';

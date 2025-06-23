@@ -3,7 +3,7 @@ import { LEVEL_STATUS } from '../enum/LEVEL_STATUS';
 import Game from '../../game/engine/game';
 import { Relic } from 'game/types/Relic.ts';
 import { GAME_STATE } from 'game/enum/game_state.ts';
-import { relics } from 'game/engine/relics/relics_collection.ts';
+import { relics } from 'game/engine/relics/relics_collection.tsx';
 
 export const LocalLevels: Level[] = [
   // {
@@ -292,7 +292,7 @@ export const LocalLevels: Level[] = [
   {
     level: 40,
     levelId: 'LVL_40',
-    description: 'v40',
+    description: 'Singularity',
     status: LEVEL_STATUS.UNLOCKED,
     chaosDungeon: true,
     cost: 10,
@@ -300,7 +300,7 @@ export const LocalLevels: Level[] = [
   {
     level: 41,
     levelId: 'LVL_41',
-    description: 'v41',
+    description: 'Metro Exodus',
     status: LEVEL_STATUS.UNLOCKED,
     chaosDungeon: true,
     cost: 10,
@@ -308,7 +308,7 @@ export const LocalLevels: Level[] = [
   {
     level: 42,
     levelId: 'LVL_42',
-    description: 'v42',
+    description: 'Final Destination',
     status: LEVEL_STATUS.UNLOCKED,
     chaosDungeon: true,
     cost: 10,

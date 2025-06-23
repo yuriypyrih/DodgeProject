@@ -20,10 +20,13 @@ import WhatshotIcon from '@mui/icons-material/Whatshot';
 import StopwatchIcon from 'assets/svg/stopwatch.svg?react';
 import styles from './Wiki.module.scss';
 import ColorfullSquare from '../../components/ColorfullSquare';
+import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
 
 import { COLOR } from 'game/enum/colors.ts';
 import CustomButton from '../../components/CustomButton';
 import useNavigateBack from '../../utils/hooks/useNavigateBack.ts';
+import LinkIcon from '@mui/icons-material/Link';
+import { getEnemyIcon } from 'game/engine/relics/relics_collection.tsx';
 
 type ContentType = { Icon?: any; title?: string | string[]; description: string[] };
 
@@ -88,7 +91,7 @@ const generalContent: ContentType[] = [
 const enemiesContent: ContentType[] = [
   {
     title: 'Scout',
-    Icon: <ColorfullSquare size={30} color1={COLOR.RED} />,
+    Icon: getEnemyIcon('Scout'),
     description: ['The simplest enemy', '- Does 25 dmg'],
   },
   {
@@ -107,32 +110,32 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Speeder',
-    Icon: <ColorfullSquare size={30} color1={COLOR.LIGHT_BLUE} />,
+    Icon: getEnemyIcon('Speeder'),
     description: ['A faster version of the Scout', '- Does 25 dmg'],
   },
   {
     title: 'Tracer',
-    Icon: <ColorfullSquare size={30} color1={COLOR.YELLOW} />,
+    Icon: getEnemyIcon('Tracer'),
     description: ['An enemy that follows you', '- Does 25 dmg'],
   },
   {
     title: 'Worm',
-    Icon: <ColorfullSquare size={30} color1={COLOR.PINK} />,
+    Icon: getEnemyIcon('Worm'),
     description: ['Loops around the walls', '- Does 25 dmg'],
   },
   {
     title: 'Slime',
-    Icon: <ColorfullSquare size={30} color1={COLOR.GREEN} />,
+    Icon: getEnemyIcon('Slime'),
     description: ['Bounces around', '- Does 25 dmg'],
   },
   {
     title: 'Bomber',
-    Icon: <ColorfullSquare size={30} color1={COLOR.ORANGE} color2={COLOR.RED} edge />,
+    Icon: getEnemyIcon('Bomber'),
     description: ['Hitting a wall causes an Explosion', '- Head: 25 dmg', '- Explosion: 45 dmg'],
   },
   {
     title: 'Venom',
-    Icon: <ColorfullSquare size={30} color1={COLOR.PURPLE} />,
+    Icon: getEnemyIcon('Venom'),
     description: [
       'Getting hit by it will apply Poison to you',
       '- Head: 5 dmg. If already poisoned it does 30 dmg instead',
@@ -141,17 +144,17 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Titan',
-    Icon: <ColorfullSquare size={30} color1={COLOR.DARK_BLUE} />,
+    Icon: getEnemyIcon('Titan'),
     description: ['Grows in size steadily', '- Does 25 dmg'],
   },
   {
     title: 'Ghost',
-    Icon: <ColorfullSquare size={30} color1={COLOR.LIGHT_GREY} />,
+    Icon: getEnemyIcon('Ghost'),
     description: ['Periodically becomes transparent', '- Does 25 dmg'],
   },
   {
     title: 'Shadow',
-    Icon: <ColorfullSquare size={30} color1={COLOR.BLACK} />,
+    Icon: getEnemyIcon('Shadow'),
     description: [
       'Carries around an Aura that Applies Darkness',
       '- Does 25 dmg',
@@ -160,22 +163,22 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Glitch',
-    Icon: <ColorfullSquare size={30} color1={COLOR.WHITE} />,
+    Icon: getEnemyIcon('Glitch'),
     description: ['Periodically morphs into a different enemy type', '- Exact copy of the morphed enemy'],
   },
   {
     title: 'Portal',
-    Icon: <ColorfullSquare size={30} color1={COLOR.PORTAL_ORANGE} color2={COLOR.PORTAL_BLUE} />,
+    Icon: getEnemyIcon('Portal'),
     description: ['Phases through the Right and Left walls', '- Does 25 dmg', '- Immune to Fear'],
   },
   {
     title: 'Magnet',
-    Icon: <ColorfullSquare size={30} color1={COLOR.RED} color2={COLOR.LIGHT_BLUE} />,
+    Icon: getEnemyIcon('Magnet'),
     description: ['Carries a magnetic Aura that pulls you in', '- Does 25 dmg'],
   },
   {
     title: 'Hacker',
-    Icon: <ColorfullSquare size={30} color2={COLOR.DARK_GREEN} color1={COLOR.VENOM} />,
+    Icon: getEnemyIcon('Hacker'),
     description: [
       'When hit you get Hacked',
       '- Does 20 dmg',
@@ -185,7 +188,7 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Inferno',
-    Icon: <ColorfullSquare size={30} color2={COLOR.RED} color1={COLOR.YELLOW} />,
+    Icon: getEnemyIcon('Inferno'),
     description: [
       'Hitting a wall sets it briefly on fire',
       '- Head: 25 dmg',
@@ -194,12 +197,12 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Frosty',
-    Icon: <ColorfullSquare size={30} color2={COLOR.DARK_BLUE} color1={COLOR.LIGHT_BLUE} />,
+    Icon: getEnemyIcon('Frosty'),
     description: ['Carries an Aura of Frost that slows you down', '- Does 25 dmg'],
   },
   {
     title: 'Reaper',
-    Icon: <ColorfullSquare size={30} color2={COLOR.LIGHT_GREY} color1={COLOR.BLACK} />,
+    Icon: getEnemyIcon('Reaper'),
     description: [
       'Getting hit applies Deathmark',
       '- Head: No damage',
@@ -208,12 +211,12 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Voidborn',
-    Icon: <ColorfullSquare size={30} color2={COLOR.PURPLE} color1={COLOR.VENOM} />,
+    Icon: getEnemyIcon('Voidborn'),
     description: ['Chooses an orbit to circle around', '- Does 25 dmg', '- Immune to Fear'],
   },
   {
     title: 'Scorpion',
-    Icon: <ColorfullSquare size={30} color2={COLOR.ORANGE} color1={COLOR.RED} />,
+    Icon: getEnemyIcon('Scorpion'),
     description: [
       'Resembles an ordinary enemy but carries a second Head on its tail',
       '- Head/Tail: 25 dmg',
@@ -222,7 +225,7 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Lifeline',
-    Icon: <ColorfullSquare size={30} color2={COLOR.RED} color1={COLOR.PRIMARY} edge={true} />,
+    Icon: getEnemyIcon('Lifeline'),
     description: [
       'Has two states with different effects. Hitting the first time will swap its state',
       '- Healing State: Fully heals you',
@@ -231,7 +234,7 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Radioactive',
-    Icon: <ColorfullSquare size={30} color2={COLOR.GREEN} color1={COLOR.ORANGE} />,
+    Icon: getEnemyIcon('Radioactive'),
     description: [
       'Carries around an Aura that Applies Radiation buildup',
       '- The more radiation buildup the more damage you take while being near it',
@@ -240,7 +243,7 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Trickster',
-    Icon: <ColorfullSquare size={30} color2={COLOR.PINK} color1={COLOR.PURPLE} />,
+    Icon: getEnemyIcon('Trickster'),
     description: [
       'When hit you get Tricked',
       '- Does 20 dmg',
@@ -250,12 +253,12 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Puppet',
-    Icon: <ColorfullSquare size={30} color2={COLOR.RED} color1={COLOR.WHITE} edge={true} />,
+    Icon: getEnemyIcon('Puppet'),
     description: ['Mimics your control inputs when you change directions', '- Does 25 dmg'],
   },
   {
     title: 'Tether',
-    Icon: <ColorfullSquare size={30} color2={COLOR.DARK_BLUE} color1={COLOR.PORTAL_BLUE} />,
+    Icon: getEnemyIcon('Tether'),
     description: ['Creates a damaging line to the center of the arena and itself', '- Head/Line: 25 dmg'],
   },
 ];
@@ -310,7 +313,7 @@ const augmentsContent: ContentType[] = [
     description: [
       'Applies a night vision filter on screen',
       '- Makes spotting Ghost & Shadow enemies easier',
-      '- Increased resistance to Poison (66%) and Frost (50%)',
+      '- Increased resistance to Poison (66%) and Frost/Radiation buildup (50%)',
       '- Deathmark deals only 20dmg to you',
     ],
   },
@@ -360,11 +363,12 @@ const augmentsContent: ContentType[] = [
   },
   {
     Icon: <StopwatchIcon style={{ width: 30, height: 30 }} />,
-    title: ['Stopwatch', ' (Active x1)', 'Rechargeable'],
+    title: ['Stopwatch', ' (Active x3)', 'Rechargeable'],
     description: [
-      'Slows down the time for the enemies for 3s and heals you for 50% of your missing hp',
+      'Slows down the time for the enemies for 3s and heals you for 40% of your missing hp',
       '- You are Stabilized during this duration',
-      '- Collecting a star will recharge the augment',
+      '- You are immune to Deathmark damage during this duration',
+      '- Collecting a star will refill a single charge',
     ],
   },
   {
@@ -382,6 +386,29 @@ const augmentsContent: ContentType[] = [
     Icon: <SkullIcon style={{ width: 30, height: 30 }} />,
     title: 'Harvester (Passive ∞)',
     description: ['You only have 1hp but you get x10 the amount of the stars you collect', '- Aka: Hardcore mode'],
+  },
+  {
+    Icon: <SelfImprovementIcon style={{ width: 30, height: 30 }} />,
+    title: 'Medidation (Passive ∞)',
+    description: [
+      'While damaged and standing still for 1s you will enter Meditation state',
+      '- While meditating you are regenerating 4hp/sec',
+      '- While meditating you are stabilized',
+      '- While meditating you are immume to Deathmark damage',
+      '- Upon entering Meditation state after being hit you will heal additional 6hp',
+      '- Taking damage will break Meditation state (except for Poison dmg)',
+    ],
+  },
+  {
+    Icon: <LinkIcon style={{ width: 30, height: 30 }} />,
+    title: 'Symbiotic Link (Active)',
+    description: [
+      'Activate to create a link to the closest enemy',
+      '- While being linked you will ignore being hit by that enemy type and its effects (Explosions, Firewall, Auras, etc)',
+      '- Being hit by the linked enemy 4x times consecutively will disable the link',
+      '- Auras count as hits when linked to an Aura Enemy',
+      '- Being hit by another non-linked enemy will fully replenish the link',
+    ],
   },
 ];
 

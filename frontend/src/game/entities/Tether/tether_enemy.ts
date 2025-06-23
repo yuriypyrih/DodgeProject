@@ -4,6 +4,7 @@ import GameObject from 'game/engine/gameObject.ts';
 import { Rectangle } from 'game/types/Rectangle.ts';
 import Trail from 'game/engine/trail.ts';
 import Game from 'game/engine/game.ts';
+import { AUGMENTS } from '../../../lib/api/specs/api.ts';
 
 type Vec2 = { x: number; y: number };
 type Rect = { x: number; y: number; width: number; height: number };
@@ -149,7 +150,16 @@ export default class TetherEnemy extends GameObject {
       };
       const touching = lineTouchesRect(cubeCenter, canvasCenter, playerRect);
       if (touching) {
-        player.healthManager.takeDamage(25, { lastWhoDamagedMe: 'Tether enemy' });
+        if (
+          player.relicManager.relic?.id === AUGMENTS.SYMBIOTIC_LINK &&
+          player.relicManager.symbioticLinked &&
+          player.relicManager.available_uses > 0 &&
+          this.gameObject.symbiosisName
+        ) {
+          player.relicManager.testSymbioticLink(this);
+        } else {
+          player.healthManager.takeDamage(25, { lastWhoDamagedMe: 'Tether enemy' });
+        }
       }
     }
 

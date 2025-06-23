@@ -30,6 +30,7 @@ export default class ScorpionEnemy extends GameObject {
       velY,
       velX,
       name: 'Scorpion Enemy',
+      symbiosisName: 'Scorpion',
     });
 
     this.game = game;

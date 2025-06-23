@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 'redux/store.ts';
 import CubeRelicButton from 'components/CubeRelicButton';
 import styles from './Relics.module.scss';
-import { relics } from 'game/engine/relics/relics_collection.ts';
+import { relics } from 'game/engine/relics/relics_collection.tsx';
 import ImportContactsIcon from '@mui/icons-material/ImportContacts';
 import UnlockLevelModal from '../../components/UnlockLevelModal/UnlockLevelModal.tsx';
 import { unlockAugment } from 'redux/slices/authSlice.ts';

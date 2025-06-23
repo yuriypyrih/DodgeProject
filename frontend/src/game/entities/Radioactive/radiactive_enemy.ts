@@ -30,6 +30,7 @@ export default class RadioactiveEnemy extends GameObject {
       position,
       velY,
       velX,
+      symbiosisName: 'Radioactive',
     });
 
     this.game = game;

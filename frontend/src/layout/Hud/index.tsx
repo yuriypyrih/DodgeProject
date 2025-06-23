@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'redux/store.ts';
 import { VFX } from 'game/enum/vfx.ts';
@@ -8,11 +8,12 @@ import Game from 'game/engine/game.ts';
 import HealIcon from '@mui/icons-material/Favorite';
 import styles from './styles.module.scss';
 import { COLOR } from 'game/enum/colors.ts';
-import { relics } from 'game/engine/relics/relics_collection.ts';
+import { getEnemyIcon, relics } from 'game/engine/relics/relics_collection.tsx';
 import { RELIC_TYPE } from 'game/enum/relic_type.ts';
 import { CircularProgress } from '@mui/material';
 import { isChaosDungeon } from 'utils/isChaosDungeon.ts';
 import clsx from 'clsx';
+import { AUGMENTS } from '../../lib/api/specs/api.ts';
 
 type HudProps = {
   game: Game | null;
@@ -112,8 +113,9 @@ const Hud: React.FC<HudProps> = ({ game, reset }) => {
     console.log('HUD: TEXT');
   }, [dispatch, play_text]);
 
-  const getRelic = () => {
+  const getRelic = useMemo(() => {
     let Icon = HealIcon;
+    let SymbiosisIcon = null;
     let wasted = true;
     let variant: 'indeterminate' | 'static' | 'determinate' = 'indeterminate';
     let value = 100;
@@ -122,6 +124,9 @@ const Hud: React.FC<HudProps> = ({ game, reset }) => {
       const foundRelic = relics.find((r) => r.id === selectedRelic.relic);
       if (foundRelic) {
         Icon = foundRelic.Icon;
+        if (foundRelic.id === AUGMENTS.SYMBIOTIC_LINK && selectedRelic?.symbiosisName) {
+          SymbiosisIcon = getEnemyIcon(selectedRelic?.symbiosisName, 16);
+        }
         if (foundRelic.type === RELIC_TYPE.ACTIVE) {
           variant = 'determinate';
           if (selectedRelic.relic_available_uses !== Infinity) {
@@ -148,15 +153,15 @@ const Hud: React.FC<HudProps> = ({ game, reset }) => {
             style={{ position: 'absolute' }}
           />
         )}
-        <Icon style={{ opacity: wasted ? 0.2 : 1, width: 25, height: 25 }} />
+        {SymbiosisIcon ? SymbiosisIcon : <Icon style={{ opacity: wasted ? 0.2 : 1, width: 25, height: 25 }} />}
       </>
     );
-  };
+  }, [selectedRelic]);
 
   return (
     <div className={styles.root}>
       <div className={styles.container}>
-        <div className={styles.power}>{getRelic()}</div>
+        <div className={styles.power}>{getRelic}</div>
         <div>
           <div className={`${styles.health} ${poisoned ? styles.healthPoisoned : null}`}>
             <div className={styles.healthRed} style={{ width: `${getHPMeter()}%` }} />

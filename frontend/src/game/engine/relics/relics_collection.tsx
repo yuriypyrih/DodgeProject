@@ -19,6 +19,8 @@ import WhatshotIcon from '@mui/icons-material/Whatshot';
 import SkullIcon from 'assets/svg/skull.svg?react';
 import BlockIcon from '@mui/icons-material/Block';
 import { AUGMENTS } from '../../../lib/api/specs/api.ts';
+import ColorfullSquare from 'components/ColorfullSquare/index.tsx';
+import { COLOR } from 'game/enum/colors.ts';
 
 export const relics: Relic[] = [
   {
@@ -146,7 +148,7 @@ export const relics: Relic[] = [
     name: 'Stopwatch',
     type: RELIC_TYPE.ACTIVE,
     state: LEVEL_STATUS.LOCKED,
-    max_uses: 1,
+    max_uses: 3,
     cost: 8,
     Icon: StopwatchIcon,
     cooldown: -1,
@@ -172,23 +174,102 @@ export const relics: Relic[] = [
     cooldown: -1,
   },
   {
+    id: AUGMENTS.MEDITATE,
+    name: 'Meditation',
+    type: RELIC_TYPE.PASSIVE,
+    state: LEVEL_STATUS.UNLOCKED,
+    max_uses: Number.POSITIVE_INFINITY,
+    cost: 5,
+    Icon: SelfImprovementIcon,
+    cooldown: -1,
+  },
+  {
     id: AUGMENTS.SYMBIOTIC_LINK,
     name: 'Symbiotic Link',
     type: RELIC_TYPE.ACTIVE,
     state: LEVEL_STATUS.UNLOCKED,
-    max_uses: 5,
+    max_uses: 4,
     cost: 1,
     Icon: LinkIcon,
     cooldown: -1,
   },
-  {
-    id: AUGMENTS.MEDITATE,
-    name: 'Meditation',
-    type: RELIC_TYPE.ACTIVE,
-    state: LEVEL_STATUS.UNLOCKED,
-    max_uses: 40,
-    cost: 1,
-    Icon: SelfImprovementIcon,
-    cooldown: -1,
-  },
 ];
+
+export const getEnemyIcon = (enemy: string, size = 30) => {
+  switch (enemy) {
+    case 'Scout':
+      return <ColorfullSquare size={size} color1={COLOR.RED} />;
+
+    case 'Speeder':
+      return <ColorfullSquare size={size} color1={COLOR.LIGHT_BLUE} />;
+
+    case 'Tracer':
+      return <ColorfullSquare size={size} color1={COLOR.YELLOW} />;
+
+    case 'Worm':
+      return <ColorfullSquare size={size} color1={COLOR.PINK} />;
+
+    case 'Slime':
+      return <ColorfullSquare size={size} color1={COLOR.GREEN} />;
+
+    case 'Venom':
+      return <ColorfullSquare size={size} color1={COLOR.PURPLE} />;
+
+    case 'Titan':
+      return <ColorfullSquare size={size} color1={COLOR.DARK_BLUE} />;
+
+    case 'Ghost':
+      return <ColorfullSquare size={size} color1={COLOR.LIGHT_GREY} />;
+
+    case 'Shadow':
+      return <ColorfullSquare size={size} color1={COLOR.BLACK} />;
+
+    case 'Glitch':
+      return <ColorfullSquare size={size} color1={COLOR.WHITE} />;
+
+    case 'Bomber':
+      return <ColorfullSquare size={size} color1={COLOR.ORANGE} color2={COLOR.RED} edge />;
+
+    case 'Portal':
+      return <ColorfullSquare size={size} color1={COLOR.PORTAL_ORANGE} color2={COLOR.PORTAL_BLUE} />;
+
+    case 'Magnet':
+      return <ColorfullSquare size={size} color1={COLOR.RED} color2={COLOR.LIGHT_BLUE} />;
+
+    case 'Hacker':
+      return <ColorfullSquare size={size} color1={COLOR.VENOM} color2={COLOR.DARK_GREEN} />;
+
+    case 'Inferno':
+      return <ColorfullSquare size={size} color1={COLOR.YELLOW} color2={COLOR.RED} />;
+
+    case 'Frosty':
+      return <ColorfullSquare size={size} color1={COLOR.LIGHT_BLUE} color2={COLOR.DARK_BLUE} />;
+
+    case 'Reaper':
+      return <ColorfullSquare size={size} color1={COLOR.BLACK} color2={COLOR.LIGHT_GREY} />;
+
+    case 'Voidborn':
+      return <ColorfullSquare size={size} color1={COLOR.VENOM} color2={COLOR.PURPLE} />;
+
+    case 'Scorpion':
+      return <ColorfullSquare size={size} color1={COLOR.RED} color2={COLOR.ORANGE} />;
+
+    case 'Radioactive':
+      return <ColorfullSquare size={size} color1={COLOR.ORANGE} color2={COLOR.GREEN} />;
+
+    case 'Trickster':
+      return <ColorfullSquare size={size} color1={COLOR.PURPLE} color2={COLOR.PINK} />;
+
+    case 'Tether':
+      return <ColorfullSquare size={size} color1={COLOR.PORTAL_BLUE} color2={COLOR.DARK_BLUE} />;
+
+    case 'Lifeline':
+      return <ColorfullSquare size={size} color1={COLOR.PRIMARY} color2={COLOR.RED} edge />;
+
+    case 'Puppet':
+      return <ColorfullSquare size={size} color1={COLOR.WHITE} color2={COLOR.RED} edge />;
+
+    default:
+      return <ColorfullSquare size={size} color1={'red'} />;
+  }
+};

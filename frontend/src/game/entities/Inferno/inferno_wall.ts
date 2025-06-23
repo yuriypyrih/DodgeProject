@@ -60,6 +60,7 @@ export default class InfernoWall extends GameObject {
       position: getPosition(side, game),
       velY: 0,
       velX: 0,
+      symbiosisName: 'Inferno',
     });
 
     this.game = game;

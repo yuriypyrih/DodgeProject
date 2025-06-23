@@ -23,6 +23,7 @@ export default class ReaperEnemy extends GameObject {
       position,
       velY,
       velX,
+      symbiosisName: 'Reaper',
     });
 
     this.game = game;

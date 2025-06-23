@@ -9,7 +9,7 @@ import { dispatch } from '../main.tsx';
 import { useNavigate } from 'react-router-dom';
 import { resetTimers, setGameState, setLevel } from '../redux/slices/gameSlice.ts';
 import { game } from '../App.tsx';
-import { relics } from '../game/engine/relics/relics_collection.ts';
+import { relics } from '../game/engine/relics/relics_collection.tsx';
 import { setContext } from '../game';
 import { splitCamelCase } from '../utils/splitCaseWord.ts';
 import { isChaosDungeon } from '../utils/isChaosDungeon.ts';

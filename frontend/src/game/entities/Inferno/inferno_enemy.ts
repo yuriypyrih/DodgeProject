@@ -25,6 +25,7 @@ export default class InfernoEnemy extends GameObject {
       velY,
       velX,
       name: 'Inferno Enemy',
+      symbiosisName: 'Inferno',
     });
 
     this.game = game;

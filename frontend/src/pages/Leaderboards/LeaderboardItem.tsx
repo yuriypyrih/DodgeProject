@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { ScoreRecord } from 'Models/ScoreRecord.ts';
 import styles from './styles.module.scss';
 import DefaultIcon from '@mui/icons-material/Description';
-import { relics } from 'game/engine/relics/relics_collection.ts';
+import { relics } from 'game/engine/relics/relics_collection.tsx';
 import USerIcon from '@mui/icons-material/AccountCircle';
 import clsx from 'clsx';
 

@@ -44,10 +44,11 @@ export default class HealthManager {
       lastWhoDamagedMe?: string;
       ImmunityShiftInMS?: number;
       isSecondaryDamage?: boolean;
+      disableChaosDamage?: boolean;
     },
   ) {
     const immunityShit = options && options.ImmunityShiftInMS ? options.ImmunityShiftInMS : 0;
-    const CHAOS_EXTRA_DMG = 5;
+    const CHAOS_EXTRA_DMG = options?.disableChaosDamage ? 0 : 5;
     const calculatedDmg = this.game.player.isChaosActive ? damage + CHAOS_EXTRA_DMG : damage;
 
     console.log('TAKE DAMAGE', damage, options?.lastWhoDamagedMe);
@@ -76,6 +77,7 @@ export default class HealthManager {
           this.health -= calculatedDmg;
         } else {
           this.buffered_dmg += calculatedDmg;
+          this.game.player.relicManager.damagedNeedHealing = true;
         }
         if (!options?.disableDefaultPulse) {
           store.dispatch(playAnimation(VFX.PULSE_RED));
@@ -102,9 +104,6 @@ export default class HealthManager {
     this.buffered_dmg = 0;
     if (this.game.player.relicManager.relic?.id === AUGMENTS.HARVESTER) {
       this.health = 1;
-    }
-    if (this.game.player.relicManager.relic?.id === AUGMENTS.MEDITATE) {
-      this.health = 60;
     }
   }
 

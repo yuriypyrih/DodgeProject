@@ -25,6 +25,7 @@ export default class Explosion extends GameObject {
       position,
       velY: 0,
       velX: 0,
+      symbiosisName: 'Bomber',
     });
 
     this.game = game;

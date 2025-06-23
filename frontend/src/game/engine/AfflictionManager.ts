@@ -3,7 +3,7 @@ import { COLOR } from '../enum/colors.ts';
 import store from '../../redux/store.ts';
 import { setPoisoned } from 'redux/slices/gameSlice.ts';
 import GameObject from './gameObject.ts';
-import { relics } from './relics/relics_collection.ts';
+import { relics } from './relics/relics_collection.tsx';
 import { playAnimation, playText } from 'redux/slices/vfxSlice.ts';
 import { VFX } from '../enum/vfx.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
@@ -267,7 +267,7 @@ export default class AfflictionManager {
       if (this.deathmark_aura_radius < 20) {
         this.isDeathmarked = false;
         this.deathmark_aura_radius = this.DEATHMARK_AURA_RADIUS_MAX;
-        if (!relicManager.isImmune) {
+        if (!relicManager.isImmune && !relicManager.isMedidating) {
           if (relicManager.relic?.id === AUGMENTS.NIGHT_VISION) {
             player.healthManager.takeDamage(20, { lastWhoDamagedMe: 'Deathmark' });
           } else if (relicManager.relic?.id === AUGMENTS.DEMON_SOUL) {

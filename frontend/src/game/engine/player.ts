@@ -12,6 +12,8 @@ import AfflictionManager from './AfflictionManager.ts';
 import RelicManager from './RelicManager.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
 import { XY } from 'game/types/XY.ts';
+import { isChaosDungeon } from 'utils/isChaosDungeon.ts';
+import { relics } from 'game/engine/relics/relics_collection.tsx';
 
 type PlayerProps = {
   game: Game;
@@ -166,7 +168,7 @@ export default class Player extends GameObject {
 
   victoryConditionCheck() {
     const maxStars = this.game.spawner.levelStars[this.game.level];
-    if (this.stars >= maxStars.length) {
+    if (this.stars >= maxStars.length && !isChaosDungeon(this.game.level)) {
       this.game.dispatchVictory(this.stars);
       return true;
     } else {
@@ -223,7 +225,7 @@ export default class Player extends GameObject {
     //IMPORTANT: First update the stars and then the hudProgress
     this.game.spawner.updateHudProgress();
     this.game.removeGameObject(starObject);
-    this.milestone = true;
+    this.milestone = !isChaosDungeon(this.game.level);
     this.healthManager.lastTimeDamaged = this.game.now;
   }
 
@@ -280,6 +282,16 @@ export default class Player extends GameObject {
 
     this.game.gameObjects.forEach((object: GameObject) => {
       if (this.collision(object.getBounds())) {
+        if (
+          this.relicManager.relic?.id === AUGMENTS.SYMBIOTIC_LINK &&
+          this.relicManager.symbioticLinked &&
+          object.gameObject.symbiosisName
+        ) {
+          if (this.relicManager.testSymbioticLink(object)) {
+            return;
+          }
+        }
+
         // You're immune to dmg when healed
         if (object.gameObject.id === ENTITY_ID.STAR) {
           this.collectStar(object);
@@ -450,27 +462,34 @@ export default class Player extends GameObject {
           this.afflictionManager.applyMagneticForce(object, 'minus');
         }
         if (object.gameObject.id === ENTITY_ID.RADIOACTIVE_AURA) {
-          const radioationDmg =
-            this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL
-              ? this.afflictionManager.radioBuildup * 0.25
-              : this.afflictionManager.radioBuildup;
+          let radioationDmg = this.afflictionManager.radioBuildup;
+          if (this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL) {
+            radioationDmg = this.afflictionManager.radioBuildup * 0.25;
+          } else if (this.relicManager.relic?.id === AUGMENTS.NIGHT_VISION) {
+            radioationDmg = this.afflictionManager.radioBuildup * 0.5;
+          }
+
           this.healthManager.takeDamage(!this.relicManager.berserkIsActive ? radioationDmg : -4, {
             isTrueDmg: true,
             lastWhoDamagedMe: 'Radiation',
             ImmunityShiftInMS: -200,
             isSecondaryDamage: true,
+            disableChaosDamage: true,
             disableDefaultPulse: Boolean(this.afflictionManager.radioBuildup < 6 || this.relicManager.berserkIsActive),
             callback: () => {
+              this.afflictionManager.poisonConsumed += this.afflictionManager.radioBuildup;
               this.afflictionManager.radioBuildup += 0.5;
             },
           });
           this.getHitByBodyAura(object, 25, 'Radioactive Enemy');
         }
         if (object.gameObject.id === ENTITY_ID.RADIO_BULLET) {
-          const radioationDmg =
-            this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL
-              ? (this.afflictionManager.radioBuildup + 10) * 0.25
-              : this.afflictionManager.radioBuildup + 10;
+          let radioationDmg = this.afflictionManager.radioBuildup;
+          if (this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL) {
+            radioationDmg = this.afflictionManager.radioBuildup * 0.25;
+          } else if (this.relicManager.relic?.id === AUGMENTS.NIGHT_VISION) {
+            radioationDmg = this.afflictionManager.radioBuildup * 0.5;
+          }
           this.healthManager.takeDamage(!this.relicManager.berserkIsActive ? radioationDmg : -4, {
             isTrueDmg: true,
             lastWhoDamagedMe: 'Radiation Bullet',
@@ -479,6 +498,7 @@ export default class Player extends GameObject {
             disableDefaultPulse: Boolean(this.afflictionManager.radioBuildup < 6 || this.relicManager.berserkIsActive),
             callback: () => {
               this.afflictionManager.radioBuildup += 0.5;
+              this.afflictionManager.poisonConsumed += this.afflictionManager.radioBuildup;
               this.game.removeGameObject(object);
             },
           });
