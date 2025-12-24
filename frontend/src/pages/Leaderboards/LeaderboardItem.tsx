@@ -6,6 +6,8 @@ import DefaultIcon from '@mui/icons-material/Description';
 import { relics } from 'game/engine/relics/relics_collection.tsx';
 import USerIcon from '@mui/icons-material/AccountCircle';
 import clsx from 'clsx';
+import TitleCosmetic from 'components/TitleCosmetic';
+import { TEXT_STYLE } from 'Models/data/LocalCosmetics.ts';
 
 type TProps = {
   scoreRecord: ScoreRecord;
@@ -73,7 +75,9 @@ const LeaderboardItem: React.FC<TProps> = ({ scoreRecord, index, lastPlaced, hig
           </Box>
           <Box sx={{ flex: 1, display: 'flex', gap: 1 }}>
             <USerIcon sx={{ color: 'white' }} />
-            <Box sx={{ color: 'white' }}>{scoreRecord.userName}</Box>
+            <Box sx={{ color: 'white' }}>
+              <TitleCosmetic text={scoreRecord.userName} textStyle={TEXT_STYLE.ELECTRIC} />
+            </Box>
           </Box>
           <Box sx={{ flex: 1, textAlign: 'right', pr: 2 }}>
             <Box sx={{ color: 'white' }}>{scoreRecord.score.toFixed(2)} s</Box>

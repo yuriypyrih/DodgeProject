@@ -1,134 +1,183 @@
 @import "../../Theme/_variables";
 
-@mixin createPulseKeyframes($name, $color, $maxOpacity: 0.6, $size : 32px) {
-  @keyframes #{$name} {
-    0% {
-      border: 1px solid #2dd5c4;
-    }
+$DEFAULT_BORDER: #2dd5c4;
 
-    30% {
-      border: 1px solid $color;
-      box-shadow: 0 0 $size rgba($color, $maxOpacity);
-    }
-
-    100% {
-      border: 1px solid #2dd5c4;
-    }
-  }
-}
-
-@keyframes pulsePortalOrange {
-  0% {
-    box-shadow: inset 50px 0 50px -50px #2dd5c400;
-  }
-
-  30% {
-    box-shadow: inset 50px 0 50px -50px #ff934d60;
-  }
-
-  100% {
-    box-shadow: inset 50px 0 50px -50px #2dd5c400;
-  }
-}
-
-@keyframes pulsePortalBlue {
-  0% {
-    box-shadow: inset -50px 0 50px -50px #2dd5c400;
-  }
-
-  30% {
-    box-shadow: inset -50px 0 50px -50px #4db9ff60;
-  }
-
-  100% {
-    box-shadow: inset -50px 0 50px -50px #2dd5c400;
-  }
-}
-
-@keyframes pulseImmune {
-  0% {
-    border: 1px solid #2dd5c4;
-  }
-
-  20% {
-    border: 1px solid $GOLD;
-    box-shadow: 0 0 2.4rem rgba($GOLD, 1);
-  }
-
-  100% {
-    border: 1px solid #2dd5c4;
-  }
-}
-
-@include createPulseKeyframes("pulseRed", $RED);
-@include createPulseKeyframes("pulseLightBlue", $LIGHT_BLUE, 1, 64px);
-@include createPulseKeyframes("pulseGreen", $AQUA);
-@include createPulseKeyframes("pulseHacked", $GREEN);
-@include createPulseKeyframes("pulsePurple", $PURPLE, 0.4);
-@include createPulseKeyframes("pulseGold", $GOLD, 0.3);
-@include createPulseKeyframes("pulseBlack", $BLACK);
+// -------- Base ---------------------------------------------------------------
 
 .root {
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position: relative;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   border-radius: 3px;
-  border: 1px solid #2dd5c4;
-  box-shadow: 0 0 2rem #2dd5c402;
-  overflow: hidden;
-  transition: all;
+  border: 1px solid $DEFAULT_BORDER;
+
+  // Important: allow the outer glow to render outside the edges.
+  overflow: visible;
 }
 
 .innerContainer {
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position: relative;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  // Keep your content clipping here, not on .root
   overflow: hidden;
-  transition: all;
 }
 
+// -------- Mixins -------------------------------------------------------------
+
+// Outer halo: a non-animated box-shadow baked into a pseudo-element.
+// We only animate opacity (GPU-composited). Hugging the outside of the wrapper.
+@mixin outerHaloPulse($name, $color, $maxOpacity: 0.6, $blur: 24px, $spread: 6px) {
+  @keyframes #{$name}-halo {
+    0%   { opacity: 0; }
+    30%  { opacity: $maxOpacity; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes #{$name}-border {
+    0%   { border-color: $DEFAULT_BORDER; }
+    30%  { border-color: $color; }
+    100% { border-color: $DEFAULT_BORDER; }
+  }
+
+  position: relative;
+
+  // The glow is rendered outside via box-shadow, but we never animate it.
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;                 // same size as host
+    border-radius: inherit;
+    pointer-events: none;
+
+    // The shadow itself (outside the perimeter). This is static.
+    background: transparent;
+    box-shadow: 0 0 $blur $spread rgba($color, 1);
+
+    // We animate only opacity for performance.
+    opacity: 0;
+    will-change: opacity;
+    contain: paint;
+    transform: translateZ(0);
+  }
+}
+
+// Helper to start the animations
+@mixin playOuterHalo($name, $duration, $easing: ease-out) {
+  animation: #{$name}-border $duration $easing;
+  &::after { animation: #{$name}-halo $duration $easing; }
+}
+
+// Directional “portal” outer glow (stronger on one side).
+// Implemented with a biased static shadow + opacity animation.
+@mixin outerPortalGlow($name, $side: left, $color, $maxOpacity: 0.38, $blur: 28px, $offset: 18px, $spread: 10px) {
+  @keyframes #{$name}-halo {
+    0%   { opacity: 0; }
+    30%  { opacity: $maxOpacity; }
+    100% { opacity: 0; }
+  }
+
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: transparent;
+
+    // Bias the shadow toward one side by offsetting it.
+    @if $side == left {
+      box-shadow: -#{$offset} 0 $blur $spread rgba($color, 1);
+    } @else {
+      box-shadow:  #{$offset} 0 $blur $spread rgba($color, 1);
+    }
+
+    opacity: 0;
+    will-change: opacity;
+    contain: paint;
+    transform: translateZ(0);
+  }
+}
+
+// -------- Classes (same API you already use) ---------------------------------
+
 .PULSE_RED_ANIMATION {
-  animation: pulseRed 0.7s ease-in;
+  @include outerHaloPulse(pulseRed, $RED, 0.6, 20px, 6px);
+  @include playOuterHalo(pulseRed, 700ms, ease-in);
 }
 
 .PULSE_LIGHT_BLUE_ANIMATION {
-  animation: pulseLightBlue 3s ease-out;
+  @include outerHaloPulse(pulseLightBlue, $LIGHT_BLUE, 1, 36px, 10px);
+  @include playOuterHalo(pulseLightBlue, 3s, ease-out);
 }
 
 .PULSE_GREEN_ANIMATION {
-  animation: pulseGreen 0.7s ease-in;
+  @include outerHaloPulse(pulseGreen, $AQUA, 0.6, 20px, 6px);
+  @include playOuterHalo(pulseGreen, 700ms, ease-in);
 }
 
 .PULSE_HACKED_ANIMATION {
-  animation: pulseHacked 0.7s ease-in;
+  @include outerHaloPulse(pulseHacked, $GREEN, 0.6, 20px, 6px);
+  @include playOuterHalo(pulseHacked, 700ms, ease-in);
 }
 
 .PULSE_PURPLE_ANIMATION {
-  animation: pulsePurple 3s;
-}
-
-.PULSE_PORTAL_ORANGE {
-  animation: pulsePortalOrange 0.5s ease-out;
-}
-
-.PULSE_PORTAL_BLUE {
-  animation: pulsePortalBlue 0.5s ease-out;
+  @include outerHaloPulse(pulsePurple, $PURPLE, 0.4, 22px, 7px);
+  @include playOuterHalo(pulsePurple, 3s, ease-out);
 }
 
 .PULSE_GOLD_ANIMATION {
-  animation: pulseGold 0.7s ease-out;
+  @include outerHaloPulse(pulseGold, $GOLD, 0.3, 24px, 8px);
+  @include playOuterHalo(pulseGold, 700ms, ease-out);
 }
 
 .PULSE_IMMUNITY_ANIMATION {
-  animation: pulseImmune 2s ease-out;
+  @include outerHaloPulse(pulseImmune, $GOLD, 1, 28px, 10px);
+  @include playOuterHalo(pulseImmune, 2s, ease-out);
 }
 
 .PULSE_DEATHMARK {
-  animation: pulseBlack 3s ease-out;
+  @include outerHaloPulse(pulseBlack, $BLACK, 0.6, 18px, 5px);
+  @include playOuterHalo(pulseBlack, 3s, ease-out);
 }
 
-.nightVisionEffect {
-  background: radial-gradient(#2e790150 0%, #01230100 60%, #01230100 100%);
+.PULSE_PORTAL_ORANGE {
+  @include outerPortalGlow(pulsePortalOrange, left, #ff934d, 0.38, 28px, 22px, 12px);
+  &::after { animation: pulsePortalOrange-halo 500ms ease-out; }
+}
+
+.PULSE_PORTAL_BLUE {
+  @include outerPortalGlow(pulsePortalBlue, right, #4db9ff, 0.38, 28px, 22px, 12px);
+  &::after { animation: pulsePortalBlue-halo 500ms ease-out; }
+}
+
+// -------- Optional: reduced motion ------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  .PULSE_RED_ANIMATION,
+  .PULSE_LIGHT_BLUE_ANIMATION,
+  .PULSE_GREEN_ANIMATION,
+  .PULSE_HACKED_ANIMATION,
+  .PULSE_PURPLE_ANIMATION,
+  .PULSE_GOLD_ANIMATION,
+  .PULSE_IMMUNITY_ANIMATION,
+  .PULSE_DEATHMARK,
+  .PULSE_PORTAL_ORANGE,
+  .PULSE_PORTAL_BLUE {
+    animation: none !important;
+  }
+  .PULSE_RED_ANIMATION::after,
+  .PULSE_LIGHT_BLUE_ANIMATION::after,
+  .PULSE_GREEN_ANIMATION::after,
+  .PULSE_HACKED_ANIMATION::after,
+  .PULSE_PURPLE_ANIMATION::after,
+  .PULSE_GOLD_ANIMATION::after,
+  .PULSE_IMMUNITY_ANIMATION::after,
+  .PULSE_DEATHMARK::after,
+  .PULSE_PORTAL_ORANGE::after,
+  .PULSE_PORTAL_BLUE::after {
+    animation: none !important;
+  }
 }

@@ -20,7 +20,7 @@ const Home: React.FC = () => {
   };
 
   const handleGoAchievements = () => {
-    // history.push("/Achievements")
+    navigate('/Wiki?queryTab=3');
   };
   const handleGoSettings = () => {
     navigate('/Settings');
@@ -57,7 +57,7 @@ const Home: React.FC = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '350px', gap: 3, mt: 4 }}>
           <CustomButton onClick={handleGoSelection} text={'PLAY'} fullWidth />
           <CustomButton onClick={handleGoLeaderboards} text={'LEADERBOARDS'} fullWidth />
-          <CustomButton onClick={handleGoAchievements} text={'ACHIEVEMENTS'} fullWidth disabled />
+          <CustomButton onClick={handleGoAchievements} text={'ACHIEVEMENTS'} fullWidth />
           <CustomButton onClick={handleGoSettings} text={'SETTINGS'} fullWidth />
         </Box>
       </Box>

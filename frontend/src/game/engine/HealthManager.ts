@@ -61,6 +61,7 @@ export default class HealthManager {
         } else {
           this.buffered_dmg += calculatedDmg;
         }
+        this.game.audioHandler.damage.play();
         if (!options?.disableDefaultPulse) {
           store.dispatch(playAnimation(VFX.PULSE_RED));
         }
@@ -79,6 +80,8 @@ export default class HealthManager {
           this.buffered_dmg += calculatedDmg;
           this.game.player.relicManager.damagedNeedHealing = true;
         }
+
+        this.game.audioHandler.damage.play();
         if (!options?.disableDefaultPulse) {
           store.dispatch(playAnimation(VFX.PULSE_RED));
         }

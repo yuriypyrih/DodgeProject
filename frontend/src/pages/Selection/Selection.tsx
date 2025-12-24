@@ -19,6 +19,7 @@ import ShopButton from '../../components/ShopButton';
 import LeaderboardButton from '../../components/LeaderboardButton';
 import { API_LEVEL } from 'Models/enum/API_LEVEL.ts';
 import CustomButton from '../../components/CustomButton';
+import WikiButton from 'components/WikiButton';
 
 const Selection: React.FC<unknown> = () => {
   const NORMAL_PAGE_SIZE = 12;
@@ -105,9 +106,8 @@ const Selection: React.FC<unknown> = () => {
     <Box className={styles.root}>
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
         <Box sx={{ position: 'absolute', display: 'flex', justifyContent: 'center', width: '100%', left: 0 }}>
-          <Button className={styles.journalBtn} onClick={() => navigate('/Wiki')}>
-            <ImportContactsIcon style={{ marginRight: 8 }} />
-            <Typography variant={'h5'}>READ ME</Typography>
+          <Button className={styles.journalBtn}>
+            <Typography variant={'h5'}>Level Selection</Typography>
           </Button>
         </Box>
         <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
@@ -116,8 +116,9 @@ const Selection: React.FC<unknown> = () => {
               {getRelic()}
             </Button>
           </Box>
-          <Box sx={{ width: 250, height: 44, display: 'flex', wrap: 'nowrap', gap: 1, justifyContent: 'flex-end' }}>
+          <Box sx={{ height: 44, display: 'flex', wrap: 'nowrap', gap: 1, justifyContent: 'flex-end' }}>
             {page === 3 && <LeaderboardButton />}
+            <WikiButton />
             <ShopButton />
           </Box>
         </Box>

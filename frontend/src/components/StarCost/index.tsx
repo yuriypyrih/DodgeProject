@@ -49,7 +49,7 @@ const StarCost: React.FC<StarCostProps> = ({
       {!withoutLock && getLock()}
       <Box sx={{ display: 'flex', flexWrap: 'nowrap', alignItems: 'center', justifyContent: 'center', px: 0.5 }}>
         <Box>
-          <Typography sx={{ fontSize: 10 }}>{cost}</Typography>
+          <Typography sx={{ fontSize: 12 }}>{cost}</Typography>
         </Box>
         <StarIcon
           style={{

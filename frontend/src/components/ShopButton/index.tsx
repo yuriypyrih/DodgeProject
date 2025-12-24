@@ -8,7 +8,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 import styles from './styles.module.scss';
 
-const StarButton: React.FC<unknown> = () => {
+const ShopButton: React.FC<unknown> = () => {
   const navigate = useNavigate();
   const { stars } = useSelector((state: RootState) => state.authSlice.user);
 
@@ -38,4 +38,4 @@ const StarButton: React.FC<unknown> = () => {
   );
 };
 
-export default StarButton;
+export default ShopButton;

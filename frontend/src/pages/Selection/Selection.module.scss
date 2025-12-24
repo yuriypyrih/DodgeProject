@@ -17,23 +17,8 @@
   border-radius: 16px;
   color: white;
   box-shadow: 0 0 2px rgba(#00afa3, 0);
-  animation: pulse 4s forwards 2s;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 2px rgba(#00afa3, 0);
-  }
-  40% {
-    transform: scale(1.08);
-    box-shadow: 0 2px 12px rgba(#00afa3, 1);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 2px rgba(#00afa3, 0);
-  }
-}
 
 .relicBtn {
   &:global(.MuiButton-root) {

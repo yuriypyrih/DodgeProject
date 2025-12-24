@@ -26,6 +26,7 @@ import { COLOR } from 'game/enum/colors.ts';
 import CustomButton from '../../components/CustomButton';
 import useNavigateBack from '../../utils/hooks/useNavigateBack.ts';
 import LinkIcon from '@mui/icons-material/Link';
+import NewStarIcon from '@mui/icons-material/Star';
 import { getEnemyIcon } from 'game/engine/relics/relics_collection.tsx';
 
 type ContentType = { Icon?: any; title?: string | string[]; description: string[] };
@@ -412,6 +413,130 @@ const augmentsContent: ContentType[] = [
   },
 ];
 
+const achievementList: ContentType[] = [
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Bronze Competent',
+    description: ['Complete all basic levels.', '- Reward: 10 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Silver Talented',
+    description: ['Get into top 10 in any of the leaderboards.', '- Reward: 20 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Gold Champion',
+    description: ['Get into top 10 in all of the leaderboards at the same time.', '- Reward: 30 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Overachiever',
+    description: ['You have earned over 10 achievements.', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'The Unseen',
+    description: [
+      'Win level 11 without taking any damage and without using the Night Hunter augment.',
+      '- Reward: 100 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Phase Shift',
+    description: [
+      'Win level 14 but you are not allowed to press Left Move button during the enitre Boss fight.',
+      '- Reward: 100 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Full of Heart',
+    description: [
+      'Win a Marathon level by dropping bellow 20hp twice while using the Heal Augment.',
+      '- Reward: 100 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Toxic Spritz',
+    description: [
+      'Heal yourself for a total 200hp using Elixir of Vigor augment in a single run.',
+      '- Reward: 100 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'No escape',
+    description: [
+      'Survive for 40s in the Final Destination Chaos Dungeon using Guardian Angel augment.',
+      '- Reward: 100 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Living Nightmare',
+    description: ['Using the Fear augment scare at least 16 enemies in a single level.', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Perseviarance',
+    description: ['With level ___ by using Mediation and having healed over 100hp.', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Inner connection',
+    description: ['Win level 32 without taking damage and using the Symbiotic Link augment.', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Mutation Junkie',
+    description: ['Win level ___ (that has radiation) using Berserk', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Call of the Void',
+    description: [
+      'Win level 20 by staying as close to the center of the arena as possible at all times.',
+      '- Reward: 100 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Playing with Fire',
+    description: ['Take at least 95 damage from fire in any level and still win.', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Frostbite',
+    description: [
+      'Collect every star in level 18 while having maxium Frost buildup during collection.',
+      '- Reward: 100 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Deathless',
+    description: ['Win level 19 with Harvester augment.', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Get Hacked!',
+    description: ['Get hacked in Clown Fiest Chaos Dungeon while using no augments.', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Borrow Time',
+    description: ['Use the Stopwatch augment 4 times in a Chaos Dungeon.', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Leader',
+    description: ['Reach 1st place in any of the leadersboards.', '- Reward: 200 stars'],
+  },
+];
+
 const Wiki: React.FC<unknown> = () => {
   const { navigateBack } = useNavigateBack();
   const [tab, setTab] = React.useState(0);
@@ -425,7 +550,7 @@ const Wiki: React.FC<unknown> = () => {
     const queryTab = query.get('queryTab');
     if (queryTab) {
       const newTab = Number(queryTab);
-      if (newTab >= 0 && newTab <= 2) {
+      if (newTab >= 0 && newTab <= 3) {
         setTab(newTab);
       }
     }
@@ -440,7 +565,14 @@ const Wiki: React.FC<unknown> = () => {
         sx={{ display: 'grid', gridTemplateColumns: '40px 120px 1fr', color: '#ffffffDD', columnGap: 2 }}
         key={index}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            opacity: tab === 3 && index !== 1 ? 0.4 : 1,
+            color: tab === 3 && index === 1 ? '#ECCD51' : '#ffffffDD',
+          }}
+        >
           {item.Icon ? item.Icon : <DescriptionIcon style={{ width: 30, height: 30 }} />}
         </Box>
         {item.title && (
@@ -453,11 +585,12 @@ const Wiki: React.FC<unknown> = () => {
           </Box>
         )}
         <Box>
-          {item.description.map((d, index) => (
+          {item.description.map((d, descIndex) => (
             <Typography
-              key={index}
+              key={descIndex}
               style={{
                 color: (index !== 0 && !item.title) || !!item.title ? '#00AFA3' : '#ffffffDD',
+                textDecoration: descIndex === 1 && index === 1 && tab === 3 ? 'line-through' : 'none',
               }}
             >
               {d}
@@ -472,22 +605,19 @@ const Wiki: React.FC<unknown> = () => {
     if (tab === 0) return generalContent.map((item, index) => getListItem(item, index));
     else if (tab === 1) return enemiesContent.map((item, index) => getListItem(item, index));
     else if (tab === 2) return augmentsContent.map((item, index) => getListItem(item, index));
+    else if (tab === 3) return achievementList.map((item, index) => getListItem(item, index));
   };
 
   return (
     <Box className={styles.root}>
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
-          <Box sx={{ position: 'absolute', display: 'flex', width: '100%', justifyContent: 'center' }}>
-            <Typography variant={'h5'} color={'primary'} sx={{ textAlign: 'center' }}>
-              Wiki
-            </Typography>
-          </Box>
           <Box>
             <Tabs value={tab} onChange={handleChange} indicatorColor="primary">
               <Tab label="General" className={styles.tabs} />
               <Tab label="Enemies" className={styles.tabs} />
               <Tab label="Augments" className={styles.tabs} />
+              <Tab label={`Achievements [0/${achievementList.length}]`} className={styles.tabs} />
             </Tabs>
           </Box>
           <Box className={styles.mainContainer}>{getContent()}</Box>

@@ -13,6 +13,7 @@ import { Relic } from 'game/types/Relic.ts';
 import ShopButton from '../../components/ShopButton';
 import useNavigateBack from '../../utils/hooks/useNavigateBack.ts';
 import CustomButton from '../../components/CustomButton';
+import WikiButton from 'components/WikiButton';
 
 const Relics: React.FC = () => {
   const navigate = useNavigate();
@@ -43,9 +44,7 @@ const Relics: React.FC = () => {
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: 1 }}>
-              <Button className={styles.journalBtn} onClick={() => navigate('/Wiki?queryTab=2')}>
-                <ImportContactsIcon />
-              </Button>
+              <WikiButton tab={2} />
               <ShopButton />
             </Box>
           </Box>

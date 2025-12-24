@@ -1,4 +1,5 @@
 import InputHandler from './input';
+import AudioHandler from './audio';
 import Player from './player';
 import { GAME_STATE } from '../enum/game_state';
 import { ENTITY_ID } from '../enum/entitiy_id';
@@ -31,6 +32,7 @@ export default class Game {
   spawner: Spawner;
   hud: Hud;
   inputHandler: InputHandler;
+  audioHandler: AudioHandler;
   birthday: number;
   darkness: number; // 0 to 100;
   timeScale: number; // 1 means normal, 2 means half the speed etc
@@ -67,6 +69,8 @@ export default class Game {
 
     this.inputHandler = new InputHandler({ game: this });
     this.inputHandler.initEvents();
+    this.audioHandler = new AudioHandler({ game: this });
+    this.audioHandler.initAudio();
     this.darkness = 0;
     this.timeScale = 1;
     this.keyLastTimePressed = this.now;
@@ -152,6 +156,7 @@ export default class Game {
   }
 
   dispatchVictory(_stars: number) {
+    this.audioHandler.victory.play();
     this.setGameState(GAME_STATE.PAGE_VICTORY);
   }
 

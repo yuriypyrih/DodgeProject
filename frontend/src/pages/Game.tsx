@@ -110,7 +110,7 @@ const Game: React.FC = () => {
         cursor: gameState === GAME_STATE.PLAYING ? 'none' : undefined,
       }}
     >
-      <canvas id={'gameScreen-canvas'} width="900" height="500" />
+      <canvas id={'gameScreen-canvas'} width="900" height="500" style={{ touchAction: 'none' }} />
       <Hud game={game} reset={resetToggle} />
       {gameState === GAME_STATE.PAUSED ? <Pause game={game} toggleReset={startLevel} /> : null}
     </div>

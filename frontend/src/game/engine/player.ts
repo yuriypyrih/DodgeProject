@@ -13,7 +13,6 @@ import RelicManager from './RelicManager.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
 import { XY } from 'game/types/XY.ts';
 import { isChaosDungeon } from 'utils/isChaosDungeon.ts';
-import { relics } from 'game/engine/relics/relics_collection.tsx';
 
 type PlayerProps = {
   game: Game;
@@ -51,7 +50,7 @@ export default class Player extends GameObject {
     this.personalParticles = [];
     this.stars = 0;
     this.milestone = false;
-    this.developerMode = true;
+    this.developerMode = false;
     this.isChaosActive = false;
 
     this.gameObject.position = {
@@ -221,6 +220,7 @@ export default class Player extends GameObject {
 
   collectStar(starObject: GameObject) {
     this.stars++;
+    this.game.audioHandler.starGrab.play();
     store.dispatch(playAnimation(VFX.PULSE_GOLD));
     //IMPORTANT: First update the stars and then the hudProgress
     this.game.spawner.updateHudProgress();

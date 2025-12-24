@@ -26,6 +26,7 @@ export default class Star extends GameObject {
     this.game = game;
     this.pulseTimer = 0;
     this.MAX_PULSE = 60;
+    this.game.audioHandler.starAppear.play();
   }
 
   fear() {
