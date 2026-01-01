@@ -30,7 +30,7 @@ import { getLevel24, level24Stars } from './levels/getLevel24.ts';
 import { getLevel25, level25Stars } from './levels/getLevel25.ts';
 import { getLevel26, level26Stars } from './levels/getLevel26.ts';
 import { getLevel27, level27Stars } from './levels/getLevel27.ts';
-import { isChaosDungeon } from '../../utils/isChaosDungeon.ts';
+import { isChaosDungeon } from 'utils/isChaosDungeon.ts';
 import { getLevel28, level28Stars } from 'game/engine/levels/getLevel28.ts';
 import { getLevel29, level29Stars } from 'game/engine/levels/getLevel29.ts';
 import { getLevel30, level30Stars } from 'game/engine/levels/getLevel30.ts';

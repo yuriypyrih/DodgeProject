@@ -12,28 +12,28 @@
   transition: border-color 0.2s ease-out;
 }
 
-.background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 90%;
-  height: 100%;
-  z-index: 0;
-  background-image: url("../../assets/img/arena1.png");
-  background-size: cover;
-  background-position: center;
-  mask-image: linear-gradient(60deg, black 0%, black 60%, transparent 80%, transparent 100%);
-}
+//.background {
+//  position: absolute;
+//  top: 0;
+//  left: 0;
+//  width: 90%;
+//  height: 100%;
+//  z-index: 0;
+//  background-image: url("../../assets/img/arena1.png");
+//  background-size: cover;
+//  background-position: center;
+//  mask-image: linear-gradient(60deg, black 0%, black 60%, transparent 80%, transparent 100%);
+//}
 
 .hovered {
   cursor: pointer;
   border: 4px solid #79e3d6;
 }
 
-//.root > * {
-//  z-index: 1;
-//}
-
 .disabled {
-  filter: grayscale(100%);
+  border: 4px solid #5a5a5a;
+  & .titleCosmetic {
+    opacity: 0.8 !important;
+    color: #EC5151;
+  }
 }

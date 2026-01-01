@@ -2,17 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store.ts';
-import { LEVEL_STATUS } from '../../Models/enum/LEVEL_STATUS.ts';
-import { Level } from '../../Models/level.ts';
-import { setGameState } from '../../redux/slices/gameSlice.ts';
+import { RootState } from 'redux/store.ts';
+import { LEVEL_STATUS } from 'Models/enum/LEVEL_STATUS.ts';
+import { Level } from 'Models/level.ts';
+import { setGameState } from 'redux/slices/gameSlice.ts';
 import { dispatch } from '../../main.tsx';
 import styles from './Victory.module.scss';
 import { game } from '../../App.tsx';
-import { GAME_STATE } from '../../game/enum/game_state.ts';
+import { GAME_STATE } from 'game/enum/game_state.ts';
 import CustomButton from '../../components/CustomButton';
 import { VICTORY_QUOTES } from '../../modules/quotes/VICTORY_QUOTES.ts';
-import { getRandomNumber } from '../../utils/random.ts';
+import { getRandomNumber } from 'utils/random.ts';
+
 const Victory: React.FC<unknown> = () => {
   const navigate = useNavigate();
   const levels = useSelector((state: RootState) => state.gameSlice.levels);

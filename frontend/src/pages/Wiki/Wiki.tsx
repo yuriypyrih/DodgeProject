@@ -28,8 +28,18 @@ import useNavigateBack from '../../utils/hooks/useNavigateBack.ts';
 import LinkIcon from '@mui/icons-material/Link';
 import NewStarIcon from '@mui/icons-material/Star';
 import { getEnemyIcon } from 'game/engine/relics/relics_collection.tsx';
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store.ts';
+import { ACHIEVEMENT } from '../../lib/api/specs/api.ts';
 
-type ContentType = { Icon?: any; title?: string | string[]; description: string[] };
+type ContentType = {
+  Icon?: any;
+  title?: string | string[];
+  description: string[];
+  disabled?: boolean;
+  meta?: string;
+  metaExtra?: string;
+};
 
 const generalContent: ContentType[] = [
   {
@@ -386,7 +396,11 @@ const augmentsContent: ContentType[] = [
   {
     Icon: <SkullIcon style={{ width: 30, height: 30 }} />,
     title: 'Harvester (Passive ∞)',
-    description: ['You only have 1hp but you get x10 the amount of the stars you collect', '- Aka: Hardcore mode'],
+    description: [
+      'You only have 1hp but you get x10 the amount of the stars you collect',
+      '- First time you beat each level with Harvester you get plus 100 stars',
+      '- Aka: Hardcore mode',
+    ],
   },
   {
     Icon: <SelfImprovementIcon style={{ width: 30, height: 30 }} />,
@@ -417,131 +431,165 @@ const achievementList: ContentType[] = [
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Bronze Competent',
-    description: ['Complete all basic levels.', '- Reward: 10 stars'],
+    meta: ACHIEVEMENT.BRONZE_COMPETENT,
+    metaExtra: 'ADD_COMPLETE',
+    description: ['Complete all basic levels.', '- Reward: 100 stars'],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Silver Talented',
-    description: ['Get into top 10 in any of the leaderboards.', '- Reward: 20 stars'],
+    meta: ACHIEVEMENT.SILVER_TALENTED,
+    description: ['Get into top 10 in any of the leaderboards.', '- Reward: 100 stars'],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Gold Champion',
-    description: ['Get into top 10 in all of the leaderboards at the same time.', '- Reward: 30 stars'],
+    meta: ACHIEVEMENT.GOLD_ACHIEVER,
+    description: ['Be in top 10 in all of the leaderboards at the same time.', '- Reward: 100 stars'],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Overachiever',
-    description: ['You have earned over 10 achievements.', '- Reward: 100 stars'],
-  },
-  {
-    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
-    title: 'The Unseen',
-    description: [
-      'Win level 11 without taking any damage and without using the Night Hunter augment.',
-      '- Reward: 100 stars',
-    ],
-  },
-  {
-    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
-    title: 'Phase Shift',
-    description: [
-      'Win level 14 but you are not allowed to press Left Move button during the enitre Boss fight.',
-      '- Reward: 100 stars',
-    ],
+    meta: ACHIEVEMENT.OVERACHIEVER,
+    description: ['You have earned 10 or more achievements.', '- Reward: 100 stars'],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Full of Heart',
-    description: [
-      'Win a Marathon level by dropping bellow 20hp twice while using the Heal Augment.',
-      '- Reward: 100 stars',
-    ],
+    meta: ACHIEVEMENT.FULL_OF_HEART,
+    description: ['Win any level by dropping bellow 20hp twice while using the Heal Augment.', '- Reward: 50 stars'],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Toxic Spritz',
+    meta: ACHIEVEMENT.TOXIC_SPRITZ,
     description: [
       'Heal yourself for a total 200hp using Elixir of Vigor augment in a single run.',
-      '- Reward: 100 stars',
-    ],
-  },
-  {
-    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
-    title: 'No escape',
-    description: [
-      'Survive for 40s in the Final Destination Chaos Dungeon using Guardian Angel augment.',
-      '- Reward: 100 stars',
+      '- Reward: 50 stars',
     ],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Living Nightmare',
-    description: ['Using the Fear augment scare at least 16 enemies in a single level.', '- Reward: 100 stars'],
-  },
-  {
-    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
-    title: 'Perseviarance',
-    description: ['With level ___ by using Mediation and having healed over 100hp.', '- Reward: 100 stars'],
-  },
-  {
-    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
-    title: 'Inner connection',
-    description: ['Win level 32 without taking damage and using the Symbiotic Link augment.', '- Reward: 100 stars'],
-  },
-  {
-    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
-    title: 'Mutation Junkie',
-    description: ['Win level ___ (that has radiation) using Berserk', '- Reward: 100 stars'],
-  },
-  {
-    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
-    title: 'Call of the Void',
-    description: [
-      'Win level 20 by staying as close to the center of the arena as possible at all times.',
-      '- Reward: 100 stars',
-    ],
+    meta: ACHIEVEMENT.LIVING_NIGHTMARE,
+    description: ['Scare at least 22 enemies in a single level.', '- Reward: 50 stars'],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Playing with Fire',
-    description: ['Take at least 95 damage from fire in any level and still win.', '- Reward: 100 stars'],
+    meta: ACHIEVEMENT.PLAYING_WITH_FIRE,
+    description: ['Take at least 95 damage from fire or explosions in any level and still win.', '- Reward: 50 stars'],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
-    title: 'Frostbite',
+    title: 'The Unseen',
+    meta: ACHIEVEMENT.THE_UNSEEN,
     description: [
-      'Collect every star in level 18 while having maxium Frost buildup during collection.',
-      '- Reward: 100 stars',
+      'Win level 11 without taking any damage and without using the Night Hunter augment.',
+      '- Reward: 50 stars',
     ],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Phase Shift',
+    meta: ACHIEVEMENT.PHASE_SHIFT,
+    description: [
+      'Win level 14 but you are not allowed to press Left Move button during the enitre Boss fight.',
+      '- Reward: 50 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Frostbite',
+    meta: ACHIEVEMENT.BITEFROST,
+    description: [
+      'Collect every star in level 18 while having maxium Frost buildup during collection.',
+      '- Reward: 50 stars',
+    ],
+  },
+
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Deathless',
-    description: ['Win level 19 with Harvester augment.', '- Reward: 100 stars'],
+    meta: ACHIEVEMENT.DEATHLESS,
+    description: ['Win level 19 with Harvester augment.', '- Reward: 50 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Call of the Void',
+    meta: ACHIEVEMENT.CALL_OF_THE_VOID,
+    description: [
+      'Win level 20 by staying as close to the center of the arena as possible at all times.',
+      '- Reward: 50 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Mutation Junkie',
+    meta: ACHIEVEMENT.MUTATION_JUNKIE,
+    description: ['Win level 29 using Berserk augment.', '- Reward: 50 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Perseviarance',
+    meta: ACHIEVEMENT.PERSEVIARANCE,
+    description: ['With level 31 by using Mediation augment and having healed over 100hp.', '- Reward: 50 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Inner connection',
+    meta: ACHIEVEMENT.INNER_CONNECTION,
+    description: ['Win level 32 without taking damage and using the Symbiotic Link augment.', '- Reward: 50 stars'],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Get Hacked!',
-    description: ['Get hacked in Clown Fiest Chaos Dungeon while using no augments.', '- Reward: 100 stars'],
+    meta: ACHIEVEMENT.GET_HACKED,
+    description: ['Get hacked in Clown Fiest Chaos Dungeon while using no augments.', '- Reward: 50 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'No escape',
+    meta: ACHIEVEMENT.NO_ESCAPE,
+    description: [
+      'Survive for 40s in the Final Destination Chaos Dungeon using Guardian Angel augment.',
+      '- Reward: 50 stars',
+    ],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Borrow Time',
-    description: ['Use the Stopwatch augment 4 times in a Chaos Dungeon.', '- Reward: 100 stars'],
+    meta: ACHIEVEMENT.BORROW_TIME,
+    description: ['Use the Stopwatch augment 4 times in a Chaos Dungeon.', '- Reward: 50 stars'],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Leader',
-    description: ['Reach 1st place in any of the leadersboards.', '- Reward: 200 stars'],
+    meta: ACHIEVEMENT.LEADER,
+    description: ['Reach 1st place in any of the leadersboards.', '- Reward: 100 stars'],
   },
 ];
 
 const Wiki: React.FC<unknown> = () => {
   const { navigateBack } = useNavigateBack();
+  const { search } = useLocation();
+  const { unlockedAchievements, completeLevels } = useSelector((state: RootState) => state.authSlice.user);
   const [tab, setTab] = React.useState(0);
 
-  const { search } = useLocation();
+  const achievementMap = useMemo(() => {
+    const achievementArray: ContentType[] = [];
+    let totalUnlocked: number = 0;
+    achievementList.forEach((achievement) => {
+      if (achievement.meta && unlockedAchievements.includes(achievement.meta as ACHIEVEMENT)) {
+        achievementArray.push({ ...achievement, disabled: true });
+        totalUnlocked++;
+      } else {
+        achievementArray.push(achievement);
+      }
+    });
+    return { achievementArray, totalUnlocked };
+  }, [unlockedAchievements]);
+
   const query = useMemo(() => {
     return new URLSearchParams(search);
   }, [search]);
@@ -569,8 +617,7 @@ const Wiki: React.FC<unknown> = () => {
           sx={{
             display: 'flex',
             justifyContent: 'center',
-            opacity: tab === 3 && index !== 1 ? 0.4 : 1,
-            color: tab === 3 && index === 1 ? '#ECCD51' : '#ffffffDD',
+            color: tab === 3 ? (item.disabled ? '#ECCD51' : '#ffffff40') : '#ffffffDD',
           }}
         >
           {item.Icon ? item.Icon : <DescriptionIcon style={{ width: 30, height: 30 }} />}
@@ -590,10 +637,11 @@ const Wiki: React.FC<unknown> = () => {
               key={descIndex}
               style={{
                 color: (index !== 0 && !item.title) || !!item.title ? '#00AFA3' : '#ffffffDD',
-                textDecoration: descIndex === 1 && index === 1 && tab === 3 ? 'line-through' : 'none',
+                opacity: item.disabled && tab === 3 ? 0.6 : 1,
+                textDecoration: descIndex === 1 && item.disabled && tab === 3 ? 'line-through' : 'none',
               }}
             >
-              {d}
+              {d} {item.metaExtra === 'ADD_COMPLETE' && descIndex === 0 && ` [${completeLevels.length}/36]`}
             </Typography>
           ))}
         </Box>
@@ -605,7 +653,7 @@ const Wiki: React.FC<unknown> = () => {
     if (tab === 0) return generalContent.map((item, index) => getListItem(item, index));
     else if (tab === 1) return enemiesContent.map((item, index) => getListItem(item, index));
     else if (tab === 2) return augmentsContent.map((item, index) => getListItem(item, index));
-    else if (tab === 3) return achievementList.map((item, index) => getListItem(item, index));
+    else if (tab === 3) return achievementMap.achievementArray.map((item, index) => getListItem(item, index));
   };
 
   return (
@@ -617,7 +665,10 @@ const Wiki: React.FC<unknown> = () => {
               <Tab label="General" className={styles.tabs} />
               <Tab label="Enemies" className={styles.tabs} />
               <Tab label="Augments" className={styles.tabs} />
-              <Tab label={`Achievements [0/${achievementList.length}]`} className={styles.tabs} />
+              <Tab
+                label={`Achievements [${achievementMap.totalUnlocked}/${achievementList.length}]`}
+                className={styles.tabs}
+              />
             </Tabs>
           </Box>
           <Box className={styles.mainContainer}>{getContent()}</Box>

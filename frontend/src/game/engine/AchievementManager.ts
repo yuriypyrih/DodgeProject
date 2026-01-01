@@ -1,148 +1,16 @@
-// Unique IDs for all achievements
 import Game from 'game/engine/game.ts';
-
-export enum ACHIEVEMENT {
-  BRONZE_COMPETENT = 'BRONZE_COMPETENT',
-  SILVER_TALENTED = 'SILVER_TALENTED',
-  GOLD_ACHIEVER = 'GOLD_ACHIEVER',
-  OVERACHIEVER = 'OVERACHIEVER',
-  PHASE_SHIFT = 'PHASE_SHIFT',
-  THE_UNSEEN = 'THE_UNSEEN',
-  FULL_OF_HEART = 'FULL_OF_HEART',
-  TOXIC_SPRITZ = 'TOXIC_SPRITZ',
-  NO_ESCAPE = 'NO_ESCAPE',
-  LIVING_NIGHTMARE = 'LIVING_NIGHTMARE',
-  PERSEVIARANCE = 'PERSEVIARANCE',
-  INNER_CONNECTION = 'INNER_CONNECTION',
-  MUTATION_JUNKIE = 'MUTATION_JUNKIE',
-  CALL_OF_THE_VOID = 'CALL_OF_THE_VOID',
-  PLAYING_WITH_FIRE = 'PLAYING_WITH_FIRE',
-  BITEFROST = 'BITEFROST',
-  DEATHLESS = 'DEATHLESS',
-  GET_HACKED = 'GET_HACKED',
-  BORROW_TIME = 'BORROW_TIME',
-  LEADER = 'LEADER',
-}
-export type AchievementState = {
-  name: ACHIEVEMENT;
-  unlocked: boolean;
-  reward: number;
-};
-
-export type AchievementsMap = {
-  [K in ACHIEVEMENT]: AchievementState;
-};
-
-export const ACHIEVEMENTS: AchievementsMap = {
-  [ACHIEVEMENT.BRONZE_COMPETENT]: {
-    name: ACHIEVEMENT.BRONZE_COMPETENT,
-    unlocked: false,
-    reward: 10,
-  },
-  [ACHIEVEMENT.SILVER_TALENTED]: {
-    name: ACHIEVEMENT.SILVER_TALENTED,
-    unlocked: false,
-    reward: 20,
-  },
-  [ACHIEVEMENT.GOLD_ACHIEVER]: {
-    name: ACHIEVEMENT.GOLD_ACHIEVER,
-    unlocked: false,
-    reward: 30,
-  },
-  [ACHIEVEMENT.OVERACHIEVER]: {
-    name: ACHIEVEMENT.OVERACHIEVER,
-    unlocked: false,
-    reward: 100,
-  },
-
-  [ACHIEVEMENT.THE_UNSEEN]: {
-    name: ACHIEVEMENT.THE_UNSEEN,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.PHASE_SHIFT]: {
-    name: ACHIEVEMENT.PHASE_SHIFT,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.FULL_OF_HEART]: {
-    name: ACHIEVEMENT.FULL_OF_HEART,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.TOXIC_SPRITZ]: {
-    name: ACHIEVEMENT.TOXIC_SPRITZ,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.NO_ESCAPE]: {
-    name: ACHIEVEMENT.NO_ESCAPE,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.LIVING_NIGHTMARE]: {
-    name: ACHIEVEMENT.LIVING_NIGHTMARE,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.PERSEVIARANCE]: {
-    name: ACHIEVEMENT.PERSEVIARANCE,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.INNER_CONNECTION]: {
-    name: ACHIEVEMENT.INNER_CONNECTION,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.MUTATION_JUNKIE]: {
-    name: ACHIEVEMENT.MUTATION_JUNKIE,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.CALL_OF_THE_VOID]: {
-    name: ACHIEVEMENT.CALL_OF_THE_VOID,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.PLAYING_WITH_FIRE]: {
-    name: ACHIEVEMENT.PLAYING_WITH_FIRE,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.BITEFROST]: {
-    name: ACHIEVEMENT.BITEFROST,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.DEATHLESS]: {
-    name: ACHIEVEMENT.DEATHLESS,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.GET_HACKED]: {
-    name: ACHIEVEMENT.GET_HACKED,
-    unlocked: false,
-    reward: 100,
-  },
-  [ACHIEVEMENT.BORROW_TIME]: {
-    name: ACHIEVEMENT.BORROW_TIME,
-    unlocked: false,
-    reward: 100,
-  },
-
-  [ACHIEVEMENT.LEADER]: {
-    name: ACHIEVEMENT.LEADER,
-    unlocked: false,
-    reward: 200,
-  },
-};
+import { ACHIEVEMENTS, AchievementState } from 'game/engine/achievements/achievements.ts';
+import store from 'redux/store.ts';
+import { addAchievementsToSend, addUnlockedAchievement } from 'redux/slices/gameSlice.ts';
+import { ACHIEVEMENT, AUGMENTS } from '../../lib/api/specs/api.ts';
+import { getSec } from 'utils/deltaTime.ts';
 
 type Trackables = {
   hasTakenDmg: boolean;
   phaseShiftLeftButtonPressed: boolean;
   fullOfHeartTimesDroppedBellowThreshold20: number;
   toxicSpritzTotalHeal: number;
+  hasSurvived40SecondsInChaosDungeon: boolean;
   numberOfEnemiesScared: number;
   meditationTotalHeal: number;
   callOfTheVoidWentOutside: boolean;
@@ -156,8 +24,10 @@ type TProps = {
   game: Game;
 };
 
+type TrackablesUpdater = Partial<Trackables> | ((prev: Trackables) => Partial<Trackables>);
+
 export default class AchievementManager {
-  private game: Game;
+  private readonly game: Game;
   trackables: Trackables;
 
   constructor({ game }: TProps) {
@@ -165,13 +35,15 @@ export default class AchievementManager {
     this.trackables = this.createInitialTrackables();
   }
 
-  updateTrackables(partial: Partial<Trackables>) {
+  updateTrackables(update: TrackablesUpdater) {
+    const nextPartial = typeof update === 'function' ? update(this.trackables) : update;
+
     this.trackables = {
       ...this.trackables,
-      ...partial,
+      ...nextPartial,
     };
   }
-  unlock(name: ACHIEVEMENT): boolean {
+  unlock(name: ACHIEVEMENT, evaluateFunc: () => boolean): boolean {
     const achievement = ACHIEVEMENTS[name];
     if (!achievement) return false;
 
@@ -179,19 +51,79 @@ export default class AchievementManager {
       return false;
     }
 
-    achievement.unlocked = true;
-    this.onAchievementUnlocked(achievement);
-    return true;
-  }
-  evaluate() {
-    const game = this.game;
-    // if (this.game.> 0) {
-    //   this.unlock(ACHIEVEMENT.FIRST_KILL);
-    // }
+    if (evaluateFunc()) {
+      achievement.unlocked = true;
+      this.onAchievementUnlocked(achievement);
+      return true;
+    }
 
-    // if (this.trackables.damageTaken === 0) {
-    //   this.unlock(ACHIEVEMENT.NO_HIT_LEVEL);
-    // }
+    return false;
+  }
+  evaluate(hasVictory?: boolean) {
+    const game = this.game;
+    const player = this.game.player;
+    const selectedRelic = store.getState()?.authSlice.user?.selectedRelic;
+
+    this.unlock(ACHIEVEMENT.THE_UNSEEN, () => {
+      return (
+        Boolean(hasVictory) &&
+        game.level === 11 &&
+        !this.trackables.hasTakenDmg &&
+        selectedRelic !== AUGMENTS.NIGHT_VISION
+      );
+    });
+    this.unlock(ACHIEVEMENT.PHASE_SHIFT, () => {
+      return Boolean(hasVictory) && game.level === 14 && !this.trackables.phaseShiftLeftButtonPressed;
+    });
+    this.unlock(ACHIEVEMENT.FULL_OF_HEART, () => {
+      console.log('FULL OF HEART', this.trackables.fullOfHeartTimesDroppedBellowThreshold20, selectedRelic);
+      return (
+        Boolean(hasVictory) &&
+        selectedRelic === AUGMENTS.HEAL &&
+        this.trackables.fullOfHeartTimesDroppedBellowThreshold20 >= 2
+      );
+    });
+    this.unlock(ACHIEVEMENT.TOXIC_SPRITZ, () => {
+      return this.trackables.toxicSpritzTotalHeal > 200;
+    });
+    this.unlock(ACHIEVEMENT.NO_ESCAPE, () => {
+      return getSec(this.game.spawner.chaosRoundTimer) >= 40 && this.game.level === 42;
+    });
+    this.unlock(ACHIEVEMENT.LIVING_NIGHTMARE, () => {
+      return this.trackables.numberOfEnemiesScared >= 22;
+    });
+    this.unlock(ACHIEVEMENT.PERSEVIARANCE, () => {
+      return Boolean(hasVictory) && game.level === 31 && this.trackables.meditationTotalHeal >= 100;
+    });
+    this.unlock(ACHIEVEMENT.INNER_CONNECTION, () => {
+      return (
+        Boolean(hasVictory) &&
+        game.level === 32 &&
+        !this.trackables.hasTakenDmg &&
+        selectedRelic === AUGMENTS.SYMBIOTIC_LINK
+      );
+    });
+    this.unlock(ACHIEVEMENT.MUTATION_JUNKIE, () => {
+      return Boolean(hasVictory) && game.level === 29 && selectedRelic === AUGMENTS.BERSERK;
+    });
+    this.unlock(ACHIEVEMENT.CALL_OF_THE_VOID, () => {
+      return Boolean(hasVictory) && game.level === 20 && !this.trackables.callOfTheVoidWentOutside;
+    });
+    this.unlock(ACHIEVEMENT.PLAYING_WITH_FIRE, () => {
+      return Boolean(hasVictory) && this.trackables.totalFireDmg >= 95;
+    });
+    this.unlock(ACHIEVEMENT.BITEFROST, () => {
+      return Boolean(hasVictory) && game.level === 18 && this.trackables.numberOfStarsCollectedWhileBeingFrozen >= 3;
+    });
+    this.unlock(ACHIEVEMENT.DEATHLESS, () => {
+      return Boolean(hasVictory) && game.level === 19 && selectedRelic === AUGMENTS.HARVESTER;
+    });
+    this.unlock(ACHIEVEMENT.GET_HACKED, () => {
+      return this.trackables.hasBeenHacked && player.isChaosActive && selectedRelic === AUGMENTS.HACKED;
+    });
+    this.unlock(ACHIEVEMENT.BORROW_TIME, () => {
+      return this.trackables.stopwatchUsed >= 4 && player.isChaosActive;
+    });
   }
 
   reset() {
@@ -209,12 +141,14 @@ export default class AchievementManager {
       callOfTheVoidWentOutside: false,
       totalFireDmg: 0,
       numberOfStarsCollectedWhileBeingFrozen: 0,
+      hasSurvived40SecondsInChaosDungeon: false,
       hasBeenHacked: false,
       stopwatchUsed: 0,
     };
   }
 
   private onAchievementUnlocked(achievement: AchievementState) {
-    console.log(`Achievement unlocked: ${achievement.name} (+${achievement.reward})`);
+    console.log(`❤️ Achievement unlocked: ${achievement.name} (+${achievement.reward})`);
+    store.dispatch(addAchievementsToSend([achievement.name]));
   }
 }

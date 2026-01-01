@@ -157,10 +157,12 @@ export default class Game {
 
   dispatchVictory(_stars: number) {
     this.audioHandler.victory.play();
+    this.player.achievementManager.evaluate(true);
     this.setGameState(GAME_STATE.PAGE_VICTORY);
   }
 
   dispatchDefeat(_stars: number) {
+    this.player.achievementManager.evaluate();
     this.setGameState(GAME_STATE.PAGE_DEFEAT);
   }
 

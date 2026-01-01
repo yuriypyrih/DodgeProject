@@ -4,6 +4,7 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import { AUGMENTS } from '../data/AUGMENTS';
 import { LEVELS } from '../data/LEVELS';
+import { TITLES } from '../data/TITLES';
 
 export interface IUser extends Document {
   name: string;
@@ -19,6 +20,9 @@ export interface IUser extends Document {
   unlockedLevels: string[];
   completeLevels: string[];
   unlockedRelics: string[];
+  unlockedTitles: string[];
+  unlockedAchievements: string[];
+  selectedTitle: string;
   selectedRelic: string;
   feedbackSentAt: Date | null;
   correctPassword(
@@ -85,6 +89,21 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     unlockedRelics: {
       type: [String],
       default: [AUGMENTS.HEAL, AUGMENTS.HACKED],
+      select: true
+    },
+    unlockedAchievements: {
+      type: [String],
+      default: [],
+      select: true
+    },
+    unlockedTitles: {
+      type: [String],
+      default: [TITLES.DEFAULT],
+      select: true
+    },
+    selectedTitle: {
+      type: String,
+      default: TITLES.DEFAULT,
       select: true
     },
     selectedRelic: {

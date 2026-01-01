@@ -133,6 +133,7 @@ export default class RelicManager {
     const player = this.game.player;
     const healthManager = player.healthManager;
     const afflictionManager = player.afflictionManager;
+    const achievementManager = player.achievementManager;
     const now = this.game.now;
 
     console.log('useActiveRelic ,', this.game.birthday);
@@ -154,6 +155,9 @@ export default class RelicManager {
         const missingHp = calculateMissingHp(healthManager.health, 5);
         const totalHealing = afflictionManager.poisonConsumed + 5 + missingHp;
         healthManager.health += totalHealing;
+        achievementManager.updateTrackables((prev) => ({
+          toxicSpritzTotalHeal: prev.toxicSpritzTotalHeal + totalHealing,
+        }));
         afflictionManager.removePoison();
         afflictionManager.radioBuildup = 0;
         afflictionManager.frostIntensity = -60;
@@ -196,6 +200,7 @@ export default class RelicManager {
         }
       }
       if (this.relic.id === AUGMENTS.STOPWATCH) {
+        this.game.player.achievementManager.updateTrackables((prev) => ({ stopwatchUsed: prev.stopwatchUsed + 1 }));
         this.stopwatchActivationTime = Date.now();
         this.game.player.afflictionManager.isDeathmarked = false;
         store.dispatch(playAnimation(VFX.PULSE_LIGHT_BLUE));
@@ -239,6 +244,9 @@ export default class RelicManager {
     this.game.darkness = 0;
     this.game.gameObjects.forEach((object: GameObject) => {
       if (player.fearCollision(object.getBounds())) {
+        player.achievementManager.updateTrackables((prev) => ({
+          numberOfEnemiesScared: prev.numberOfEnemiesScared + 1,
+        }));
         object.fear(player.gameObject.position.x + 12, player.gameObject.position.y + 12);
       }
     });
@@ -401,7 +409,11 @@ export default class RelicManager {
       this.isMedidating = isMeditating;
 
       if (isMeditating && getSec(this.meditationIntervalTime, 2) > REGEN_INTERVAL_TOTAL) {
-        healthManager.health += HEAL_PER_SEC + (this.damagedNeedHealing ? 6 : 0);
+        const healAmount = HEAL_PER_SEC + (this.damagedNeedHealing ? 6 : 0);
+        this.game.player.achievementManager.updateTrackables((prev) => ({
+          meditationTotalHeal: prev.meditationTotalHeal + healAmount,
+        }));
+        healthManager.health += healAmount;
         this.damagedNeedHealing = false;
         this.meditationIntervalTime = 0;
         this.updateRelic();

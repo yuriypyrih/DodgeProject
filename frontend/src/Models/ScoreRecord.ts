@@ -4,6 +4,7 @@ export type ScoreRecord = {
   _id: string;
   userId: string;
   userName: string;
+  userTitle: string;
   augment: AUGMENTS;
   level: string;
   score: number;

@@ -10,6 +10,8 @@ router.post('/unlockLevel', gameController.unlockLevel);
 router.post('/beatLevel', gameController.beatLevel);
 router.post('/unlockAugment', gameController.unlockAugment);
 router.post('/selectAugment', gameController.selectAugment);
+router.post('/unlockTitle', gameController.unlockTitle);
+router.post('/selectTitle', gameController.selectTitle);
 router.get('/leaderboards', gameController.getLeaderBoards);
 
 export default router;

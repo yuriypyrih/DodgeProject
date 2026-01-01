@@ -3,7 +3,8 @@ import Game from '../../game/engine/game';
 import { GAME_STATE } from 'game/enum/game_state';
 import { Level } from 'Models/level';
 import { LocalLevels } from 'Models/data/LocalLevels';
-import { AUGMENTS } from '../../lib/api/specs/api.ts';
+import { ACHIEVEMENT, AUGMENTS } from '../../lib/api/specs/api.ts';
+import { AchievementState } from 'game/engine/achievements/achievements.ts';
 
 type gameSliceType = {
   game: Game | null;
@@ -14,6 +15,8 @@ type gameSliceType = {
     relic_available_uses: number;
     symbiosisName?: string;
   } | null;
+  showUnlockedAchievements: AchievementState[];
+  achievementsToSend: ACHIEVEMENT[];
   isHacked: boolean;
   hp: number;
   gameState: GAME_STATE;
@@ -32,6 +35,8 @@ const initialState: gameSliceType = {
   level: LocalLevels[0],
   levels: LocalLevels,
   selectedRelic: null,
+  showUnlockedAchievements: [],
+  achievementsToSend: [],
   isHacked: false,
   hp: 0,
   gameState: GAME_STATE.PLAYING,
@@ -70,6 +75,18 @@ const gameSlice = createSlice({
     },
     setHP: (state, action) => {
       state.hp = action.payload;
+    },
+    addUnlockedAchievement: (state, action) => {
+      state.showUnlockedAchievements = [...state.showUnlockedAchievements, ...action.payload];
+    },
+    addAchievementsToSend: (state, action) => {
+      state.achievementsToSend = [...state.achievementsToSend, ...action.payload];
+    },
+    clearAchievementsToSend: (state) => {
+      state.achievementsToSend = [];
+    },
+    clearUnlockedAchievements: (state) => {
+      state.showUnlockedAchievements = [];
     },
     setIsHacked: (state, action) => {
       state.isHacked = action.payload;
@@ -116,6 +133,10 @@ export const {
   setGameState,
   setProgress,
   collectStar,
+  addUnlockedAchievement,
+  clearUnlockedAchievements,
+  addAchievementsToSend,
+  clearAchievementsToSend,
   reset,
   setCurrentTimer,
   setChaosTimer,

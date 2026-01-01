@@ -1,7 +1,6 @@
-// FireName.tsx
 import React from 'react';
 import { Box, SxProps, Theme } from '@mui/material';
-import { TEXT_STYLE } from 'Models/data/LocalCosmetics';
+import { TITLES } from '../../lib/api/specs/api.ts';
 
 const fireStyle = {
   position: 'relative',
@@ -335,33 +334,33 @@ const electricStyle = {
   },
 } as const;
 
-type Props = Readonly<{ text: string; textStyle?: TEXT_STYLE; sx?: SxProps<Theme> }>;
+type Props = Readonly<{ text: string; textStyle?: TITLES | null; sx?: SxProps<Theme> }>;
 
-const TitleCosmetic: React.FC<Props> = ({ text, textStyle = TEXT_STYLE.DEFAULT, sx }) => {
+const TitleCosmetic: React.FC<Props> = ({ text, textStyle = TITLES.DEFAULT, sx }) => {
   const getStyle = () => {
-    if (textStyle === TEXT_STYLE.DEFAULT) {
+    if (textStyle === TITLES.DEFAULT) {
       return {};
-    } else if (textStyle === TEXT_STYLE.FIRE) {
+    } else if (textStyle === TITLES.FIRE) {
       return fireStyle;
-    } else if (textStyle === TEXT_STYLE.ICE) {
+    } else if (textStyle === TITLES.ICE) {
       return iceStyle;
-    } else if (textStyle === TEXT_STYLE.SHADOW) {
+    } else if (textStyle === TITLES.SHADOW) {
       return shadowStyle;
-    } else if (textStyle === TEXT_STYLE.RAINBOW) {
+    } else if (textStyle === TITLES.RAINBOW) {
       return rainbowStyle;
-    } else if (textStyle === TEXT_STYLE.VOID) {
+    } else if (textStyle === TITLES.VOID) {
       return voidStyle;
-    } else if (textStyle === TEXT_STYLE.HACKER) {
+    } else if (textStyle === TITLES.HACKER) {
       return hackerStyle;
-    } else if (textStyle === TEXT_STYLE.BRONZE) {
+    } else if (textStyle === TITLES.BRONZE) {
       return bronzeStyle;
-    } else if (textStyle === TEXT_STYLE.SILVER) {
+    } else if (textStyle === TITLES.SILVER) {
       return silverStyle;
-    } else if (textStyle === TEXT_STYLE.GOLD) {
+    } else if (textStyle === TITLES.GOLD) {
       return goldStyle;
-    } else if (textStyle === TEXT_STYLE.PORTAL) {
+    } else if (textStyle === TITLES.PORTAL) {
       return portalStyle;
-    } else if (textStyle === TEXT_STYLE.ELECTRIC) {
+    } else if (textStyle === TITLES.ELECTRIC) {
       return electricStyle;
     }
     return {};

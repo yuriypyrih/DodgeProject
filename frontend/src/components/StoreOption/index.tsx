@@ -1,40 +1,63 @@
 import { Box, Typography } from '@mui/material';
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../redux/store.ts';
+import React, { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store.ts';
 import styles from './styles.module.scss';
 import StarCost from '../StarCost';
 import clsx from 'clsx';
-import TitleCosmetic from 'components/TitleCosmetic';
+import { ACHIEVEMENT } from '../../lib/api/specs/api.ts';
 
 type TProps = {
   title?: string;
   background?: string;
+  id: string;
   content?: any;
   stars?: number;
   isBought?: boolean;
   requirement?: string;
+  achievements?: ACHIEVEMENT[];
   onBuy?: () => void;
 };
 
-const StoreOption: React.FC<TProps> = ({ title = 'Tittle', content, stars = 0, isBought, requirement, background }) => {
-  const dispatch: AppDispatch = useDispatch();
+const StoreOption: React.FC<TProps> = ({
+  title = 'Tittle',
+  content,
+  id,
+  stars = 0,
+  requirement,
+  achievements,
+  background,
+  onBuy,
+}) => {
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  const { user } = useSelector((state: RootState) => state.authSlice);
+  const { unlockedAchievements } = useSelector((state: RootState) => state.authSlice.user);
 
-  // const handleBuy = () => {
-  //   if (name.length) {
-  //     dispatch(changeName({ name, callback: () => onClose() }));
-  //   }
-  // };
+  const isLocked = useMemo(() => {
+    if (!achievements) return false;
+    if (achievements?.length && unlockedAchievements?.length) {
+      const hasAllAchievements = achievements.every((a) => unlockedAchievements.includes(a));
+      if (hasAllAchievements) {
+        return false;
+      }
+    }
+    return true;
+  }, [achievements, unlockedAchievements]);
+
+  const handleBuy = () => {
+    if (onBuy && !isLocked) {
+      onBuy();
+    }
+  };
 
   return (
     <Box
-      className={clsx(styles.root, isBought && styles.disabled, !isBought && isHovered && styles.hovered)}
+      key={id}
+      className={clsx(styles.root, isLocked && styles.disabled, !isLocked && isHovered && styles.hovered)}
       onMouseEnter={() => {
-        if (isBought) return;
+        if (isLocked) return;
         setIsHovered(true);
       }}
+      onClick={handleBuy}
       onMouseLeave={() => setIsHovered(false)}
     >
       {background && <div className={styles.background} />}
@@ -46,12 +69,15 @@ const StoreOption: React.FC<TProps> = ({ title = 'Tittle', content, stars = 0, i
             </Typography>
           </Box>
           <Box style={{ minHeight: '26px', display: 'flex', justifyContent: 'center' }}>{content}</Box>
-          <Box style={{ minHeight: '26px', display: 'flex', fontSize: 14, opacity: 0.4, justifyContent: 'center' }}>
-            {requirement}
+          <Box
+            className={styles.titleCosmetic}
+            style={{ minHeight: '26px', display: 'flex', fontSize: 14, opacity: 0.4, justifyContent: 'center' }}
+          >
+            {isLocked ? requirement : 'Ready for you'}
           </Box>
         </Box>
         <Box sx={{ display: 'flex', flexDirection: 'column-reverse', alignItems: 'flex-end' }}>
-          <StarCost cost={stars} position={'absolute'} hovered={isHovered} />
+          <StarCost cost={stars} position={'absolute'} hovered={isHovered} disabled={isLocked} />
         </Box>
       </Box>
     </Box>

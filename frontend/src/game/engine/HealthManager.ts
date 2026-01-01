@@ -47,13 +47,15 @@ export default class HealthManager {
       disableChaosDamage?: boolean;
     },
   ) {
+    const healthPreDmg = this.health;
     const immunityShit = options && options.ImmunityShiftInMS ? options.ImmunityShiftInMS : 0;
     const CHAOS_EXTRA_DMG = options?.disableChaosDamage ? 0 : 5;
     const calculatedDmg = this.game.player.isChaosActive ? damage + CHAOS_EXTRA_DMG : damage;
 
-    console.log('TAKE DAMAGE', damage, options?.lastWhoDamagedMe);
     if (options && options.isSecondaryDamage) {
       if (!this.isImmuneSecondary && !this.game.player.relicManager.isImmune) {
+        console.log('TAKE DAMAGE', damage, options?.lastWhoDamagedMe);
+        this.game.player.achievementManager.updateTrackables({ hasTakenDmg: true });
         this.lastTimeDamagedSecondary = this.game.now + immunityShit;
         if (options?.lastWhoDamagedMe) this.lastWhoDamagedMe = options.lastWhoDamagedMe;
         if (options?.isTrueDmg) {
@@ -72,6 +74,8 @@ export default class HealthManager {
       }
     } else {
       if (!this.isImmune && !this.game.player.relicManager.isImmune) {
+        console.log('TAKE DAMAGE', damage, options?.lastWhoDamagedMe);
+        this.game.player.achievementManager.updateTrackables({ hasTakenDmg: true });
         this.lastTimeDamaged = this.game.now + immunityShit;
         if (options?.lastWhoDamagedMe) this.lastWhoDamagedMe = options.lastWhoDamagedMe;
         if (options?.isTrueDmg) {
@@ -98,6 +102,18 @@ export default class HealthManager {
       this.game.keyLastTimePressed = this.game.now;
       this.game.player.relicManager.available_uses = this.game.player.relicManager.relic?.max_uses;
       this.game.player.relicManager.updateRelic();
+    }
+    if (
+      this.game.player.relicManager.relic?.id === AUGMENTS.HEAL &&
+      healthPreDmg - calculatedDmg <= 20 &&
+      healthPreDmg > 20 &&
+      !this.isImmune &&
+      !this.isImmuneSecondary &&
+      !this.game.player.relicManager.isImmune
+    ) {
+      this.game.player.achievementManager.updateTrackables((prev) => ({
+        fullOfHeartTimesDroppedBellowThreshold20: prev.fullOfHeartTimesDroppedBellowThreshold20 + 1,
+      }));
     }
   }
 

@@ -9,33 +9,73 @@
  * ---------------------------------------------------------------
  */
 
-/** Enum representing various AUGMENTS */
-export enum AUGMENTS {
-  HEAL = 'HEAL',
-  IMMUNITY = 'IMMUNITY',
-  REGENERATION = 'REGENERATION',
-  POISON_CURE = 'POISON_CURE',
-  FEAR = 'FEAR',
-  NIGHT_VISION = 'NIGHT_VISION',
-  PORTAL = 'PORTAL',
-  BERSERK = 'BERSERK',
-  GUARDIAN_ANGEL = 'GUARDIAN_ANGEL',
-  STABILIZER = 'STABILIZER',
-  RECALL_BEACON = 'RECALL_BEACON',
-  DEMON_SOUL = 'DEMON_SOUL',
-  HARVESTER = 'HARVESTER',
-  STOPWATCH = 'STOPWATCH',
-  SYMBIOTIC_LINK = 'SYMBIOTIC_LINK',
-  MEDITATE = 'MEDITATE',
-  HACKED = 'HACKED',
+/** Enum representing player achievements */
+export enum ACHIEVEMENT {
+  BRONZE_COMPETENT = "BRONZE_COMPETENT",
+  SILVER_TALENTED = "SILVER_TALENTED",
+  GOLD_ACHIEVER = "GOLD_ACHIEVER",
+  OVERACHIEVER = "OVERACHIEVER",
+  PHASE_SHIFT = "PHASE_SHIFT",
+  THE_UNSEEN = "THE_UNSEEN",
+  FULL_OF_HEART = "FULL_OF_HEART",
+  TOXIC_SPRITZ = "TOXIC_SPRITZ",
+  NO_ESCAPE = "NO_ESCAPE",
+  LIVING_NIGHTMARE = "LIVING_NIGHTMARE",
+  PERSEVIARANCE = "PERSEVIARANCE",
+  INNER_CONNECTION = "INNER_CONNECTION",
+  MUTATION_JUNKIE = "MUTATION_JUNKIE",
+  CALL_OF_THE_VOID = "CALL_OF_THE_VOID",
+  PLAYING_WITH_FIRE = "PLAYING_WITH_FIRE",
+  BITEFROST = "BITEFROST",
+  DEATHLESS = "DEATHLESS",
+  GET_HACKED = "GET_HACKED",
+  BORROW_TIME = "BORROW_TIME",
+  LEADER = "LEADER",
 }
 
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from 'axios';
-import axios from 'axios';
+/** Enum representing various AUGMENTS */
+export enum AUGMENTS {
+  HEAL = "HEAL",
+  IMMUNITY = "IMMUNITY",
+  REGENERATION = "REGENERATION",
+  POISON_CURE = "POISON_CURE",
+  FEAR = "FEAR",
+  NIGHT_VISION = "NIGHT_VISION",
+  PORTAL = "PORTAL",
+  BERSERK = "BERSERK",
+  GUARDIAN_ANGEL = "GUARDIAN_ANGEL",
+  STABILIZER = "STABILIZER",
+  RECALL_BEACON = "RECALL_BEACON",
+  DEMON_SOUL = "DEMON_SOUL",
+  HARVESTER = "HARVESTER",
+  STOPWATCH = "STOPWATCH",
+  SYMBIOTIC_LINK = "SYMBIOTIC_LINK",
+  MEDITATE = "MEDITATE",
+  HACKED = "HACKED",
+}
+
+/** Enum representing available player titles */
+export enum TITLES {
+  DEFAULT = "DEFAULT",
+  FIRE = "FIRE",
+  ICE = "ICE",
+  SHADOW = "SHADOW",
+  RAINBOW = "RAINBOW",
+  BRONZE = "BRONZE",
+  SILVER = "SILVER",
+  GOLD = "GOLD",
+  PORTAL = "PORTAL",
+  VOID = "VOID",
+  HACKER = "HACKER",
+  ELECTRIC = "ELECTRIC",
+}
+
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
+import axios from "axios";
 
 export type QueryParamsType = Record<string | number, any>;
 
-export interface FullRequestParams extends Omit<AxiosRequestConfig, 'data' | 'params' | 'url' | 'responseType'> {
+export interface FullRequestParams extends Omit<AxiosRequestConfig, "data" | "params" | "url" | "responseType"> {
   /** set parameter to `true` for call `securityWorker` for this request */
   secure?: boolean;
   /** request path */
@@ -50,9 +90,9 @@ export interface FullRequestParams extends Omit<AxiosRequestConfig, 'data' | 'pa
   body?: unknown;
 }
 
-export type RequestParams = Omit<FullRequestParams, 'body' | 'method' | 'query' | 'path'>;
+export type RequestParams = Omit<FullRequestParams, "body" | "method" | "query" | "path">;
 
-export interface ApiConfig<SecurityDataType = unknown> extends Omit<AxiosRequestConfig, 'data' | 'cancelToken'> {
+export interface ApiConfig<SecurityDataType = unknown> extends Omit<AxiosRequestConfig, "data" | "cancelToken"> {
   securityWorker?: (
     securityData: SecurityDataType | null,
   ) => Promise<AxiosRequestConfig | void> | AxiosRequestConfig | void;
@@ -61,21 +101,21 @@ export interface ApiConfig<SecurityDataType = unknown> extends Omit<AxiosRequest
 }
 
 export enum ContentType {
-  Json = 'application/json',
-  FormData = 'multipart/form-data',
-  UrlEncoded = 'application/x-www-form-urlencoded',
-  Text = 'text/plain',
+  Json = "application/json",
+  FormData = "multipart/form-data",
+  UrlEncoded = "application/x-www-form-urlencoded",
+  Text = "text/plain",
 }
 
 export class HttpClient<SecurityDataType = unknown> {
   public instance: AxiosInstance;
   private securityData: SecurityDataType | null = null;
-  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker'];
+  private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private secure?: boolean;
   private format?: ResponseType;
 
   constructor({ securityWorker, secure, format, ...axiosConfig }: ApiConfig<SecurityDataType> = {}) {
-    this.instance = axios.create({ ...axiosConfig, baseURL: axiosConfig.baseURL || 'http://localhost:5000' });
+    this.instance = axios.create({ ...axiosConfig, baseURL: axiosConfig.baseURL || "http://localhost:5001" });
     this.secure = secure;
     this.format = format;
     this.securityWorker = securityWorker;
@@ -101,7 +141,7 @@ export class HttpClient<SecurityDataType = unknown> {
   }
 
   protected stringifyFormItem(formItem: unknown) {
-    if (typeof formItem === 'object' && formItem !== null) {
+    if (typeof formItem === "object" && formItem !== null) {
       return JSON.stringify(formItem);
     } else {
       return `${formItem}`;
@@ -132,18 +172,18 @@ export class HttpClient<SecurityDataType = unknown> {
     ...params
   }: FullRequestParams): Promise<AxiosResponse<T>> => {
     const secureParams =
-      ((typeof secure === 'boolean' ? secure : this.secure) &&
+      ((typeof secure === "boolean" ? secure : this.secure) &&
         this.securityWorker &&
         (await this.securityWorker(this.securityData))) ||
       {};
     const requestParams = this.mergeRequestParams(params, secureParams);
     const responseFormat = format || this.format || undefined;
 
-    if (type === ContentType.FormData && body && body !== null && typeof body === 'object') {
+    if (type === ContentType.FormData && body && body !== null && typeof body === "object") {
       body = this.createFormData(body as Record<string, unknown>);
     }
 
-    if (type === ContentType.Text && body && body !== null && typeof body !== 'string') {
+    if (type === ContentType.Text && body && body !== null && typeof body !== "string") {
       body = JSON.stringify(body);
     }
 
@@ -151,7 +191,7 @@ export class HttpClient<SecurityDataType = unknown> {
       ...requestParams,
       headers: {
         ...(requestParams.headers || {}),
-        ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
+        ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
       },
       params: query,
       responseType: responseFormat,
@@ -164,7 +204,7 @@ export class HttpClient<SecurityDataType = unknown> {
 /**
  * @title Your API Title
  * @version 1.0.0
- * @baseUrl http://localhost:5000
+ * @baseUrl http://localhost:5001
  *
  * Your API description
  */

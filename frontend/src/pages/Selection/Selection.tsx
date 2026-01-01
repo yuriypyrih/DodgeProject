@@ -3,7 +3,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import CubePlayButton from '../../components/CubePlayButton';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ImportContactsIcon from '@mui/icons-material/ImportContacts';
 import { AppDispatch, RootState } from 'redux/store.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import DefaultIcon from '@mui/icons-material/Description';
@@ -20,6 +19,7 @@ import LeaderboardButton from '../../components/LeaderboardButton';
 import { API_LEVEL } from 'Models/enum/API_LEVEL.ts';
 import CustomButton from '../../components/CustomButton';
 import WikiButton from 'components/WikiButton';
+import ProfileButton from 'components/ProfileButton';
 
 const Selection: React.FC<unknown> = () => {
   const NORMAL_PAGE_SIZE = 12;
@@ -106,9 +106,9 @@ const Selection: React.FC<unknown> = () => {
     <Box className={styles.root}>
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
         <Box sx={{ position: 'absolute', display: 'flex', justifyContent: 'center', width: '100%', left: 0 }}>
-          <Button className={styles.journalBtn}>
-            <Typography variant={'h5'}>Level Selection</Typography>
-          </Button>
+          <Typography variant={'h5'} className={styles.journalBtn}>
+            Level Selection
+          </Typography>
         </Box>
         <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
           <Box>

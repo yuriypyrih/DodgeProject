@@ -13,6 +13,7 @@ import RelicManager from './RelicManager.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
 import { XY } from 'game/types/XY.ts';
 import { isChaosDungeon } from 'utils/isChaosDungeon.ts';
+import AchievementManager from 'game/engine/AchievementManager.ts';
 
 type PlayerProps = {
   game: Game;
@@ -23,6 +24,7 @@ export default class Player extends GameObject {
   healthManager: HealthManager;
   afflictionManager: AfflictionManager;
   relicManager: RelicManager;
+  achievementManager: AchievementManager;
   personalParticles: Trail[];
   stars: number;
   milestone: boolean;
@@ -47,6 +49,7 @@ export default class Player extends GameObject {
     this.healthManager = new HealthManager({ game });
     this.afflictionManager = new AfflictionManager({ game });
     this.relicManager = new RelicManager({ game });
+    this.achievementManager = new AchievementManager({ game });
     this.personalParticles = [];
     this.stars = 0;
     this.milestone = false;
@@ -72,6 +75,9 @@ export default class Player extends GameObject {
       this.gameObject.velX = -this.maxSpeed;
     } else {
       this.gameObject.velX = this.maxSpeed;
+    }
+    if (this.game.level === 14 && this.game.spawner.executionSequence === 4) {
+      this.achievementManager.updateTrackables({ phaseShiftLeftButtonPressed: true });
     }
   }
 
@@ -118,6 +124,7 @@ export default class Player extends GameObject {
     this.healthManager.reset();
     this.relicManager.reset();
     this.afflictionManager.reset();
+    this.achievementManager.reset();
     this.personalParticles = [];
     this.game.keyLastTimePressed = this.game.now;
   }
@@ -227,6 +234,11 @@ export default class Player extends GameObject {
     this.game.removeGameObject(starObject);
     this.milestone = !isChaosDungeon(this.game.level);
     this.healthManager.lastTimeDamaged = this.game.now;
+    if (this.game.level === 18 && this.afflictionManager.frostIntensity >= 30) {
+      this.achievementManager.updateTrackables((prev) => ({
+        numberOfStarsCollectedWhileBeingFrozen: prev.numberOfStarsCollectedWhileBeingFrozen + 1,
+      }));
+    }
   }
 
   draw(context: CanvasRenderingContext2D) {
@@ -343,24 +355,26 @@ export default class Player extends GameObject {
         }
 
         if (object.gameObject.id === ENTITY_ID.EXPLOSION) {
-          this.healthManager.takeDamage(
-            this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? (this.isChaosActive ? 8 : 12) : 45,
-            {
-              isTrueDmg: true,
-              lastWhoDamagedMe: 'Explosion',
+          const explosionDmg = this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? (this.isChaosActive ? 8 : 12) : 45;
+          this.healthManager.takeDamage(explosionDmg, {
+            isTrueDmg: true,
+            lastWhoDamagedMe: 'Explosion',
+            callback: () => {
+              this.achievementManager.updateTrackables((prev) => ({ totalFireDmg: prev.totalFireDmg + explosionDmg }));
             },
-          );
+          });
         }
         if (object.gameObject.id === ENTITY_ID.INFERNO_WALL) {
-          this.healthManager.takeDamage(
-            this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? (this.isChaosActive ? -1 : 2.5) : 10,
-            {
-              isTrueDmg: true,
-              lastWhoDamagedMe: 'Firewall',
-              ImmunityShiftInMS: -500,
-              isSecondaryDamage: true,
+          const fireDmg = this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? (this.isChaosActive ? -1 : 2.5) : 10;
+          this.healthManager.takeDamage(fireDmg, {
+            isTrueDmg: true,
+            lastWhoDamagedMe: 'Firewall',
+            ImmunityShiftInMS: -500,
+            isSecondaryDamage: true,
+            callback: () => {
+              this.achievementManager.updateTrackables((prev) => ({ totalFireDmg: prev.totalFireDmg + fireDmg }));
             },
-          );
+          });
         }
         if (object.gameObject.id === ENTITY_ID.FROSTY) {
           this.getHitByBodyAura(object, 25, 'Frosty Enemy', () => {
@@ -554,6 +568,13 @@ export default class Player extends GameObject {
     if (this.gameObject.position.y + this.gameObject.height > gameHeight) {
       this.gameObject.position.y = gameHeight - this.gameObject.height;
       this.afflictionManager.isTricked = false;
+    }
+
+    // Check if the player is outside the center for CALL OF THE VOID achievement
+    if (this.game.level == 20) {
+      if (this.gameObject.position.x > (gameWidth * 3) / 4 || this.gameObject.position.x < gameWidth / 4) {
+        this.achievementManager.updateTrackables({ callOfTheVoidWentOutside: true });
+      }
     }
   }
 
