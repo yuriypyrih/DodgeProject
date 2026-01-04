@@ -4,8 +4,9 @@
   "description": "Backend for DodgerReactApp",
   "main": "dist/index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
     "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
     "migration": "ts-node src/scripts/migration.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
