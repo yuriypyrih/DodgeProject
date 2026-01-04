@@ -1,31 +1,45 @@
-// Database connection URI
+// Database connection
 import connectDB from '../database';
-import { AUGMENTS } from '../data/AUGMENTS';
 import { User } from '../models/userModel';
 
-// Migration function
 const migrationScript = async () => {
   try {
     // Connect to the database
     await connectDB();
     console.log('Connected to the database');
 
-    // Actual Migration
-    // await User.updateMany(
-    //   { unlockedRelics: { $ne: AUGMENTS.HACKED } },
-    //   { $addToSet: { unlockedRelics: AUGMENTS.HACKED } },
-    //   { runValidators: false } // Disable validators for this operation
-    // );
-
-    await User.updateMany(
-      { completeLevels: { $exists: false } },
-      { $set: { completeLevels: [] } },
-      { runValidators: false } // Disable validators for this operation
+    // Migration: add title & achievement fields if missing
+    const result = await User.updateMany(
+      {
+        $or: [
+          { unlockedTitles: { $exists: false } },
+          { unlockedAchievements: { $exists: false } },
+          { harvestedLevels: { $exists: false } },
+          { selectedTitle: { $exists: false } },
+          { paidTransactions: { $exists: false } }
+        ]
+      },
+      {
+        $set: {
+          unlockedTitles: ['DEFAULT'],
+          unlockedAchievements: [],
+          harvestedLevels: [],
+          selectedTitle: 'DEFAULT',
+          paidTransactions: []
+        }
+      },
+      {
+        runValidators: false // migrations should bypass validators
+      }
     );
 
     console.log('Migration Script Completed');
+    console.log(`Matched: ${result.matchedCount}`);
+    console.log(`Modified: ${result.modifiedCount}`);
   } catch (error) {
     console.error('Migration Script Error:', error);
+  } finally {
+    process.exit(0);
   }
 };
 

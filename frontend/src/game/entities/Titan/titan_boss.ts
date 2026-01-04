@@ -167,7 +167,7 @@ export default class TitanBoss extends GameObject {
     this.game.gameObjects.forEach((object: GameObject) => {
       if (this.collision(object.getBounds())) {
         if (object.gameObject.id === ENTITY_ID.BULLET) {
-          this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
+          this.game.removeGameObject(object);
           if (this.gameObject.width < 400) {
             this.gameObject.width += 1;
             this.gameObject.height += 1;

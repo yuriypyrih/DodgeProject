@@ -13,6 +13,8 @@ export enum AUGMENTS {
   DEMON_SOUL = 'DEMON_SOUL',
   HARVESTER = 'HARVESTER',
   STOPWATCH = 'STOPWATCH',
+  SYMBIOTIC_LINK = 'SYMBIOTIC_LINK',
+  MEDITATE = 'MEDITATE',
   HACKED = 'HACKED'
 }
 
@@ -37,6 +39,8 @@ export enum AUGMENTS {
  *         - DEMON_SOUL
  *         - HARVESTER
  *         - STOPWATCH
+ *         - SYMBIOTIC_LINK
+ *         - MEDITATE
  *         - HACKED
  *       description: Enum representing various AUGMENTS
  */

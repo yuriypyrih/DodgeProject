@@ -3,7 +3,7 @@ import { LEVEL_STATUS } from '../Models/enum/LEVEL_STATUS';
 import { setLevels, setSelectedRelic } from '../redux/slices/gameSlice';
 import { setUser } from '../redux/slices/authSlice';
 import { dispatch } from '../main.tsx';
-import { relics } from '../game/engine/relics/relics_collection.ts';
+import { relics } from '../game/engine/relics/relics_collection.tsx';
 
 export const utilSetUser = (user: any) => {
   dispatch(setUser({ ...user }));

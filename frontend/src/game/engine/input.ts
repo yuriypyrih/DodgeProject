@@ -1,8 +1,8 @@
+// inputHandler.ts
 import Game from './game';
+import MobileControls from './mobileControls';
 
-type InputHandlerProps = {
-  game: Game;
-};
+type InputHandlerProps = { game: Game };
 
 export enum KEY_BINDINGS {
   ARROWS = 'ARROWS',
@@ -12,70 +12,108 @@ export enum KEY_BINDINGS {
 const arrowsBindings = ['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'KeyQ'];
 const awsdBindings = ['KeyA', 'KeyW', 'KeyD', 'KeyS', 'KeyL'];
 
-export const isKeyBindingsArrows = () => {
-  return localStorage.getItem('keyBindings') === KEY_BINDINGS.ARROWS;
-};
+export const isKeyBindingsArrows = () => localStorage.getItem('keyBindings') === KEY_BINDINGS.ARROWS;
 
-const keyDownEvents = (event: any, game: Game) => {
+const keyDownEvents = (event: KeyboardEvent, game: Game) => {
   const actualBinding = isKeyBindingsArrows() ? arrowsBindings : awsdBindings;
 
   switch (event.code) {
     case actualBinding[0]:
+      game.keyPressed();
       game.player.moveLeft();
       break;
     case actualBinding[1]:
+      game.keyPressed();
       game.player.moveUp();
       break;
     case actualBinding[2]:
+      game.keyPressed();
       game.player.moveRight();
       break;
     case actualBinding[3]:
+      game.keyPressed();
       game.player.moveDown();
       break;
     case actualBinding[4]:
       game.player.relicManager.useActiveRelic();
       break;
     case 'Space':
-      game.togglePause();
-      break;
     case 'Escape':
       game.togglePause();
       break;
   }
 };
 
-const keyUpEvents = (event: any, game: Game) => {
+const keyUpEvents = (event: KeyboardEvent, game: Game) => {
   const actualBinding = isKeyBindingsArrows() ? arrowsBindings : awsdBindings;
+  const player = game.player;
 
   switch (event.code) {
     case actualBinding[0]:
-      if (game.player.gameObject.velX < 0) game.player.stopX();
+      game.keyPressed();
+      if (
+        (player.gameObject.velX < 0 && !player.afflictionManager.isTricked) ||
+        (player.gameObject.velX > 0 && player.afflictionManager.isTricked)
+      )
+        player.stopX();
       break;
     case actualBinding[1]:
-      if (game.player.gameObject.velY < 0) game.player.stopY();
+      game.keyPressed();
+      if (
+        (player.gameObject.velY < 0 && !player.afflictionManager.isTricked) ||
+        (player.gameObject.velY > 0 && player.afflictionManager.isTricked)
+      )
+        player.stopY();
       break;
     case actualBinding[2]:
-      if (game.player.gameObject.velX > 0) game.player.stopX();
+      game.keyPressed();
+      if (
+        (player.gameObject.velX > 0 && !player.afflictionManager.isTricked) ||
+        (player.gameObject.velX < 0 && player.afflictionManager.isTricked)
+      )
+        player.stopX();
       break;
     case actualBinding[3]:
-      if (game.player.gameObject.velY > 0) game.player.stopY();
+      game.keyPressed();
+      if (
+        (player.gameObject.velY > 0 && !player.afflictionManager.isTricked) ||
+        (player.gameObject.velY < 0 && player.afflictionManager.isTricked)
+      )
+        player.stopY();
       break;
   }
 };
 
 export default class InputHandler {
   game: Game;
+  private onKeyDown = (e: KeyboardEvent) => keyDownEvents(e, this.game);
+  private onKeyUp = (e: KeyboardEvent) => keyUpEvents(e, this.game);
+  private mobile?: MobileControls;
+
   constructor({ game }: InputHandlerProps) {
     this.game = game;
   }
 
   initEvents() {
-    document.addEventListener('keydown', (event) => keyDownEvents(event, this.game));
-    document.addEventListener('keyup', (event) => keyUpEvents(event, this.game));
+    // Keyboard
+    document.addEventListener('keydown', this.onKeyDown);
+    document.addEventListener('keyup', this.onKeyUp);
+
+    // Mobile
+    if (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) {
+      this.mobile = new MobileControls(this.game);
+      this.mobile.mount();
+
+      // Prevent the page from scrolling when touching the canvas
+      // (Add 'touch-action: none' to your <canvas> in CSS for iOS 13+)
+      const canvas = document.querySelector('canvas');
+      canvas?.setAttribute('style', `${canvas.getAttribute('style') ?? ''}; touch-action: none;`);
+    }
   }
 
   terminate() {
-    document.removeEventListener('keydown', (event) => keyDownEvents(event, this.game));
-    document.removeEventListener('keyup', (event) => keyUpEvents(event, this.game));
+    document.removeEventListener('keydown', this.onKeyDown);
+    document.removeEventListener('keyup', this.onKeyUp);
+    this.mobile?.unmount();
   }
 }

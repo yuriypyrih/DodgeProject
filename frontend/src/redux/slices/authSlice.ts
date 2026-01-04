@@ -9,17 +9,22 @@ import {
   resetPasswordRequest,
   sendFeedbackRequest,
 } from '../../lib/api/http/requests/authentication';
-import { API_LEVEL } from '../../Models/enum/API_LEVEL';
+import { API_LEVEL } from 'Models/enum/API_LEVEL.ts';
 import {
   beatLevelRequest,
   selectAugmentRequest,
+  selectTitleRequest,
   unlockAugmentRequest,
   unlockLevelRequest,
+  unlockTitleRequest,
 } from '../../lib/api/http/requests/game';
-import { utilSetUser } from '../../utils/utilSetUser';
-import { AUGMENTS } from '../../lib/api/specs/api.ts';
+import { utilSetUser } from 'utils/utilSetUser.ts';
+import { ACHIEVEMENT, AUGMENTS, TITLES } from '../../lib/api/specs/api.ts';
 import { resetLastRun, setLastRun } from './chaosSlice.ts';
-import { encryptObject } from '../../utils/encryptObject.ts';
+import { encryptObject } from 'utils/encryptObject.ts';
+import { addUnlockedAchievement, clearAchievementsToSend } from 'redux/slices/gameSlice.ts';
+import { ACHIEVEMENTS, AchievementState } from 'game/engine/achievements/achievements.ts';
+import { RootState } from 'redux/store.ts';
 
 export const login = createAsyncThunk('auth/login', async (params: { email: string; password: string }, thunkAPI) => {
   try {
@@ -245,12 +250,27 @@ export const beatLevel = createAsyncThunk(
   async (params: { level: string; stars: number; unlockNext?: boolean; score?: number }, thunkAPI) => {
     thunkAPI.dispatch(resetLastRun());
     try {
-      const cypher = encryptObject(params, import.meta.env.VITE_CYPHER_KEY);
+      const state = thunkAPI.getState() as RootState;
+      const achievementsToSend = state.gameSlice.achievementsToSend;
+      const fullParams = { ...params, newAchievements: achievementsToSend };
+      const cypher = encryptObject(fullParams, import.meta.env.VITE_CYPHER_KEY);
       const { data } = await beatLevelRequest(cypher);
+      thunkAPI.dispatch(clearAchievementsToSend());
       if (data && data.documents) {
         utilSetUser(data.documents.user);
         if (data.documents.lastRun) {
           thunkAPI.dispatch(setLastRun(data.documents.lastRun));
+        }
+        const newUnlockedAchievements = data.documents.newUnlockedAchievements as ACHIEVEMENT[];
+        if (newUnlockedAchievements && newUnlockedAchievements.length > 0) {
+          const populatedArray: AchievementState[] = [];
+          newUnlockedAchievements.forEach((achievement_code) => {
+            const foundOne = ACHIEVEMENTS[achievement_code];
+            if (foundOne) {
+              populatedArray.push(foundOne);
+            }
+          });
+          thunkAPI.dispatch(addUnlockedAchievement(populatedArray));
         }
       } else {
         console.error('Something wrong with auth/beatLevel');
@@ -315,6 +335,36 @@ export const selectAugment = createAsyncThunk('auth/selectAugment', async (param
   }
 });
 
+export const unlockTitle = createAsyncThunk('auth/unlockTitle', async (params: { title: TITLES }, thunkAPI) => {
+  try {
+    const { data } = await unlockTitleRequest(params);
+    if (data && data.document) {
+      utilSetUser(data.document);
+    } else {
+      console.error('Something wrong with auth/unlockTitle');
+      return thunkAPI.rejectWithValue('');
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
+export const selectTitle = createAsyncThunk('auth/selectTitle', async (params: { title: TITLES }, thunkAPI) => {
+  try {
+    const { data } = await selectTitleRequest(params);
+    if (data && data.document) {
+      utilSetUser(data.document);
+    } else {
+      console.error('Something wrong with auth/selectTitle');
+      return thunkAPI.rejectWithValue('');
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
 type User = {
   _id: string;
   email: string;
@@ -322,7 +372,12 @@ type User = {
   unlockedRelics: AUGMENTS[];
   selectedRelic: AUGMENTS | null;
   unlockedLevels: API_LEVEL[];
+  unlockedAchievements: ACHIEVEMENT[];
+  unlockedTitles: TITLES[];
+  selectedTitle: TITLES | null;
   completeLevels: API_LEVEL[];
+  harvestedLevels: API_LEVEL[];
+  paidTransactions: string[];
   feedbackSentAt: Date | null;
   stars: number;
 };
@@ -352,8 +407,13 @@ const initialState: authSliceType = {
     name: '',
     unlockedRelics: [],
     selectedRelic: null,
+    selectedTitle: null,
+    unlockedTitles: [],
     unlockedLevels: [],
     completeLevels: [],
+    unlockedAchievements: [],
+    harvestedLevels: [],
+    paidTransactions: [],
     feedbackSentAt: null,
     stars: 0,
   },

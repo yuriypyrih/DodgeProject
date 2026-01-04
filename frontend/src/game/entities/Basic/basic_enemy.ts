@@ -24,6 +24,7 @@ export default class BasicEnemy extends GameObject {
       velY,
       velX,
       name: 'Scout Enemy',
+      symbiosisName: 'Scout',
     });
 
     this.game = game;

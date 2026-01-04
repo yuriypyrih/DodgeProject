@@ -9,6 +9,12 @@
   }
 }
 
+.skullIcon {
+  path {
+    fill : #2dd5c4;
+  }
+}
+
 .locked {
   &:global(.MuiButton-root) {
     background: #808080;

@@ -20,12 +20,26 @@ import WhatshotIcon from '@mui/icons-material/Whatshot';
 import StopwatchIcon from 'assets/svg/stopwatch.svg?react';
 import styles from './Wiki.module.scss';
 import ColorfullSquare from '../../components/ColorfullSquare';
+import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
 
 import { COLOR } from 'game/enum/colors.ts';
 import CustomButton from '../../components/CustomButton';
 import useNavigateBack from '../../utils/hooks/useNavigateBack.ts';
+import LinkIcon from '@mui/icons-material/Link';
+import NewStarIcon from '@mui/icons-material/Star';
+import { getEnemyIcon } from 'game/engine/relics/relics_collection.tsx';
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store.ts';
+import { ACHIEVEMENT } from '../../lib/api/specs/api.ts';
 
-type ContentType = { Icon?: any; title?: string | string[]; description: string[] };
+type ContentType = {
+  Icon?: any;
+  title?: string | string[];
+  description: string[];
+  disabled?: boolean;
+  meta?: string;
+  metaExtra?: string;
+};
 
 const generalContent: ContentType[] = [
   {
@@ -88,7 +102,7 @@ const generalContent: ContentType[] = [
 const enemiesContent: ContentType[] = [
   {
     title: 'Scout',
-    Icon: <ColorfullSquare size={30} color1={COLOR.RED} />,
+    Icon: getEnemyIcon('Scout'),
     description: ['The simplest enemy', '- Does 25 dmg'],
   },
   {
@@ -107,32 +121,32 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Speeder',
-    Icon: <ColorfullSquare size={30} color1={COLOR.LIGHT_BLUE} />,
+    Icon: getEnemyIcon('Speeder'),
     description: ['A faster version of the Scout', '- Does 25 dmg'],
   },
   {
     title: 'Tracer',
-    Icon: <ColorfullSquare size={30} color1={COLOR.YELLOW} />,
+    Icon: getEnemyIcon('Tracer'),
     description: ['An enemy that follows you', '- Does 25 dmg'],
   },
   {
     title: 'Worm',
-    Icon: <ColorfullSquare size={30} color1={COLOR.PINK} />,
+    Icon: getEnemyIcon('Worm'),
     description: ['Loops around the walls', '- Does 25 dmg'],
   },
   {
     title: 'Slime',
-    Icon: <ColorfullSquare size={30} color1={COLOR.GREEN} />,
+    Icon: getEnemyIcon('Slime'),
     description: ['Bounces around', '- Does 25 dmg'],
   },
   {
     title: 'Bomber',
-    Icon: <ColorfullSquare size={30} color1={COLOR.ORANGE} color2={COLOR.RED} edge />,
+    Icon: getEnemyIcon('Bomber'),
     description: ['Hitting a wall causes an Explosion', '- Head: 25 dmg', '- Explosion: 45 dmg'],
   },
   {
     title: 'Venom',
-    Icon: <ColorfullSquare size={30} color1={COLOR.PURPLE} />,
+    Icon: getEnemyIcon('Venom'),
     description: [
       'Getting hit by it will apply Poison to you',
       '- Head: 5 dmg. If already poisoned it does 30 dmg instead',
@@ -141,17 +155,17 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Titan',
-    Icon: <ColorfullSquare size={30} color1={COLOR.DARK_BLUE} />,
+    Icon: getEnemyIcon('Titan'),
     description: ['Grows in size steadily', '- Does 25 dmg'],
   },
   {
     title: 'Ghost',
-    Icon: <ColorfullSquare size={30} color1={COLOR.LIGHT_GREY} />,
+    Icon: getEnemyIcon('Ghost'),
     description: ['Periodically becomes transparent', '- Does 25 dmg'],
   },
   {
     title: 'Shadow',
-    Icon: <ColorfullSquare size={30} color1={COLOR.BLACK} />,
+    Icon: getEnemyIcon('Shadow'),
     description: [
       'Carries around an Aura that Applies Darkness',
       '- Does 25 dmg',
@@ -160,22 +174,22 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Glitch',
-    Icon: <ColorfullSquare size={30} color1={COLOR.WHITE} />,
+    Icon: getEnemyIcon('Glitch'),
     description: ['Periodically morphs into a different enemy type', '- Exact copy of the morphed enemy'],
   },
   {
     title: 'Portal',
-    Icon: <ColorfullSquare size={30} color1={COLOR.PORTAL_ORANGE} color2={COLOR.PORTAL_BLUE} />,
+    Icon: getEnemyIcon('Portal'),
     description: ['Phases through the Right and Left walls', '- Does 25 dmg', '- Immune to Fear'],
   },
   {
     title: 'Magnet',
-    Icon: <ColorfullSquare size={30} color1={COLOR.RED} color2={COLOR.LIGHT_BLUE} />,
+    Icon: getEnemyIcon('Magnet'),
     description: ['Carries a magnetic Aura that pulls you in', '- Does 25 dmg'],
   },
   {
     title: 'Hacker',
-    Icon: <ColorfullSquare size={30} color2={COLOR.DARK_GREEN} color1={COLOR.VENOM} />,
+    Icon: getEnemyIcon('Hacker'),
     description: [
       'When hit you get Hacked',
       '- Does 20 dmg',
@@ -185,7 +199,7 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Inferno',
-    Icon: <ColorfullSquare size={30} color2={COLOR.RED} color1={COLOR.YELLOW} />,
+    Icon: getEnemyIcon('Inferno'),
     description: [
       'Hitting a wall sets it briefly on fire',
       '- Head: 25 dmg',
@@ -194,12 +208,12 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Frosty',
-    Icon: <ColorfullSquare size={30} color2={COLOR.DARK_BLUE} color1={COLOR.LIGHT_BLUE} />,
+    Icon: getEnemyIcon('Frosty'),
     description: ['Carries an Aura of Frost that slows you down', '- Does 25 dmg'],
   },
   {
     title: 'Reaper',
-    Icon: <ColorfullSquare size={30} color2={COLOR.LIGHT_GREY} color1={COLOR.BLACK} />,
+    Icon: getEnemyIcon('Reaper'),
     description: [
       'Getting hit applies Deathmark',
       '- Head: No damage',
@@ -208,17 +222,55 @@ const enemiesContent: ContentType[] = [
   },
   {
     title: 'Voidborn',
-    Icon: <ColorfullSquare size={30} color2={COLOR.PURPLE} color1={COLOR.VENOM} />,
+    Icon: getEnemyIcon('Voidborn'),
     description: ['Chooses an orbit to circle around', '- Does 25 dmg', '- Immune to Fear'],
   },
   {
     title: 'Scorpion',
-    Icon: <ColorfullSquare size={30} color2={COLOR.ORANGE} color1={COLOR.RED} />,
+    Icon: getEnemyIcon('Scorpion'),
     description: [
       'Resembles an ordinary enemy but carries a second Head on its tail',
       '- Head/Tail: 25 dmg',
       '- Immune to Fear',
     ],
+  },
+  {
+    title: 'Lifeline',
+    Icon: getEnemyIcon('Lifeline'),
+    description: [
+      'Has two states with different effects. Hitting the first time will swap its state',
+      '- Healing State: Fully heals you',
+      '- Damaging State: Kills you instantly',
+    ],
+  },
+  {
+    title: 'Radioactive',
+    Icon: getEnemyIcon('Radioactive'),
+    description: [
+      'Carries around an Aura that Applies Radiation buildup',
+      '- The more radiation buildup the more damage you take while being near it',
+      '- Head: 25 dmg',
+    ],
+  },
+  {
+    title: 'Trickster',
+    Icon: getEnemyIcon('Trickster'),
+    description: [
+      'When hit you get Tricked',
+      '- Does 20 dmg',
+      '- Has completely random movement pattern but can be frightened',
+      '- Tricked: reverses your controls until you hit a wall',
+    ],
+  },
+  {
+    title: 'Puppet',
+    Icon: getEnemyIcon('Puppet'),
+    description: ['Mimics your control inputs when you change directions', '- Does 25 dmg'],
+  },
+  {
+    title: 'Tether',
+    Icon: getEnemyIcon('Tether'),
+    description: ['Creates a damaging line to the center of the arena and itself', '- Head/Line: 25 dmg'],
   },
 ];
 
@@ -233,7 +285,7 @@ const augmentsContent: ContentType[] = [
   },
   {
     Icon: <ImmunityIcon style={{ width: 30, height: 30 }} />,
-    title: ['Immunity', '(Active x3)'],
+    title: ['Immunity', '(Active x4)'],
     description: [
       'Grants damage immunity for 2 seconds and heals for 10hp',
       '- While immune you also cannot get Poisoned or Deathmarked',
@@ -251,9 +303,9 @@ const augmentsContent: ContentType[] = [
     Icon: <CureIcon style={{ width: 30, height: 30 }} />,
     title: ['Elixir of Vigor', '(Active x3)'],
     description: [
-      'Cleanses all negative effects like Poison, Deathmark, and Frost/Darkness buildup',
-      '- Also heals you 5hp + 5% of your missing hp + all the hp you lost from poison until then',
-      '- Stored poison is reused for subsequent healing making Elixir stronger each time',
+      'Cleanses all negative effects like Poison, Deathmark, and Frost/Darkness/Radiation buildup',
+      '- Also heals you 5hp + 5% of your missing hp + all the hp you lost from Poison/Radiation until then',
+      '- Stored Poison/Radiation is reused for subsequent healing making Elixir stronger each time',
     ],
   },
   {
@@ -272,7 +324,7 @@ const augmentsContent: ContentType[] = [
     description: [
       'Applies a night vision filter on screen',
       '- Makes spotting Ghost & Shadow enemies easier',
-      '- Increased resistance to Poison (66%) and Frost (50%)',
+      '- Increased resistance to Poison (66%) and Frost/Radiation buildup (50%)',
       '- Deathmark deals only 20dmg to you',
     ],
   },
@@ -305,7 +357,7 @@ const augmentsContent: ContentType[] = [
     description: [
       'The first time you are about to die, you gain 2 seconds of damage immunity instead',
       '- Raises your health to 35hp after saving you',
-      '- Also cures Poison and alleviates Frost/Darkness build up',
+      '- Also cures Poison and alleviates Frost/Darkness/Radiation build up',
     ],
   },
   {
@@ -316,16 +368,18 @@ const augmentsContent: ContentType[] = [
       '- During Berserk your life burns until you die (~ 27s before you run out of HP)',
       '- During Berserk you take 60% less damage',
       '- During Berserk you are immune to Frost/Darkness build up',
+      '- During Berserk damage from Radiation heals you instead (~ countering the self burn effect)',
       `- Damage reduction doesn't apply on Poison, Explosions, Deathmark and Burn effects`,
     ],
   },
   {
     Icon: <StopwatchIcon style={{ width: 30, height: 30 }} />,
-    title: ['Stopwatch', ' (Active x1)', 'Rechargeable'],
+    title: ['Stopwatch', ' (Active x3)', 'Rechargeable'],
     description: [
-      'Slows down the time for the enemies for 3s and heals you for 50% of your missing hp',
+      'Slows down the time for the enemies for 3s and heals you for 40% of your missing hp',
       '- You are Stabilized during this duration',
-      '- Collecting a star will recharge the augment',
+      '- You are immune to Deathmark damage during this duration',
+      '- Collecting a star will refill a single charge',
     ],
   },
   {
@@ -335,21 +389,213 @@ const augmentsContent: ContentType[] = [
       'You receive 25% MORE damage from hitting enemies, but..',
       '- Poison heals you instead of damaging you',
       '- Deathmark heals you for 30hp instead of killing you',
-      '- Increased resistance to Burn and Explosions (75%)',
+      '- Lifline applies Poison instead of healing you (which is a good thing)',
+      '- Increased resistance to Burn, Explosions and Radiation (75%)',
     ],
   },
   {
     Icon: <SkullIcon style={{ width: 30, height: 30 }} />,
     title: 'Harvester (Passive ∞)',
-    description: ['You only have 1hp but you get x10 the amount of the stars you collect', '- Aka: Hardcore mode'],
+    description: [
+      'You only have 1hp but you get x10 the amount of the stars you collect',
+      '- First time you beat each level with Harvester you get plus 100 stars',
+      '- Aka: Hardcore mode',
+    ],
+  },
+  {
+    Icon: <SelfImprovementIcon style={{ width: 30, height: 30 }} />,
+    title: 'Medidation (Passive ∞)',
+    description: [
+      'While damaged and standing still for 1s you will enter Meditation state',
+      '- While meditating you are regenerating 4hp/sec',
+      '- While meditating you are stabilized',
+      '- While meditating you are immume to Deathmark damage',
+      '- Upon entering Meditation state after being hit you will heal additional 6hp',
+      '- Taking damage will break Meditation state (except for Poison dmg)',
+    ],
+  },
+  {
+    Icon: <LinkIcon style={{ width: 30, height: 30 }} />,
+    title: 'Symbiotic Link (Active)',
+    description: [
+      'Activate to create a link to the closest enemy',
+      '- While being linked you will ignore being hit by that enemy type and its effects (Explosions, Firewall, Auras, etc)',
+      '- Being hit by the linked enemy 4x times consecutively will disable the link',
+      '- Auras count as hits when linked to an Aura Enemy',
+      '- Being hit by another non-linked enemy will fully replenish the link',
+    ],
+  },
+];
+
+const achievementList: ContentType[] = [
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Bronze Competent',
+    meta: ACHIEVEMENT.BRONZE_COMPETENT,
+    metaExtra: 'ADD_COMPLETE',
+    description: ['Complete all basic levels.', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Silver Talented',
+    meta: ACHIEVEMENT.SILVER_TALENTED,
+    description: ['Get into top 10 in any of the leaderboards.', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Gold Champion',
+    meta: ACHIEVEMENT.GOLD_CMAMPION,
+    description: ['Be in top 10 in all of the leaderboards at the same time.', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Overachiever',
+    meta: ACHIEVEMENT.OVERACHIEVER,
+    description: ['You have earned 10 or more achievements.', '- Reward: 100 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Full of Heart',
+    meta: ACHIEVEMENT.FULL_OF_HEART,
+    description: ['Win any level by dropping bellow 20hp twice while using the Heal Augment.', '- Reward: 50 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Toxic Spritz',
+    meta: ACHIEVEMENT.TOXIC_SPRITZ,
+    description: [
+      'Heal yourself for a total 200hp using Elixir of Vigor augment in a single run.',
+      '- Reward: 50 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Living Nightmare',
+    meta: ACHIEVEMENT.LIVING_NIGHTMARE,
+    description: ['Scare at least 22 enemies or bullets in a single level.', '- Reward: 50 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Playing with Fire',
+    meta: ACHIEVEMENT.PLAYING_WITH_FIRE,
+    description: ['Take at least 95 damage from fire or explosions in any level and still win.', '- Reward: 50 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'The Unseen',
+    meta: ACHIEVEMENT.THE_UNSEEN,
+    description: [
+      'Win level 11 without taking any damage and without using the Night Hunter augment.',
+      '- Reward: 50 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Phase Shift',
+    meta: ACHIEVEMENT.PHASE_SHIFT,
+    description: [
+      'Win level 14 but you are not allowed to press Left Move button during the enitre Boss fight.',
+      '- Reward: 50 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Frostbite',
+    meta: ACHIEVEMENT.BITEFROST,
+    description: [
+      'Collect every star in level 18 while being slowed by Frost during collection.',
+      '- Reward: 50 stars',
+    ],
+  },
+
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Deathless',
+    meta: ACHIEVEMENT.DEATHLESS,
+    description: ['Win level 19 with Harvester augment.', '- Reward: 50 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Call of the Void',
+    meta: ACHIEVEMENT.CALL_OF_THE_VOID,
+    description: [
+      'Win level 20 by staying as close to the center of the arena as possible at all times.',
+      '- Reward: 50 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Biohazard',
+    meta: ACHIEVEMENT.BIOHAZARD,
+    description: [
+      'Win level 29 by activating the Berserk augment before even collecting the first star.',
+      '- Reward: 50 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Resilience',
+    meta: ACHIEVEMENT.RESILIENCE,
+    description: [
+      'With level 31 with the Mediation augment and having being hit by 4 different enemy types.',
+      '- Reward: 50 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Inner connection',
+    meta: ACHIEVEMENT.INNER_CONNECTION,
+    description: ['Win level 32 without taking damage and using the Symbiotic Link augment.', '- Reward: 50 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Get Hacked!',
+    meta: ACHIEVEMENT.GET_HACKED,
+    description: ['Get killed by a Hacker in Clown Fiesta Chaos Dungeon', '- Reward: 50 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'No escape',
+    meta: ACHIEVEMENT.NO_ESCAPE,
+    description: [
+      'Survive for 72s in the Final Destination Chaos Dungeon using Guardian Angel augment.',
+      '- Reward: 50 stars',
+    ],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Borrow Time',
+    meta: ACHIEVEMENT.BORROW_TIME,
+    description: ['Use the Stopwatch augment 4 times in a Chaos Dungeon.', '- Reward: 50 stars'],
+  },
+  {
+    Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
+    title: 'Leader',
+    meta: ACHIEVEMENT.LEADER,
+    description: ['Reach 1st place in any of the leadersboards.', '- Reward: 100 stars'],
   },
 ];
 
 const Wiki: React.FC<unknown> = () => {
   const { navigateBack } = useNavigateBack();
+  const { search } = useLocation();
+  const { unlockedAchievements, completeLevels } = useSelector((state: RootState) => state.authSlice.user);
   const [tab, setTab] = React.useState(0);
 
-  const { search } = useLocation();
+  const achievementMap = useMemo(() => {
+    const achievementArray: ContentType[] = [];
+    let totalUnlocked: number = 0;
+    achievementList.forEach((achievement) => {
+      if (achievement.meta && unlockedAchievements.includes(achievement.meta as ACHIEVEMENT)) {
+        achievementArray.push({ ...achievement, disabled: true });
+        totalUnlocked++;
+      } else {
+        achievementArray.push(achievement);
+      }
+    });
+    return { achievementArray, totalUnlocked };
+  }, [unlockedAchievements]);
+
   const query = useMemo(() => {
     return new URLSearchParams(search);
   }, [search]);
@@ -358,7 +604,7 @@ const Wiki: React.FC<unknown> = () => {
     const queryTab = query.get('queryTab');
     if (queryTab) {
       const newTab = Number(queryTab);
-      if (newTab >= 0 && newTab <= 2) {
+      if (newTab >= 0 && newTab <= 3) {
         setTab(newTab);
       }
     }
@@ -373,7 +619,13 @@ const Wiki: React.FC<unknown> = () => {
         sx={{ display: 'grid', gridTemplateColumns: '40px 120px 1fr', color: '#ffffffDD', columnGap: 2 }}
         key={index}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            color: tab === 3 ? (item.disabled ? '#ECCD51' : '#ffffff40') : '#ffffffDD',
+          }}
+        >
           {item.Icon ? item.Icon : <DescriptionIcon style={{ width: 30, height: 30 }} />}
         </Box>
         {item.title && (
@@ -386,14 +638,16 @@ const Wiki: React.FC<unknown> = () => {
           </Box>
         )}
         <Box>
-          {item.description.map((d, index) => (
+          {item.description.map((d, descIndex) => (
             <Typography
-              key={index}
+              key={descIndex}
               style={{
                 color: (index !== 0 && !item.title) || !!item.title ? '#00AFA3' : '#ffffffDD',
+                opacity: item.disabled && tab === 3 ? 0.6 : 1,
+                textDecoration: descIndex === 1 && item.disabled && tab === 3 ? 'line-through' : 'none',
               }}
             >
-              {d}
+              {d} {item.metaExtra === 'ADD_COMPLETE' && descIndex === 0 && ` [${completeLevels.length}/36]`}
             </Typography>
           ))}
         </Box>
@@ -405,22 +659,22 @@ const Wiki: React.FC<unknown> = () => {
     if (tab === 0) return generalContent.map((item, index) => getListItem(item, index));
     else if (tab === 1) return enemiesContent.map((item, index) => getListItem(item, index));
     else if (tab === 2) return augmentsContent.map((item, index) => getListItem(item, index));
+    else if (tab === 3) return achievementMap.achievementArray.map((item, index) => getListItem(item, index));
   };
 
   return (
     <Box className={styles.root}>
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
-          <Box sx={{ position: 'absolute', display: 'flex', width: '100%', justifyContent: 'center' }}>
-            <Typography variant={'h5'} color={'primary'} sx={{ textAlign: 'center' }}>
-              Wiki
-            </Typography>
-          </Box>
           <Box>
             <Tabs value={tab} onChange={handleChange} indicatorColor="primary">
               <Tab label="General" className={styles.tabs} />
               <Tab label="Enemies" className={styles.tabs} />
               <Tab label="Augments" className={styles.tabs} />
+              <Tab
+                label={`Achievements [${achievementMap.totalUnlocked}/${achievementList.length}]`}
+                className={styles.tabs}
+              />
             </Tabs>
           </Box>
           <Box className={styles.mainContainer}>{getContent()}</Box>

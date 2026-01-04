@@ -3,7 +3,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import CubePlayButton from '../../components/CubePlayButton';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ImportContactsIcon from '@mui/icons-material/ImportContacts';
 import { AppDispatch, RootState } from 'redux/store.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import DefaultIcon from '@mui/icons-material/Description';
@@ -12,17 +11,19 @@ import { Level } from 'Models/level.ts';
 import UnlockLevelModal from '../../components/UnlockLevelModal/UnlockLevelModal.tsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Selection.module.scss';
-import { relics } from 'game/engine/relics/relics_collection.ts';
+import { relics } from 'game/engine/relics/relics_collection.tsx';
 import ChaosPlayButton from '../../components/ChaosPlayButton';
 import { unlockLevel } from 'redux/slices/authSlice.ts';
 import ShopButton from '../../components/ShopButton';
 import LeaderboardButton from '../../components/LeaderboardButton';
 import { API_LEVEL } from 'Models/enum/API_LEVEL.ts';
 import CustomButton from '../../components/CustomButton';
+import WikiButton from 'components/WikiButton';
 
 const Selection: React.FC<unknown> = () => {
-  const MAX_PAGE_SIZE = 12;
-  const MAX_CHAOS_SIZE = 3;
+  const NORMAL_PAGE_SIZE = 12;
+  const CHAOS_PAGE_SIZE = 3;
+
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const { search } = useLocation();
@@ -47,15 +48,19 @@ const Selection: React.FC<unknown> = () => {
     }
   }, [query]);
 
-  const getPageLevels = () => {
-    // return levels.slice((page - 1) * MAX_PAGE_SIZE, page * MAX_PAGE_SIZE);
-    if (page <= 2) {
-      return levels.slice((page - 1) * MAX_PAGE_SIZE, page * MAX_PAGE_SIZE);
-    } else {
-      const previousNormalLevels = MAX_PAGE_SIZE * 2;
-      return levels.slice(previousNormalLevels, previousNormalLevels + (page - 2) * MAX_CHAOS_SIZE);
+  const pages = useMemo<Level[][]>(() => {
+    const out: Level[][] = [];
+    for (let i = 0; i < levels.length; ) {
+      const isChaos = Boolean(levels[i].chaosDungeon);
+      const size = isChaos ? CHAOS_PAGE_SIZE : NORMAL_PAGE_SIZE;
+      out.push(levels.slice(i, i + size));
+      i += size;
     }
-  };
+    return out;
+  }, [levels]);
+
+  const currentLevels = pages[page - 1] ?? []; // page is 1-based
+  const chaosPage = currentLevels.every((l) => l.chaosDungeon);
 
   const isFirstPage = () => {
     return page === 1;
@@ -63,7 +68,7 @@ const Selection: React.FC<unknown> = () => {
 
   const isLastPage = () => {
     // return levels.length <= page * MAX_PAGE_SIZE;
-    return page === 3;
+    return page === 5;
   };
 
   const nextPage = () => {
@@ -100,10 +105,9 @@ const Selection: React.FC<unknown> = () => {
     <Box className={styles.root}>
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
         <Box sx={{ position: 'absolute', display: 'flex', justifyContent: 'center', width: '100%', left: 0 }}>
-          <Button className={styles.journalBtn} onClick={() => navigate('/Wiki')}>
-            <ImportContactsIcon style={{ marginRight: 8 }} />
-            <Typography variant={'h5'}>READ ME</Typography>
-          </Button>
+          <Typography variant={'h5'} className={styles.journalBtn}>
+            Level Selection
+          </Typography>
         </Box>
         <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
           <Box>
@@ -111,8 +115,9 @@ const Selection: React.FC<unknown> = () => {
               {getRelic()}
             </Button>
           </Box>
-          <Box sx={{ width: 250, height: 44, display: 'flex', wrap: 'nowrap', gap: 1, justifyContent: 'flex-end' }}>
-            {page === 3 && <LeaderboardButton />}
+          <Box sx={{ height: 44, display: 'flex', wrap: 'nowrap', gap: 1, justifyContent: 'flex-end' }}>
+            {(page === 3 || page === 5) && <LeaderboardButton />}
+            <WikiButton />
             <ShopButton />
           </Box>
         </Box>
@@ -120,30 +125,48 @@ const Selection: React.FC<unknown> = () => {
         <Box
           sx={{
             display: 'grid',
-            gridTemplateColumns: page === 3 ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
+            gridTemplateColumns: chaosPage ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
             rowGap: '32px',
           }}
           className={styles.container}
         >
-          {getPageLevels().map((item, key) => (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }} key={'level' + key + item.level}>
-              {item.level <= 24 ? (
-                <CubePlayButton
-                  level={item}
-                  clickBuy={() => setBuyLevel(item)}
-                  complete={completeLevels.includes(item.levelId as API_LEVEL)}
-                />
+          {currentLevels.map((level) => (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }} key={`level-${level.levelId}`}>
+              {level.chaosDungeon ? (
+                <ChaosPlayButton level={level} clickBuy={() => setBuyLevel(level)} />
               ) : (
-                <ChaosPlayButton level={item} clickBuy={() => setBuyLevel(item)} />
+                <CubePlayButton
+                  level={level}
+                  clickBuy={() => setBuyLevel(level)}
+                  complete={completeLevels.includes(level.levelId as API_LEVEL)}
+                />
               )}
             </Box>
           ))}
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Box mr={2}>
+          <Box mr={2} sx={{ position: 'relative', display: 'flex', flexWrap: 'nowrap', alignItems: 'center' }}>
             <IconButton color={'primary'} onClick={previousPage} disabled={isFirstPage()}>
               <ArrowBackIosIcon className={styles.paginatorBtn} />
             </IconButton>
+            <Box sx={{ position: 'relative', display: 'flex', gap: '4px', alignContent: 'center' }}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Box
+                  key={i}
+                  sx={{
+                    width: 5,
+                    height: 5,
+                    borderRadius: '50%',
+                    backgroundColor: page === i + 1 ? 'primary.main' : 'rgba(255,255,255,0.35)',
+                    transition: 'background-color 0.2s ease',
+                    display: 'flex',
+                    flexDir: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                />
+              ))}
+            </Box>
             <IconButton color={'primary'} onClick={nextPage} disabled={isLastPage()}>
               <ArrowForwardIosIcon className={styles.paginatorBtn} />
             </IconButton>

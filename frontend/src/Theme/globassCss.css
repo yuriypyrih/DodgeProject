@@ -35,3 +35,54 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   transition: all 5000s 5000s ease-in-out;
 }
+
+.beat-bars {
+  opacity: 0.1;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  justify-content: center;
+  gap: 4vw;                      /* space between bars */
+  pointer-events: none;           /* let clicks pass through */
+}
+
+.bar {
+  width: 6px;
+  height: 10vh;                   /* base height */
+  background: #29f4ff;            /* cyan-ish */
+  border-radius: 3px;
+  position: relative;
+
+  transform-origin: bottom;
+  animation: beat 1s ease-in-out infinite;
+}
+
+/* sprinkle small delays so the bars don’t move in perfect sync */
+.bar:nth-child(2) { animation-delay: .12s; }
+.bar:nth-child(3) { animation-delay: .25s; }
+.bar:nth-child(4) { animation-delay: .37s; }
+.bar:nth-child(5) { animation-delay: .50s; }
+.bar:nth-child(6) { animation-delay: .67s; }
+.bar:nth-child(7) { animation-delay: .75s; }
+.bar:nth-child(8) { animation-delay: .87s; }
+.bar:nth-child(9) { animation-delay: 0s; }
+.bar:nth-child(10) { animation-delay: .12s; }
+.bar:nth-child(11) { animation-delay: .25s; }
+.bar:nth-child(12) { animation-delay: .37s; }
+.bar:nth-child(13) { animation-delay: .50s; }
+.bar:nth-child(14) { animation-delay: .67s; }
+.bar:nth-child(15) { animation-delay: .75s; }
+.bar:nth-child(16) { animation-delay: .87s; }
+.bar:nth-child(17) { animation-delay: 0s; }
+.bar:nth-child(18) { animation-delay: .12s; }
+.bar:nth-child(19) { animation-delay: .25s; }
+
+
+/* Keyframes: stretch up (50%) then return */
+@keyframes beat {
+  0%, 100% { transform: scaleY(.1); }   /* resting height */
+  50%      { transform: scaleY(1);   }   /* full extension */
+}

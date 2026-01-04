@@ -4,6 +4,19 @@ export const PATCH_NOTES: Array<{
   content: string[];
 }> = [
   {
+    title: 'Patch v1.4: Golden Age Expansion',
+    tag: 'v1.4',
+    content: [
+      'I have cooked new stuff for you, I hope you like them!',
+      '- 12 new playable levels (36 in total)',
+      '- 3 new Chaos Dungeons (6 in total)',
+      '- 2 new Augments (18 in total)',
+      '- 20 unclokable Achievements with rewards',
+      '- Unlockable cosmetics such as titles to show the others in the leaderboards who is the Boss',
+      '- Music & SFX',
+    ],
+  },
+  {
     title: 'Patch v1.3: Chaos Expansion',
     tag: 'v1.3',
     content: [

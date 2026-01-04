@@ -35,15 +35,19 @@ export default class RelicManager {
   fear_animation_timer: number;
   isImmune: boolean;
   isStabilized: boolean;
+  isMedidating: boolean;
+  damagedNeedHealing: boolean;
   tempStabilizedTime: number;
   immunityActivationTime: number;
   guardianActivationTime: number;
   stopwatchActivationTime: number;
+  meditationIntervalTime: number;
   regenIntervalTime: number;
   berserkIsActive: boolean;
   berserkTickTimer: number;
   beaconPlaced: XY | null;
   beaconPlacedTime: number;
+  symbioticLinked: string | null;
 
   constructor({ game }: TProps) {
     this.game = game;
@@ -57,11 +61,15 @@ export default class RelicManager {
     this.immunityActivationTime = 0;
     this.guardianActivationTime = 0;
     this.stopwatchActivationTime = 0;
+    this.meditationIntervalTime = 0;
     this.regenIntervalTime = 0;
     this.berserkIsActive = false;
     this.berserkTickTimer = 0;
     this.beaconPlaced = null;
     this.beaconPlacedTime = 0;
+    this.symbioticLinked = null;
+    this.isMedidating = false;
+    this.damagedNeedHealing = false;
   }
 
   assignRelic(relic: Relic | null, saveOriginal: boolean = false) {
@@ -77,15 +85,20 @@ export default class RelicManager {
     }
   }
 
-  updateRelic() {
+  updateRelic(symbiosisName?: string) {
     if (this.relic) {
       store.dispatch(
         setSelectedRelic({
           relic: this.relic.id,
           relic_available_uses: this.available_uses,
+          symbiosisName,
         }),
       );
     }
+  }
+
+  isStopwatchActive() {
+    return this.game.now - this.stopwatchActivationTime < STOPWATCH_TOTAL;
   }
 
   reset() {
@@ -101,12 +114,16 @@ export default class RelicManager {
       this.immunityActivationTime = 0;
       this.guardianActivationTime = 0;
       this.stopwatchActivationTime = 0;
+      this.meditationIntervalTime = 0;
       this.regenIntervalTime = 0;
       this.berserkIsActive = false;
       this.berserkTickTimer = 0;
       this.beaconPlaced = null;
       this.game.timeScale = 1;
       this.game.updateTimeCounter = 0;
+      this.isMedidating = false;
+      this.damagedNeedHealing = false;
+      this.symbioticLinked = null;
       this.updateRelic();
     }
   }
@@ -115,26 +132,36 @@ export default class RelicManager {
     const player = this.game.player;
     const healthManager = player.healthManager;
     const afflictionManager = player.afflictionManager;
+    const achievementManager = player.achievementManager;
     const now = this.game.now;
 
     console.log('useActiveRelic ,', this.game.birthday);
     if (this.relic && this.available_uses > 0 && this.relic.type === RELIC_TYPE.ACTIVE) {
-      this.available_uses--;
-      this.updateRelic();
+      if (this.relic.id !== AUGMENTS.SYMBIOTIC_LINK) {
+        this.available_uses--;
+        this.updateRelic();
+      }
       if (this.relic.id === AUGMENTS.HEAL) {
         healthManager.health += 35;
+        this.game.audioHandler.heal.play();
         store.dispatch(playAnimation(VFX.PULSE_GREEN));
       }
       if (this.relic.id === AUGMENTS.IMMUNITY) {
+        this.game.audioHandler.shield.play();
         this.immunityActivationTime = Date.now();
         this.game.player.healthManager.health += 15;
         store.dispatch(playAnimation(VFX.PULSE_IMMUNITY));
       }
       if (this.relic.id === AUGMENTS.POISON_CURE) {
+        this.game.audioHandler.heal.play();
         const missingHp = calculateMissingHp(healthManager.health, 5);
         const totalHealing = afflictionManager.poisonConsumed + 5 + missingHp;
         healthManager.health += totalHealing;
+        achievementManager.updateTrackables((prev) => ({
+          toxicSpritzTotalHeal: prev.toxicSpritzTotalHeal + totalHealing,
+        }));
         afflictionManager.removePoison();
+        afflictionManager.radioBuildup = 0;
         afflictionManager.frostIntensity = -60;
         afflictionManager.isDeathmarked = false;
         this.game.darkness = 0;
@@ -145,12 +172,14 @@ export default class RelicManager {
       }
       if (this.relic.id === AUGMENTS.RECALL_BEACON) {
         if (this.beaconPlaced === null) {
+          this.game.audioHandler.button.play();
           this.beaconPlaced = {
             x: player.gameObject.position.x + 8,
             y: player.gameObject.position.y + 8,
           };
           this.beaconPlacedTime = Date.now();
         } else {
+          this.game.audioHandler.teleport.play();
           this.game.gameObjects.forEach((object: GameObject) => {
             // Very forgiving Bounds while recalling for collecting a star
             if (
@@ -175,25 +204,103 @@ export default class RelicManager {
         }
       }
       if (this.relic.id === AUGMENTS.STOPWATCH) {
+        this.game.audioHandler.shield.play();
+        this.game.player.achievementManager.updateTrackables((prev) => ({ stopwatchUsed: prev.stopwatchUsed + 1 }));
         this.stopwatchActivationTime = Date.now();
+        this.game.player.afflictionManager.isDeathmarked = false;
         store.dispatch(playAnimation(VFX.PULSE_LIGHT_BLUE));
-        const missingHp = calculateMissingHp(healthManager.health, 50);
+        const missingHp = calculateMissingHp(healthManager.health, 40);
         healthManager.health += missingHp;
         this.game.player.resetMovement();
+      }
+      if (this.relic.id === AUGMENTS.SYMBIOTIC_LINK && this.symbioticLinked === null) {
+        this.game.audioHandler.shield.play();
+        store.dispatch(playAnimation(VFX.PULSE_LIGHT_BLUE));
+
+        const { x: px, y: py } = player.gameObject.position;
+
+        let nearestName = null;
+        let nearestDistSq = Infinity;
+
+        this.game.gameObjects.forEach((gameObj) => {
+          const { symbiosisName, position } = gameObj.gameObject;
+          if (!symbiosisName) return; // skip ineligible objects
+
+          const dx = position.x - px;
+          const dy = position.y - py;
+          const distSq = dx * dx + dy * dy;
+
+          if (distSq < nearestDistSq) {
+            nearestDistSq = distSq;
+            nearestName = symbiosisName;
+          }
+        });
+
+        if (nearestName) {
+          this.symbioticLinked = nearestName;
+          store.dispatch(playAnimation(VFX.PULSE_LIGHT_BLUE));
+          this.updateRelic(this.symbioticLinked);
+        }
       }
     }
   }
 
   applyFear() {
+    this.game.audioHandler.roar.play();
     const player = this.game.player;
     this.fear_animation_timer = 0;
     player.afflictionManager.frostIntensity = -40;
     this.game.darkness = 0;
     this.game.gameObjects.forEach((object: GameObject) => {
       if (player.fearCollision(object.getBounds())) {
+        player.achievementManager.updateTrackables((prev) => ({
+          numberOfEnemiesScared: prev.numberOfEnemiesScared + 1,
+        }));
         object.fear(player.gameObject.position.x + 12, player.gameObject.position.y + 12);
       }
     });
+  }
+
+  testSymbioticLink(object: GameObject): boolean {
+    if (object.gameObject.symbiosisName === this.symbioticLinked && this.symbioticLinked) {
+      if (this.available_uses === 0) {
+        return false;
+      }
+      if (
+        (object.gameObject.id === ENTITY_ID.SHADOW_AURA ||
+          object.gameObject.id === ENTITY_ID.RADIOACTIVE_AURA ||
+          object.gameObject.id === ENTITY_ID.FROSTY ||
+          object.gameObject.id === ENTITY_ID.MAGNET_AURA_PLUS ||
+          object.gameObject.id === ENTITY_ID.MAGNET_AURA_MINUS) &&
+        !this.game.player.collision({
+          x: object.gameObject.position.x,
+          y: object.gameObject.position.y,
+          width: object.gameObject.width,
+          height: object.gameObject.height,
+        })
+      ) {
+        return false;
+      }
+      const healthManager = this.game.player.healthManager;
+      healthManager.takeDamage(0, {
+        disableDefaultPulse: true,
+        callback: () => {
+          this.available_uses--;
+          // if (this.available_uses <= 0) {
+          //   const foundRelic = relics.find((r) => r.id === AUGMENTS.HACKED);
+          //   if (foundRelic) this.assignRelic(foundRelic, true);
+          // }
+        },
+      });
+      if (this.relic?.id === AUGMENTS.SYMBIOTIC_LINK) {
+        this.updateRelic(this.symbioticLinked);
+      }
+      return true;
+    } else {
+      this.available_uses = this.relic?.max_uses || 0;
+      this.updateRelic(this.symbioticLinked as string);
+      return false;
+    }
   }
 
   draw(context: CanvasRenderingContext2D) {
@@ -279,7 +386,7 @@ export default class RelicManager {
       now - this.immunityActivationTime < IMMUNITY_TOTAL || now - this.guardianActivationTime < GUARDIAN_TOTAL;
 
     // Control Stopwatch
-    if (now - this.stopwatchActivationTime < STOPWATCH_TOTAL) {
+    if (this.isStopwatchActive()) {
       this.game.timeScale = 3;
     } else {
       this.game.timeScale = 1;
@@ -294,7 +401,7 @@ export default class RelicManager {
     if (this.relic?.id === AUGMENTS.REGENERATION) {
       this.regenIntervalTime++;
 
-      if (getSec(this.regenIntervalTime, 2) > REGEN_INTERVAL_TOTAL) {
+      if (getSec(this.regenIntervalTime, 2) >= 2) {
         healthManager.health += 2;
         this.regenIntervalTime = 0;
       }
@@ -311,6 +418,27 @@ export default class RelicManager {
 
     if (this.relic?.id === AUGMENTS.HARVESTER && healthManager.health > 1) {
       healthManager.health = 1;
+    }
+
+    if (this.relic?.id === AUGMENTS.MEDITATE) {
+      const HEAL_PER_SEC = 4;
+      this.meditationIntervalTime++;
+      const isMeditating =
+        now - this.game.keyLastTimePressed > 1000 &&
+        healthManager.health < 100 &&
+        this.game.player.gameObject.velY === 0 &&
+        this.game.player.gameObject.velX === 0;
+
+      this.isStabilized = isMeditating;
+      this.isMedidating = isMeditating;
+
+      if (isMeditating && getSec(this.meditationIntervalTime, 2) > REGEN_INTERVAL_TOTAL) {
+        const healAmount = HEAL_PER_SEC + (this.damagedNeedHealing ? 6 : 0);
+        healthManager.health += healAmount;
+        this.damagedNeedHealing = false;
+        this.meditationIntervalTime = 0;
+        this.updateRelic();
+      }
     }
   }
 }

@@ -9,7 +9,7 @@ import { dispatch } from '../main.tsx';
 import { useNavigate } from 'react-router-dom';
 import { resetTimers, setGameState, setLevel } from '../redux/slices/gameSlice.ts';
 import { game } from '../App.tsx';
-import { relics } from '../game/engine/relics/relics_collection.ts';
+import { relics } from '../game/engine/relics/relics_collection.tsx';
 import { setContext } from '../game';
 import { splitCamelCase } from '../utils/splitCaseWord.ts';
 import { isChaosDungeon } from '../utils/isChaosDungeon.ts';
@@ -110,7 +110,7 @@ const Game: React.FC = () => {
         cursor: gameState === GAME_STATE.PLAYING ? 'none' : undefined,
       }}
     >
-      <canvas id={'gameScreen-canvas'} width="900" height="500" />
+      <canvas id={'gameScreen-canvas'} width="900" height="500" style={{ touchAction: 'none' }} />
       <Hud game={game} reset={resetToggle} />
       {gameState === GAME_STATE.PAUSED ? <Pause game={game} toggleReset={startLevel} /> : null}
     </div>

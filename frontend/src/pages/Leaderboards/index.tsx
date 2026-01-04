@@ -39,6 +39,12 @@ const LeaderboardsPage: React.FC<unknown> = () => {
         currentLevel = 'LVL_26';
       } else if (tab === 2) {
         currentLevel = 'LVL_27';
+      } else if (tab === 3) {
+        currentLevel = 'LVL_40';
+      } else if (tab === 4) {
+        currentLevel = 'LVL_41';
+      } else if (tab === 5) {
+        currentLevel = 'LVL_42';
       }
       const tabLeaderboard = leaderboards.find((l) => l.levelId === currentLevel);
       if (!tabLeaderboard || tabLeaderboard.records.length === 0) {
@@ -72,6 +78,9 @@ const LeaderboardsPage: React.FC<unknown> = () => {
             <Tab label="Clown Fiesta" className={styles.tabs} />
             <Tab label="Vipers Pit" className={styles.tabs} />
             <Tab label="Anubis Catacomb" className={styles.tabs} />
+            <Tab label="Singularity" className={styles.tabs} />
+            <Tab label="Metro Exodus" className={styles.tabs} />
+            <Tab label="Final Destination" className={styles.tabs} />
           </Tabs>
           <Box className={styles.list}>{getContent()}</Box>
         </Box>

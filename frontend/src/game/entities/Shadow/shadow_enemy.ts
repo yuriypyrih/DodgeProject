@@ -30,6 +30,7 @@ export default class ShadowEnemy extends GameObject {
       position,
       velY,
       velX,
+      symbiosisName: 'Shadow',
     });
 
     this.game = game;

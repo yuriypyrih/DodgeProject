@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import styles from './Home.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { PATCH_NOTES } from '../../Models/data/PatchNotes.ts';
+import { PATCH_NOTES } from 'Models/data/PatchNotes.ts';
 import ProfileButton from '../../components/ProfileButton';
 import CustomButton from '../../components/CustomButton';
 const Home: React.FC = () => {
@@ -20,7 +20,7 @@ const Home: React.FC = () => {
   };
 
   const handleGoAchievements = () => {
-    // history.push("/Achievements")
+    navigate('/Wiki?queryTab=3');
   };
   const handleGoSettings = () => {
     navigate('/Settings');
@@ -43,7 +43,7 @@ const Home: React.FC = () => {
               <Typography
                 onClick={handleGoPatches}
                 sx={{
-                  fontSize: 14,
+                  fontSize: 16,
                   textDecoration: 'underline',
                   cursor: 'pointer',
                 }}
@@ -57,7 +57,7 @@ const Home: React.FC = () => {
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '350px', gap: 3, mt: 4 }}>
           <CustomButton onClick={handleGoSelection} text={'PLAY'} fullWidth />
           <CustomButton onClick={handleGoLeaderboards} text={'LEADERBOARDS'} fullWidth />
-          <CustomButton onClick={handleGoAchievements} text={'ACHIEVEMENTS'} fullWidth disabled />
+          <CustomButton onClick={handleGoAchievements} text={'ACHIEVEMENTS'} fullWidth />
           <CustomButton onClick={handleGoSettings} text={'SETTINGS'} fullWidth />
         </Box>
       </Box>

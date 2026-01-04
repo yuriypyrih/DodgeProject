@@ -3,9 +3,11 @@ import { Box } from '@mui/material';
 import { ScoreRecord } from 'Models/ScoreRecord.ts';
 import styles from './styles.module.scss';
 import DefaultIcon from '@mui/icons-material/Description';
-import { relics } from 'game/engine/relics/relics_collection.ts';
+import { relics } from 'game/engine/relics/relics_collection.tsx';
 import USerIcon from '@mui/icons-material/AccountCircle';
 import clsx from 'clsx';
+import TitleCosmetic from 'components/TitleCosmetic';
+import { TITLES } from '../../lib/api/specs/api.ts';
 
 type TProps = {
   scoreRecord: ScoreRecord;
@@ -72,8 +74,14 @@ const LeaderboardItem: React.FC<TProps> = ({ scoreRecord, index, lastPlaced, hig
             <Box sx={{ color: 'white' }}>{getPlace()}</Box>
           </Box>
           <Box sx={{ flex: 1, display: 'flex', gap: 1 }}>
-            <USerIcon sx={{ color: 'white' }} />
-            <Box sx={{ color: 'white' }}>{scoreRecord.userName}</Box>
+            <USerIcon sx={{ color: '#2DD5C4' }} />
+            <Box sx={{ color: 'white' }}>
+              <TitleCosmetic
+                // sx={{ fontSize: 16 }}
+                text={scoreRecord.userName}
+                textStyle={scoreRecord.userTitle as TITLES}
+              />
+            </Box>
           </Box>
           <Box sx={{ flex: 1, textAlign: 'right', pr: 2 }}>
             <Box sx={{ color: 'white' }}>{scoreRecord.score.toFixed(2)} s</Box>

@@ -28,6 +28,7 @@ export default class PortalEnemy extends GameObject {
       velY: reverted ? velY * -1 : velY,
       velX,
       name: 'Portal Enemy',
+      symbiosisName: 'Portal',
     });
 
     this.game = game;

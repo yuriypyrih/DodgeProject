@@ -25,6 +25,8 @@ export default class HackerEnemy extends GameObject {
       position,
       velY,
       velX,
+      name: 'Hacker Enemy',
+      symbiosisName: 'Hacker',
     });
 
     this.game = game;

@@ -12,8 +12,11 @@ export const env = {
   SERVER_EMAIL_PASS: process.env.SERVER_EMAIL_PASS || '',
   API_SECRET_KEY: process.env.API_SECRET_KEY || '',
   DB_CONNECTION_STRING: process.env.DB_CONNECTION_STRING || '',
+  DB_CONNECTION_STRING_LOCAL: process.env.DB_CONNECTION_STRING_LOCAL || '',
   JWT_KEY: process.env.JWT_KEY || '',
   JWT_SECRET: process.env.JWT_SECRET || '',
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '',
-  CYPHER_KEY: process.env.CYPHER_KEY || ''
+  CYPHER_KEY: process.env.CYPHER_KEY || '',
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || '',
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET || ''
 };

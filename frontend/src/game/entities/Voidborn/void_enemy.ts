@@ -30,6 +30,7 @@ export default class VoidEnemy extends GameObject {
       velY,
       velX,
       name: 'Voidborn Enemy',
+      symbiosisName: 'Voidborn',
     });
 
     this.game = game;

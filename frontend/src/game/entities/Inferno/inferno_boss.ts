@@ -12,6 +12,7 @@ type TProps = {
   velX?: number;
   velY?: number;
   skipAwakening?: boolean;
+  frequency?: number;
 };
 
 export default class InfernoBoss extends GameObject {
@@ -20,8 +21,9 @@ export default class InfernoBoss extends GameObject {
   bullet_timer: number;
   awakening_timer: number;
   skipAwakening: boolean;
+  frequency: number;
 
-  constructor({ game, position, velX = 0, velY = 0.3, skipAwakening = false }: TProps) {
+  constructor({ game, position, velX = 0, velY = 0.3, skipAwakening = false, frequency = 20 }: TProps) {
     super({
       id: ENTITY_ID.BOSS,
       width: 50,
@@ -36,6 +38,7 @@ export default class InfernoBoss extends GameObject {
     this.awakening_timer = 0;
     this.bullet_timer = 0;
     this.skipAwakening = skipAwakening;
+    this.frequency = frequency;
 
     game.gameObjects.push(new InfernoWall({ game, side: 'left', duration: null }));
     game.gameObjects.push(new InfernoWall({ game, side: 'right', duration: null }));
@@ -69,7 +72,7 @@ export default class InfernoBoss extends GameObject {
 
   fireBullets() {
     this.bullet_timer++;
-    if (this.awaken && this.bullet_timer % 20 === 0) {
+    if (this.awaken && this.bullet_timer % this.frequency === 0) {
       const offset = this.gameObject.velX > 0 ? 20 : -20;
       const origin_x = this.gameObject.position.x + this.gameObject.width / 2 + offset;
       const origin_y = this.gameObject.position.y + this.gameObject.height - 5;

@@ -1,7 +1,8 @@
 import Game from './game';
 import store from '../../redux/store';
-import { getSec, sec } from '../../utils/deltaTime';
-import { setChaosTimer, setCurrentTimer, setProgress } from '../../redux/slices/gameSlice';
+import { getSec, sec } from 'utils/deltaTime.ts';
+import { setChaosTimer, setCurrentTimer, setProgress } from 'redux/slices/gameSlice.ts';
+import { getLevel0, level0Stars } from './levels/getLevel0';
 import { getLevel1, level1Stars } from './levels/getLevel1';
 import { getLevel2, level2Stars } from './levels/getLevel2';
 import { getLevel3, level3Stars } from './levels/getLevel3';
@@ -12,7 +13,6 @@ import { getLevel7, level7Stars } from './levels/getLevel7';
 import { getLevel8, level8Stars } from './levels/getLevel8';
 import { getLevel9, level9Stars } from './levels/getLevel9';
 import { getLevel10, level10Stars } from './levels/getLevel10';
-import { getLevel0, level0Stars } from './levels/getLevel0';
 import { getLevel11, level11Stars } from './levels/getLevel11';
 import { getLevel12, level12Stars } from './levels/getLevel12';
 import { getLevel13, level13Stars } from './levels/getLevel13';
@@ -30,7 +30,22 @@ import { getLevel24, level24Stars } from './levels/getLevel24.ts';
 import { getLevel25, level25Stars } from './levels/getLevel25.ts';
 import { getLevel26, level26Stars } from './levels/getLevel26.ts';
 import { getLevel27, level27Stars } from './levels/getLevel27.ts';
-import { isChaosDungeon } from '../../utils/isChaosDungeon.ts';
+import { isChaosDungeon } from 'utils/isChaosDungeon.ts';
+import { getLevel28, level28Stars } from 'game/engine/levels/getLevel28.ts';
+import { getLevel29, level29Stars } from 'game/engine/levels/getLevel29.ts';
+import { getLevel30, level30Stars } from 'game/engine/levels/getLevel30.ts';
+import { getLevel31, level31Stars } from 'game/engine/levels/getLevel31.ts';
+import { getLevel32, level32Stars } from 'game/engine/levels/getLevel32.ts';
+import { getLevel33, level33Stars } from 'game/engine/levels/getLevel33.ts';
+import { getLevel34, level34Stars } from 'game/engine/levels/getLevel34.ts';
+import { getLevel35, level35Stars } from 'game/engine/levels/getLevel35.ts';
+import { getLevel36, level36Stars } from 'game/engine/levels/getLevel36.ts';
+import { getLevel37, level37Stars } from 'game/engine/levels/getLevel37.ts';
+import { getLevel38, level38Stars } from 'game/engine/levels/getLevel38.ts';
+import { getLevel39, level39Stars } from 'game/engine/levels/getLevel39.ts';
+import { getLevel42, level42Stars } from 'game/engine/levels/getLevel42.ts';
+import { getLevel41, level41Stars } from 'game/engine/levels/getLevel41.ts';
+import { getLevel40, level40Stars } from 'game/engine/levels/getLevel40.ts';
 
 type SpawnerProps = {
   game: Game;
@@ -51,6 +66,7 @@ export default class Spawner {
     this.chaosRoundTimer = 0;
     this.timerInterval = 0;
     this.levelStars = [
+      level0Stars,
       level1Stars,
       level2Stars,
       level3Stars,
@@ -78,6 +94,21 @@ export default class Spawner {
       level25Stars,
       level26Stars,
       level27Stars,
+      level28Stars,
+      level29Stars,
+      level30Stars,
+      level31Stars,
+      level32Stars,
+      level33Stars,
+      level34Stars,
+      level35Stars,
+      level36Stars,
+      level37Stars,
+      level38Stars,
+      level39Stars,
+      level40Stars,
+      level41Stars,
+      level42Stars,
     ];
   }
 
@@ -106,9 +137,9 @@ export default class Spawner {
     } else {
       store.dispatch(
         setProgress({
-          max_stars: this.levelStars[this.game.level - 1].length,
+          max_stars: isChaosDungeon(this.game.level) ? 12 : this.levelStars[this.game.level].length,
           total_stars_collected: this.game.player.stars,
-          star_timers: this.levelStars[this.game.level - 1],
+          star_timers: this.levelStars[this.game.level],
         }),
       );
     }
@@ -116,14 +147,11 @@ export default class Spawner {
 
   update(_deltaTime: number) {
     this.roundTimer++;
-    if (this.game.player.isChaosActive) this.chaosRoundTimer++;
-
+    if (this.game.player.isChaosActive) {
+      this.chaosRoundTimer++;
+    }
     if (isChaosDungeon(this.game.level) && !this.game.player.isChaosActive) {
-      const max_stars_minus_1 = this.levelStars[this.game.level - 1].length - 1;
-      const total_stars_collected = this.game.player.stars;
-      if (max_stars_minus_1 === total_stars_collected) {
-        this.game.player.isChaosActive = true;
-      }
+      this.game.player.isChaosActive = true;
     }
 
     this.timerInterval++;
@@ -195,6 +223,36 @@ export default class Spawner {
       getLevel26(this.game);
     } else if (this.game.level === 27) {
       getLevel27(this.game);
+    } else if (this.game.level === 28) {
+      getLevel28(this.game);
+    } else if (this.game.level === 29) {
+      getLevel29(this.game);
+    } else if (this.game.level === 30) {
+      getLevel30(this.game);
+    } else if (this.game.level === 31) {
+      getLevel31(this.game);
+    } else if (this.game.level === 32) {
+      getLevel32(this.game);
+    } else if (this.game.level === 33) {
+      getLevel33(this.game);
+    } else if (this.game.level === 34) {
+      getLevel34(this.game);
+    } else if (this.game.level === 35) {
+      getLevel35(this.game);
+    } else if (this.game.level === 36) {
+      getLevel36(this.game);
+    } else if (this.game.level === 37) {
+      getLevel37(this.game);
+    } else if (this.game.level === 38) {
+      getLevel38(this.game);
+    } else if (this.game.level === 39) {
+      getLevel39(this.game);
+    } else if (this.game.level === 40) {
+      getLevel40(this.game);
+    } else if (this.game.level === 41) {
+      getLevel41(this.game);
+    } else if (this.game.level === 42) {
+      getLevel42(this.game);
     }
   }
 }

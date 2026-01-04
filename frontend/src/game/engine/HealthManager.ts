@@ -44,14 +44,19 @@ export default class HealthManager {
       lastWhoDamagedMe?: string;
       ImmunityShiftInMS?: number;
       isSecondaryDamage?: boolean;
+      disableChaosDamage?: boolean;
+      disableDefaultSound?: boolean;
     },
   ) {
+    const healthPreDmg = this.health;
     const immunityShit = options && options.ImmunityShiftInMS ? options.ImmunityShiftInMS : 0;
-    const CHAOS_EXTRA_DMG = 5;
+    const CHAOS_EXTRA_DMG = options?.disableChaosDamage ? 0 : 5;
     const calculatedDmg = this.game.player.isChaosActive ? damage + CHAOS_EXTRA_DMG : damage;
 
     if (options && options.isSecondaryDamage) {
       if (!this.isImmuneSecondary && !this.game.player.relicManager.isImmune) {
+        console.log('TAKE DAMAGE', damage, options?.lastWhoDamagedMe);
+        this.game.player.achievementManager.takeHit(options?.lastWhoDamagedMe);
         this.lastTimeDamagedSecondary = this.game.now + immunityShit;
         if (options?.lastWhoDamagedMe) this.lastWhoDamagedMe = options.lastWhoDamagedMe;
         if (options?.isTrueDmg) {
@@ -62,6 +67,9 @@ export default class HealthManager {
         if (!options?.disableDefaultPulse) {
           store.dispatch(playAnimation(VFX.PULSE_RED));
         }
+        if (!options?.disableDefaultSound) {
+          this.game.audioHandler.damage.play();
+        }
 
         if (options?.callback) {
           options.callback();
@@ -69,12 +77,19 @@ export default class HealthManager {
       }
     } else {
       if (!this.isImmune && !this.game.player.relicManager.isImmune) {
+        console.log('TAKE DAMAGE', damage, options?.lastWhoDamagedMe);
+        this.game.player.achievementManager.takeHit(options?.lastWhoDamagedMe);
         this.lastTimeDamaged = this.game.now + immunityShit;
         if (options?.lastWhoDamagedMe) this.lastWhoDamagedMe = options.lastWhoDamagedMe;
         if (options?.isTrueDmg) {
           this.health -= calculatedDmg;
         } else {
           this.buffered_dmg += calculatedDmg;
+          this.game.player.relicManager.damagedNeedHealing = true;
+        }
+
+        if (!options?.disableDefaultSound) {
+          this.game.audioHandler.damage.play();
         }
         if (!options?.disableDefaultPulse) {
           store.dispatch(playAnimation(VFX.PULSE_RED));
@@ -88,12 +103,32 @@ export default class HealthManager {
     if (options?.bypassCallback) {
       options.bypassCallback();
     }
+    if (this.game.player.relicManager.relic?.id === AUGMENTS.MEDITATE) {
+      this.game.keyLastTimePressed = this.game.now;
+      this.game.player.relicManager.available_uses = this.game.player.relicManager.relic?.max_uses;
+      this.game.player.relicManager.updateRelic();
+    }
+    if (
+      this.game.player.relicManager.relic?.id === AUGMENTS.HEAL &&
+      healthPreDmg - calculatedDmg <= 20 &&
+      healthPreDmg > 20 &&
+      !this.isImmune &&
+      !this.isImmuneSecondary &&
+      !this.game.player.relicManager.isImmune
+    ) {
+      this.game.player.achievementManager.updateTrackables((prev) => ({
+        fullOfHeartTimesDroppedBellowThreshold20: prev.fullOfHeartTimesDroppedBellowThreshold20 + 1,
+      }));
+    }
   }
 
   reset() {
     this.health = 100;
     this.lastTimeDamaged = Date.now();
     this.buffered_dmg = 0;
+    if (this.game.player.relicManager.relic?.id === AUGMENTS.HARVESTER) {
+      this.health = 1;
+    }
   }
 
   update(_deltaNumber: number) {

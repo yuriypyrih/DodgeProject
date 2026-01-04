@@ -9,11 +9,12 @@ type GameObjectProps = {
   velX: number;
   velY: number;
   name?: string;
+  symbiosisName?: string;
 };
 
 export default abstract class GameObject {
   gameObject: GameObjectProps;
-  constructor({ id, width, height, position, velX, velY, name = 'Object' }: GameObjectProps) {
+  constructor({ id, width, height, position, velX, velY, name = 'Object', symbiosisName }: GameObjectProps) {
     this.gameObject = {
       id,
       width,
@@ -22,6 +23,7 @@ export default abstract class GameObject {
       velX,
       velY,
       name,
+      symbiosisName,
     };
   }
 

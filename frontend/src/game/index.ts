@@ -8,7 +8,7 @@ export const setContext = (newContext: any) => {
 };
 
 const startEngine = () => {
-  const canvas = <HTMLCanvasElement>document.getElementById('gameScreen-canvas');
+  const canvas = document.getElementById('gameScreen-canvas') as HTMLCanvasElement | null;
 
   if (canvas) {
     context = canvas.getContext('2d');
@@ -17,35 +17,48 @@ const startEngine = () => {
   const GAME_WIDTH = 900;
   const GAME_HEIGHT = 500;
 
-  // Initiating our game engine and run it.
-  // We pass default values for canvasWidth and canvasHeight since we initialize the Game at App level
-  // But we have to pass the actual canvas size at game.Start just to make sure
   const game = new Game({ canvasWidth: GAME_WIDTH, canvasHeight: GAME_HEIGHT });
 
-  let lastTime = 0;
-  const fps = 60;
-  const fpsInterval = 1000 / fps;
+  const FPS = 60;
+  const FRAME_MS = 1000 / FPS;
 
-  function gameLoop(timestamp: number) {
-    if (game.gameState === GAME_STATE.PLAYING && context !== null) {
-      const deltaTime = timestamp - lastTime;
+  let nextTick = performance.now();
+  let paintScheduled = false;
+  const running = true;
 
-      if (deltaTime >= fpsInterval) {
-        // Clear Screen
+  function schedulePaint() {
+    if (paintScheduled) return;
+
+    paintScheduled = true;
+    requestAnimationFrame(() => {
+      paintScheduled = false;
+
+      if (game.gameState === GAME_STATE.PLAYING && context) {
         context.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-        // Update Logic and Redraw
-        game.update(deltaTime);
+        game.update(FRAME_MS); // fixed cadence, as requested
         game.draw(context);
-
-        // Update lastTime to now, subtracting any extra time elapsed beyond the frame time
-        lastTime = timestamp - (deltaTime % fpsInterval);
       }
-    }
-
-    requestAnimationFrame(gameLoop);
+    });
   }
 
-  requestAnimationFrame(gameLoop);
+  function tick() {
+    if (!running) return;
+
+    const now = performance.now();
+
+    // Hard resync after long stalls (tab switch, GC, etc.)
+    if (now > nextTick + 100) {
+      nextTick = now;
+    }
+
+    schedulePaint();
+
+    nextTick += FRAME_MS;
+    const delay = Math.max(0, nextTick - performance.now());
+    setTimeout(tick, delay);
+  }
+
+  setTimeout(tick, 0);
 
   return game;
 };

@@ -3,7 +3,7 @@ import { COLOR } from '../enum/colors.ts';
 import store from '../../redux/store.ts';
 import { setPoisoned } from 'redux/slices/gameSlice.ts';
 import GameObject from './gameObject.ts';
-import { relics } from './relics/relics_collection.ts';
+import { relics } from './relics/relics_collection.tsx';
 import { playAnimation, playText } from 'redux/slices/vfxSlice.ts';
 import { VFX } from '../enum/vfx.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
@@ -17,8 +17,10 @@ export default class AfflictionManager {
   readonly MAGNET_POWER: number;
   isPoisoned: boolean;
   poisonTimer: number;
-  poisonConsumed: 0;
+  poisonConsumed: number;
+  radioBuildup: number;
   isHacked: boolean;
+  isTricked: boolean;
   frostIntensity: number;
   isDeathmarked: boolean;
   deathmarkStartTime: number;
@@ -29,9 +31,11 @@ export default class AfflictionManager {
     this.game = game;
     this.MAGNET_POWER = 7; //Default 9
     this.isHacked = false;
+    this.isTricked = false;
     this.isPoisoned = false;
     this.poisonTimer = Date.now();
     this.poisonConsumed = 0;
+    this.radioBuildup = 0;
     this.frostIntensity = 0;
     this.isDeathmarked = false;
     this.deathmarkStartTime = -1;
@@ -41,9 +45,11 @@ export default class AfflictionManager {
 
   reset() {
     this.isHacked = false;
+    this.isTricked = false;
     this.isPoisoned = false;
     this.poisonTimer = Date.now();
     this.poisonConsumed = 0;
+    this.radioBuildup = 0;
     this.frostIntensity = 0;
     this.isDeathmarked = false;
     this.deathmarkStartTime = -1;
@@ -65,9 +71,18 @@ export default class AfflictionManager {
     }
   }
 
+  getTricked() {
+    if (!this.isTricked) {
+      this.isTricked = true;
+      store.dispatch(playText(['PRANKED']));
+      store.dispatch(playAnimation(VFX.PULSE_PINK));
+    }
+  }
+
   getPoisoned() {
     if (!this.isPoisoned) {
       this.isPoisoned = true;
+      this.game.audioHandler.poison.play();
       store.dispatch(setPoisoned(true));
       store.dispatch(playText(['POISONED']));
       store.dispatch(playAnimation(VFX.PULSE_PURPLE));
@@ -83,6 +98,7 @@ export default class AfflictionManager {
     if (!this.isDeathmarked) {
       this.isDeathmarked = true;
       this.deathmarkStartTime = Date.now();
+      this.game.audioHandler.deathmark.play();
       store.dispatch(playText(['DEATHMARKED']));
       store.dispatch(playAnimation(VFX.PULSE_DEATHMARK));
     }
@@ -137,6 +153,35 @@ export default class AfflictionManager {
   draw(context: CanvasRenderingContext2D) {
     const player = this.game.player;
     const relicManager = player.relicManager;
+    if (this.radioBuildup > 2) {
+      let radio_cube_size = 10;
+      if (this.radioBuildup >= 10) {
+        radio_cube_size = 2;
+      } else if (this.radioBuildup >= 8) {
+        radio_cube_size = 4;
+      } else if (this.radioBuildup >= 6) {
+        radio_cube_size = 6;
+      } else if (this.radioBuildup >= 4) {
+        radio_cube_size = 8;
+      } else if (this.radioBuildup >= 2) {
+        radio_cube_size = 10;
+      }
+      context.fillStyle = COLOR.ORANGE;
+      context.fillRect(
+        player.gameObject.position.x + radio_cube_size,
+        player.gameObject.position.y + radio_cube_size,
+        player.gameObject.width - radio_cube_size * 2,
+        player.gameObject.height - radio_cube_size * 2,
+      );
+      context.strokeStyle = COLOR.GREEN;
+      context.lineWidth = 2;
+      context.strokeRect(
+        player.gameObject.position.x + radio_cube_size,
+        player.gameObject.position.y + radio_cube_size,
+        player.gameObject.width - radio_cube_size * 2,
+        player.gameObject.height - radio_cube_size * 2,
+      );
+    }
 
     if (this.frostIntensity > 0 && !relicManager.isStabilized) {
       let frosty_cube_size = 8;
@@ -184,6 +229,17 @@ export default class AfflictionManager {
       context.stroke();
       context.globalAlpha = 1;
     }
+    if (this.isTricked) {
+      context.strokeStyle = COLOR.PINK;
+      context.lineWidth = 4;
+      context.strokeRect(
+        player.gameObject.position.x,
+        player.gameObject.position.y,
+        player.gameObject.width,
+        player.gameObject.height,
+      );
+      context.lineWidth = 2;
+    }
   }
 
   update(_now: number) {
@@ -214,7 +270,7 @@ export default class AfflictionManager {
       if (this.deathmark_aura_radius < 20) {
         this.isDeathmarked = false;
         this.deathmark_aura_radius = this.DEATHMARK_AURA_RADIUS_MAX;
-        if (!relicManager.isImmune) {
+        if (!relicManager.isImmune && !relicManager.isMedidating) {
           if (relicManager.relic?.id === AUGMENTS.NIGHT_VISION) {
             player.healthManager.takeDamage(20, { lastWhoDamagedMe: 'Deathmark' });
           } else if (relicManager.relic?.id === AUGMENTS.DEMON_SOUL) {

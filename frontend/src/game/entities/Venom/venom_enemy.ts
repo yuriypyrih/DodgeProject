@@ -39,6 +39,7 @@ export default class VenomEnemy extends GameObject {
       position,
       velY,
       velX,
+      symbiosisName: 'Venom',
     });
 
     this.game = game;

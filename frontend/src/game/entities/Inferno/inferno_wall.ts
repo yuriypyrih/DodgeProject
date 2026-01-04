@@ -60,6 +60,7 @@ export default class InfernoWall extends GameObject {
       position: getPosition(side, game),
       velY: 0,
       velX: 0,
+      symbiosisName: 'Inferno',
     });
 
     this.game = game;
@@ -115,7 +116,7 @@ export default class InfernoWall extends GameObject {
       this.innerTimer++;
 
       if (this.innerTimer >= this.duration - 20) {
-        this.game.gameObjects.splice(this.game.gameObjects.indexOf(this), 1);
+        this.game.removeGameObject(this);
       }
     }
   }

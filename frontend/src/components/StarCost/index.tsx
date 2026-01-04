@@ -14,6 +14,7 @@ type StarCostProps = {
   top?: string;
   hovered?: boolean;
   withoutLock?: boolean;
+  disabled?: boolean;
 };
 
 const StarCost: React.FC<StarCostProps> = ({
@@ -23,16 +24,17 @@ const StarCost: React.FC<StarCostProps> = ({
   position = 'absolute',
   hovered,
   withoutLock = false,
+  disabled,
 }) => {
   const getLock = () => {
-    return hovered ? <LockOpenIcon className={styles.locker} /> : <LockIcon className={styles.locker} />;
+    return hovered && !disabled ? <LockOpenIcon className={styles.locker} /> : <LockIcon className={styles.locker} />;
   };
 
   return (
     <Box
       style={{
-        backgroundColor: '#00AFA3',
-        border: '2px solid #2dd5c4',
+        backgroundColor: disabled ? '#00AFA310' : '#00AFA3',
+        border: disabled ? '2px solid #2dd5c410' : '2px solid #2dd5c4',
         borderRadius: '4px',
         overflow: 'hidden',
         position: position,
@@ -49,7 +51,7 @@ const StarCost: React.FC<StarCostProps> = ({
       {!withoutLock && getLock()}
       <Box sx={{ display: 'flex', flexWrap: 'nowrap', alignItems: 'center', justifyContent: 'center', px: 0.5 }}>
         <Box>
-          <Typography sx={{ fontSize: 10 }}>{cost}</Typography>
+          <Typography sx={{ fontSize: 12 }}>{cost}</Typography>
         </Box>
         <StarIcon
           style={{

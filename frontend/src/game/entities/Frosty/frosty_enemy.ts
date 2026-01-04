@@ -27,6 +27,7 @@ export default class FrostyEnemy extends GameObject {
       position,
       velY,
       velX,
+      symbiosisName: 'Frosty',
     });
 
     this.MAX_AURA_RADIUS = 220;

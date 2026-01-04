@@ -1,0 +1,55 @@
+.main {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 240px;
+  padding: 12px 14px;
+  background: rgba(20, 20, 24, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  color: #fff;
+  pointer-events: auto;
+  opacity: 0;
+  animation: popOut 0.4s 0.4s forwards;
+}
+
+@keyframes popOut {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.title {
+  font-weight: 600;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+
+.reward {
+  opacity: 0.85;
+}

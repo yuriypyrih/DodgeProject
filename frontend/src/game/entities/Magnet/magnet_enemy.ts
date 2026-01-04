@@ -28,6 +28,7 @@ export default class MagnetEnemy extends GameObject {
       position,
       velY,
       velX,
+      symbiosisName: 'Magnet',
     });
     this.MAX_AURA_RADIUS = 300;
     this.aura_radius_1 = type === 'minus' ? 0 : this.MAX_AURA_RADIUS;

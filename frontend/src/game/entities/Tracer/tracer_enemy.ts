@@ -28,6 +28,7 @@ export default class TracerEnemy extends GameObject {
       velY,
       velX,
       name: 'Tracer Enemy',
+      symbiosisName: 'Tracer',
     });
 
     this.game = game;

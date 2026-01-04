@@ -27,6 +27,7 @@ export default class TitanEnemy extends GameObject {
       velY,
       velX,
       name: 'Titan Enemy',
+      symbiosisName: 'Tether',
     });
 
     this.game = game;

@@ -12,6 +12,8 @@ import AfflictionManager from './AfflictionManager.ts';
 import RelicManager from './RelicManager.ts';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
 import { XY } from 'game/types/XY.ts';
+import { isChaosDungeon } from 'utils/isChaosDungeon.ts';
+import AchievementManager from 'game/engine/AchievementManager.ts';
 
 type PlayerProps = {
   game: Game;
@@ -22,6 +24,7 @@ export default class Player extends GameObject {
   healthManager: HealthManager;
   afflictionManager: AfflictionManager;
   relicManager: RelicManager;
+  achievementManager: AchievementManager;
   personalParticles: Trail[];
   stars: number;
   milestone: boolean;
@@ -46,6 +49,7 @@ export default class Player extends GameObject {
     this.healthManager = new HealthManager({ game });
     this.afflictionManager = new AfflictionManager({ game });
     this.relicManager = new RelicManager({ game });
+    this.achievementManager = new AchievementManager({ game });
     this.personalParticles = [];
     this.stars = 0;
     this.milestone = false;
@@ -63,23 +67,52 @@ export default class Player extends GameObject {
 
   resetMovement() {
     this.afflictionManager.frostIntensity = 0;
-    this.gameObject.velX = this.gameObject.velX > 0 ? this.maxSpeed : -this.maxSpeed;
+
+    if (this.gameObject.velX > 0) {
+      this.gameObject.velX = this.maxSpeed;
+    } else if (this.gameObject.velX < 0) {
+      this.gameObject.velX = -this.maxSpeed;
+    }
+    if (this.gameObject.velY > 0) {
+      this.gameObject.velY = this.maxSpeed;
+    } else if (this.gameObject.velY < 0) {
+      this.gameObject.velY = -this.maxSpeed;
+    }
   }
 
   moveLeft() {
-    this.gameObject.velX = -this.maxSpeed;
+    if (!this.afflictionManager.isTricked) {
+      this.gameObject.velX = -this.maxSpeed;
+    } else {
+      this.gameObject.velX = this.maxSpeed;
+    }
+    if (this.game.level === 14 && this.game.spawner.executionSequence === 4) {
+      this.achievementManager.updateTrackables({ phaseShiftLeftButtonPressed: true });
+    }
   }
 
   moveRight() {
-    this.gameObject.velX = this.maxSpeed;
+    if (!this.afflictionManager.isTricked) {
+      this.gameObject.velX = this.maxSpeed;
+    } else {
+      this.gameObject.velX = -this.maxSpeed;
+    }
   }
 
   moveUp() {
-    this.gameObject.velY = -this.maxSpeed;
+    if (!this.afflictionManager.isTricked) {
+      this.gameObject.velY = -this.maxSpeed;
+    } else {
+      this.gameObject.velY = this.maxSpeed;
+    }
   }
 
   moveDown() {
-    this.gameObject.velY = this.maxSpeed;
+    if (!this.afflictionManager.isTricked) {
+      this.gameObject.velY = this.maxSpeed;
+    } else {
+      this.gameObject.velY = -this.maxSpeed;
+    }
   }
 
   stopX() {
@@ -101,7 +134,9 @@ export default class Player extends GameObject {
     this.healthManager.reset();
     this.relicManager.reset();
     this.afflictionManager.reset();
+    this.achievementManager.reset();
     this.personalParticles = [];
+    this.game.keyLastTimePressed = this.game.now;
   }
 
   getBounds() {
@@ -148,8 +183,8 @@ export default class Player extends GameObject {
   }
 
   victoryConditionCheck() {
-    const maxStars = this.game.spawner.levelStars[this.game.level - 1];
-    if (this.stars >= maxStars.length) {
+    const maxStars = this.game.spawner.levelStars[this.game.level];
+    if (this.stars >= maxStars.length && !isChaosDungeon(this.game.level)) {
       this.game.dispatchVictory(this.stars);
       return true;
     } else {
@@ -162,6 +197,9 @@ export default class Player extends GameObject {
       // Berserk Relic
       const relic = this.relicManager.relic;
       if (relic && relic.id === AUGMENTS.BERSERK && this.relicManager.available_uses > 0) {
+        if (this.stars === 0) {
+          this.achievementManager.updateTrackables({ activatedBerserkBeforeFirstStar: true });
+        }
         store.dispatch(playText(['BERSERK']));
         this.healthManager.health = 100;
         this.relicManager.berserkIsActive = true;
@@ -176,12 +214,14 @@ export default class Player extends GameObject {
 
       //Guardian Angel Relic
       else if (relic && relic.id === AUGMENTS.GUARDIAN_ANGEL && this.relicManager.available_uses > 0) {
+        this.game.audioHandler.shield.play();
         store.dispatch(playText(['GUARDIAN ANGEL']));
         store.dispatch(playAnimation(VFX.PULSE_IMMUNITY));
         this.healthManager.health = 35;
         this.relicManager.guardianActivationTime = this.game.now;
         this.afflictionManager.removePoison();
         this.afflictionManager.frostIntensity = 0;
+        this.afflictionManager.radioBuildup = 0;
         this.game.darkness = 0;
         this.relicManager.available_uses--;
         this.relicManager.updateRelic();
@@ -201,12 +241,18 @@ export default class Player extends GameObject {
 
   collectStar(starObject: GameObject) {
     this.stars++;
+    this.game.audioHandler.starGrab.play();
     store.dispatch(playAnimation(VFX.PULSE_GOLD));
     //IMPORTANT: First update the stars and then the hudProgress
     this.game.spawner.updateHudProgress();
-    this.game.gameObjects.splice(this.game.gameObjects.indexOf(starObject), 1);
-    this.milestone = true;
+    this.game.removeGameObject(starObject);
+    this.milestone = !isChaosDungeon(this.game.level);
     this.healthManager.lastTimeDamaged = this.game.now;
+    if (this.game.level === 18 && this.afflictionManager.frostIntensity > 1) {
+      this.achievementManager.updateTrackables((prev) => ({
+        numberOfStarsCollectedWhileBeingFrozen: prev.numberOfStarsCollectedWhileBeingFrozen + 1,
+      }));
+    }
   }
 
   draw(context: CanvasRenderingContext2D) {
@@ -262,6 +308,16 @@ export default class Player extends GameObject {
 
     this.game.gameObjects.forEach((object: GameObject) => {
       if (this.collision(object.getBounds())) {
+        if (
+          this.relicManager.relic?.id === AUGMENTS.SYMBIOTIC_LINK &&
+          this.relicManager.symbioticLinked &&
+          object.gameObject.symbiosisName
+        ) {
+          if (this.relicManager.testSymbioticLink(object)) {
+            return;
+          }
+        }
+
         // You're immune to dmg when healed
         if (object.gameObject.id === ENTITY_ID.STAR) {
           this.collectStar(object);
@@ -282,9 +338,25 @@ export default class Player extends GameObject {
           this.healthManager.takeDamage(25, { lastWhoDamagedMe: object.gameObject.name });
         }
 
+        if (object.gameObject.id === ENTITY_ID.BIPOLAR && 'aggressive' in object) {
+          if (object.aggressive) {
+            this.healthManager.takeDamage(300, { lastWhoDamagedMe: object.gameObject.name });
+          } else {
+            if (this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL) {
+              this.afflictionManager.getPoisoned();
+            } else {
+              this.healthManager.health += 100;
+              store.dispatch(playAnimation(VFX.PULSE_GREEN));
+            }
+            this.healthManager.lastTimeDamaged = this.game.now;
+            object.aggressive = true;
+          }
+        }
+
         if (object.gameObject.id === ENTITY_ID.REAPER) {
           this.healthManager.takeDamage(0, {
             disableDefaultPulse: true,
+            disableDefaultSound: !this.afflictionManager.isPoisoned,
             callback: () => this.afflictionManager.getDeathmarked(),
           });
         }
@@ -298,24 +370,30 @@ export default class Player extends GameObject {
         }
 
         if (object.gameObject.id === ENTITY_ID.EXPLOSION) {
-          this.healthManager.takeDamage(
-            this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? (this.isChaosActive ? 8 : 12) : 45,
-            {
-              isTrueDmg: true,
-              lastWhoDamagedMe: 'Explosion',
+          const explosionDmg = this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? (this.isChaosActive ? 8 : 12) : 45;
+          this.healthManager.takeDamage(explosionDmg, {
+            isTrueDmg: true,
+            lastWhoDamagedMe: 'Explosion',
+            callback: () => {
+              this.achievementManager.updateTrackables((prev) => ({ totalFireDmg: prev.totalFireDmg + explosionDmg }));
             },
-          );
+          });
         }
         if (object.gameObject.id === ENTITY_ID.INFERNO_WALL) {
-          this.healthManager.takeDamage(
-            this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? (this.isChaosActive ? -1 : 2.5) : 10,
-            {
-              isTrueDmg: true,
-              lastWhoDamagedMe: 'Firewall',
-              ImmunityShiftInMS: -500,
-              isSecondaryDamage: true,
+          const fireDmg = this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? (this.isChaosActive ? -1 : 2.5) : 10;
+          this.healthManager.takeDamage(fireDmg, {
+            isTrueDmg: true,
+            lastWhoDamagedMe: 'Firewall',
+            ImmunityShiftInMS: -500,
+            isSecondaryDamage: true,
+            disableDefaultSound: true,
+            callback: () => {
+              this.game.audioHandler.burn.play();
+              this.achievementManager.updateTrackables((prev) => ({
+                totalFireDmg: prev.totalFireDmg + fireDmg,
+              }));
             },
-          );
+          });
         }
         if (object.gameObject.id === ENTITY_ID.FROSTY) {
           this.getHitByBodyAura(object, 25, 'Frosty Enemy', () => {
@@ -334,22 +412,25 @@ export default class Player extends GameObject {
           }
         }
         if (object.gameObject.id === ENTITY_ID.FROSTY_BULLET) {
-          this.healthManager.takeDamage(10, {
+          this.healthManager.takeDamage(15, {
             lastWhoDamagedMe: 'a Bullet',
             callback: () => {
               if (!this.relicManager.berserkIsActive && !this.relicManager.isStabilized) {
                 this.afflictionManager.frostIntensity =
                   this.relicManager.relic?.id === AUGMENTS.NIGHT_VISION ? 80 : 160;
               }
-              this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
+              this.game.removeGameObject(object);
             },
           });
+        } else if (object.gameObject.id === ENTITY_ID.LIFELINE_BULLET) {
+          this.healthManager.health += 15;
+          this.game.removeGameObject(object);
         }
         if (object.gameObject.id === ENTITY_ID.BULLET) {
-          this.healthManager.takeDamage(10, {
+          this.healthManager.takeDamage(15, {
             lastWhoDamagedMe: 'a Bullet',
             callback: () => {
-              this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
+              this.game.removeGameObject(object);
             },
           });
         }
@@ -357,6 +438,7 @@ export default class Player extends GameObject {
           this.healthManager.takeDamage(this.afflictionManager.isPoisoned ? 30 : 5, {
             lastWhoDamagedMe: 'Venom Enemy',
             disableDefaultPulse: !this.afflictionManager.isPoisoned,
+            disableDefaultSound: !this.afflictionManager.isPoisoned,
             bypassCallback: () => this.afflictionManager.getPoisoned(),
           });
         }
@@ -364,21 +446,44 @@ export default class Player extends GameObject {
           this.healthManager.takeDamage(20, {
             disableDefaultPulse: true,
             lastWhoDamagedMe: 'Hacker Enemy',
+            disableDefaultSound: !this.afflictionManager.isHacked,
             bypassCallback: () => {
               if (!this.afflictionManager.isHacked) {
+                this.game.audioHandler.hacked.play();
                 this.afflictionManager.getHacked();
               }
             },
           });
         }
-
+        if (object.gameObject.id === ENTITY_ID.TRICKSTER) {
+          this.healthManager.takeDamage(20, {
+            disableDefaultPulse: true,
+            lastWhoDamagedMe: 'Trickster Enemy',
+            disableDefaultSound: !this.afflictionManager.isTricked,
+            bypassCallback: () => {
+              if (!this.afflictionManager.isTricked) {
+                this.game.audioHandler.hacked.play();
+                this.afflictionManager.getTricked();
+              }
+            },
+          });
+        }
+        if (object.gameObject.id === ENTITY_ID.TRICKSTER_BULLET) {
+          this.healthManager.takeDamage(15, {
+            lastWhoDamagedMe: 'a Bullet',
+            callback: () => {
+              this.afflictionManager.getTricked();
+              this.game.removeGameObject(object);
+            },
+          });
+        }
         if (object.gameObject.id === ENTITY_ID.VENOM_BULLET) {
           this.healthManager.takeDamage(15, {
             disableDefaultPulse: !this.afflictionManager.isPoisoned,
             lastWhoDamagedMe: 'a Bullet',
             callback: () => {
               this.afflictionManager.getPoisoned();
-              this.game.gameObjects.splice(this.game.gameObjects.indexOf(object), 1);
+              this.game.removeGameObject(object);
             },
           });
         }
@@ -394,6 +499,52 @@ export default class Player extends GameObject {
         if (object.gameObject.id === ENTITY_ID.MAGNET_AURA_MINUS) {
           this.afflictionManager.applyMagneticForce(object, 'minus');
         }
+        if (object.gameObject.id === ENTITY_ID.RADIOACTIVE_AURA) {
+          let radioationDmg = this.afflictionManager.radioBuildup;
+          if (this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL) {
+            radioationDmg = this.afflictionManager.radioBuildup * 0.25;
+          } else if (this.relicManager.relic?.id === AUGMENTS.NIGHT_VISION) {
+            radioationDmg = this.afflictionManager.radioBuildup * 0.5;
+          }
+
+          this.healthManager.takeDamage(!this.relicManager.berserkIsActive ? radioationDmg : -4, {
+            isTrueDmg: true,
+            lastWhoDamagedMe: 'Radiation',
+            ImmunityShiftInMS: -200,
+            isSecondaryDamage: true,
+            disableChaosDamage: true,
+            disableDefaultSound: true,
+            disableDefaultPulse: Boolean(this.afflictionManager.radioBuildup < 6 || this.relicManager.berserkIsActive),
+            callback: () => {
+              this.afflictionManager.poisonConsumed += this.afflictionManager.radioBuildup;
+              this.afflictionManager.radioBuildup += 0.5;
+              if (this.afflictionManager.radioBuildup >= 3) {
+                this.game.audioHandler.radiation.play();
+              }
+            },
+          });
+          this.getHitByBodyAura(object, 25, 'Radioactive Enemy');
+        }
+        if (object.gameObject.id === ENTITY_ID.RADIO_BULLET) {
+          let radioationDmg = this.afflictionManager.radioBuildup;
+          if (this.relicManager.relic?.id === AUGMENTS.DEMON_SOUL) {
+            radioationDmg = this.afflictionManager.radioBuildup * 0.25;
+          } else if (this.relicManager.relic?.id === AUGMENTS.NIGHT_VISION) {
+            radioationDmg = this.afflictionManager.radioBuildup * 0.5;
+          }
+          this.healthManager.takeDamage(!this.relicManager.berserkIsActive ? radioationDmg : -4, {
+            isTrueDmg: true,
+            lastWhoDamagedMe: 'Radiation Bullet',
+            ImmunityShiftInMS: -200,
+            isSecondaryDamage: true,
+            disableDefaultPulse: Boolean(this.afflictionManager.radioBuildup < 6 || this.relicManager.berserkIsActive),
+            callback: () => {
+              this.afflictionManager.radioBuildup += 0.5;
+              this.afflictionManager.poisonConsumed += this.afflictionManager.radioBuildup;
+              this.game.removeGameObject(object);
+            },
+          });
+        }
       } else {
         //console.log(object);
         //console.log("No collision");
@@ -407,34 +558,53 @@ export default class Player extends GameObject {
     if (this.relicManager.relic?.id === AUGMENTS.PORTAL) {
       // Player Collision with left wall
       if (this.gameObject.position.x < 0) {
+        this.game.audioHandler.teleport.play();
         store.dispatch(playAnimation(VFX.PULSE_PORTAL));
         this.gameObject.position.x = gameWidth - this.gameObject.width;
         this.relicManager.tempStabilizedTime = Date.now();
+        this.afflictionManager.isTricked = false;
         this.game.player.resetMovement();
       }
       // Player Collision with right wall
       if (this.gameObject.position.x + this.gameObject.width > gameWidth) {
+        this.game.audioHandler.teleport.play();
         store.dispatch(playAnimation(VFX.PULSE_PORTAL));
         this.gameObject.position.x = 0;
         this.relicManager.tempStabilizedTime = Date.now();
+        this.afflictionManager.isTricked = false;
         this.game.player.resetMovement();
       }
     } else {
       // Player Collision with left wall
-      if (this.gameObject.position.x < 0) this.gameObject.position.x = 0;
+      if (this.gameObject.position.x < 0) {
+        this.gameObject.position.x = 0;
+        this.afflictionManager.isTricked = false;
+      }
 
       // Player Collision with right wall
       if (this.gameObject.position.x + this.gameObject.width > gameWidth) {
         this.gameObject.position.x = gameWidth - this.gameObject.width;
+        this.afflictionManager.isTricked = false;
       }
     }
 
     // Player Collision with top wall
-    if (this.gameObject.position.y < 0) this.gameObject.position.y = 0;
+    if (this.gameObject.position.y < 0) {
+      this.gameObject.position.y = 0;
+      this.afflictionManager.isTricked = false;
+    }
 
     // Player Collision with bottom wall
     if (this.gameObject.position.y + this.gameObject.height > gameHeight) {
       this.gameObject.position.y = gameHeight - this.gameObject.height;
+      this.afflictionManager.isTricked = false;
+    }
+
+    // Check if the player is outside the center for CALL OF THE VOID achievement
+    if (this.game.level == 20) {
+      if (this.gameObject.position.x > (gameWidth * 3) / 4 || this.gameObject.position.x < gameWidth / 4) {
+        this.achievementManager.updateTrackables({ callOfTheVoidWentOutside: true });
+      }
     }
   }
 

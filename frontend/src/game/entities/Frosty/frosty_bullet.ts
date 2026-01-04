@@ -87,13 +87,7 @@ export default class Frosty_bullet extends GameObject {
       this.gameObject.position.y <= 0 ||
       this.gameObject.position.y >= this.game.canvas.canvasHeight - this.gameObject.height
     ) {
-      this.game.gameObjects.splice(this.game.gameObjects.indexOf(this), 1);
+      this.game.removeGameObject(this);
     }
-    // if (
-    //   this.gameObject.position.x <= 0 ||
-    //   this.gameObject.position.x >= this.game.canvas.canvasWidth - this.gameObject.width
-    // ) {
-    //   this.game.gameObjects.splice(this.game.gameObjects.indexOf(this), 1);
-    // }
   }
 }

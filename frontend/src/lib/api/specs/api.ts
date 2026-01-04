@@ -9,6 +9,30 @@
  * ---------------------------------------------------------------
  */
 
+/** Enum representing player achievements */
+export enum ACHIEVEMENT {
+  BRONZE_COMPETENT = "BRONZE_COMPETENT",
+  SILVER_TALENTED = "SILVER_TALENTED",
+  GOLD_CMAMPION = "GOLD_CMAMPION",
+  OVERACHIEVER = "OVERACHIEVER",
+  PHASE_SHIFT = "PHASE_SHIFT",
+  THE_UNSEEN = "THE_UNSEEN",
+  FULL_OF_HEART = "FULL_OF_HEART",
+  TOXIC_SPRITZ = "TOXIC_SPRITZ",
+  NO_ESCAPE = "NO_ESCAPE",
+  LIVING_NIGHTMARE = "LIVING_NIGHTMARE",
+  RESILIENCE = "RESILIENCE",
+  INNER_CONNECTION = "INNER_CONNECTION",
+  BIOHAZARD = "BIOHAZARD",
+  CALL_OF_THE_VOID = "CALL_OF_THE_VOID",
+  PLAYING_WITH_FIRE = "PLAYING_WITH_FIRE",
+  BITEFROST = "BITEFROST",
+  DEATHLESS = "DEATHLESS",
+  GET_HACKED = "GET_HACKED",
+  BORROW_TIME = "BORROW_TIME",
+  LEADER = "LEADER",
+}
+
 /** Enum representing various AUGMENTS */
 export enum AUGMENTS {
   HEAL = "HEAL",
@@ -25,7 +49,25 @@ export enum AUGMENTS {
   DEMON_SOUL = "DEMON_SOUL",
   HARVESTER = "HARVESTER",
   STOPWATCH = "STOPWATCH",
+  SYMBIOTIC_LINK = "SYMBIOTIC_LINK",
+  MEDITATE = "MEDITATE",
   HACKED = "HACKED",
+}
+
+/** Enum representing available player titles */
+export enum TITLES {
+  DEFAULT = "DEFAULT",
+  FIRE = "FIRE",
+  ICE = "ICE",
+  SHADOW = "SHADOW",
+  RAINBOW = "RAINBOW",
+  BRONZE = "BRONZE",
+  SILVER = "SILVER",
+  GOLD = "GOLD",
+  PORTAL = "PORTAL",
+  VOID = "VOID",
+  HACKER = "HACKER",
+  ELECTRIC = "ELECTRIC",
 }
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
@@ -73,7 +115,7 @@ export class HttpClient<SecurityDataType = unknown> {
   private format?: ResponseType;
 
   constructor({ securityWorker, secure, format, ...axiosConfig }: ApiConfig<SecurityDataType> = {}) {
-    this.instance = axios.create({ ...axiosConfig, baseURL: axiosConfig.baseURL || "http://localhost:5000" });
+    this.instance = axios.create({ ...axiosConfig, baseURL: axiosConfig.baseURL || "http://localhost:5001" });
     this.secure = secure;
     this.format = format;
     this.securityWorker = securityWorker;
@@ -162,7 +204,7 @@ export class HttpClient<SecurityDataType = unknown> {
 /**
  * @title Your API Title
  * @version 1.0.0
- * @baseUrl http://localhost:5000
+ * @baseUrl http://localhost:5001
  *
  * Your API description
  */

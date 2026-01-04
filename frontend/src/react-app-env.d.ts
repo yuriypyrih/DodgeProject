@@ -10,6 +10,7 @@ interface ImportMetaEnv {
   readonly VITE_CLIENT_ID: string;
   readonly VITE_CLIENT_SECRET: string;
   readonly VITE_CYPHER_KEY: string;
+  readonly VITE_STRIPE_PUBLIC_KEY: string;
 }
 
 interface ImportMeta {

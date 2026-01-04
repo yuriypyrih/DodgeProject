@@ -5,6 +5,7 @@ import { VFX } from 'game/enum/vfx.ts';
 import clsx from 'clsx';
 import styles from './styles.module.scss';
 import { AUGMENTS } from '../../lib/api/specs/api.ts';
+import AchievementsBanner from 'components/AchievementsBanner';
 
 type VfxAnimationProps = { children: React.ReactNode };
 
@@ -37,6 +38,12 @@ const VfxAnimation: React.FC<VfxAnimationProps> = ({ children }) => {
     }
     if (vfxObject.run_animation === VFX.PULSE_HACKED) {
       setContainerClass(styles.PULSE_HACKED_ANIMATION);
+      setTimeout(() => {
+        setContainerClass('');
+      }, 700);
+    }
+    if (vfxObject.run_animation === VFX.PULSE_PINK) {
+      setContainerClass(styles.PULSE_PINK_ANIMATION);
       setTimeout(() => {
         setContainerClass('');
       }, 700);
@@ -84,6 +91,7 @@ const VfxAnimation: React.FC<VfxAnimationProps> = ({ children }) => {
       >
         <div className={clsx(styles.innerContainer, innercontainerClassA)}>
           <div className={clsx(styles.innerContainer, innercontainerClassB)}>{children}</div>
+          <AchievementsBanner />
         </div>
       </div>
     </div>

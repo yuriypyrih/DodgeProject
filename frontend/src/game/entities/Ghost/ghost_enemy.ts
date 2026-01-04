@@ -29,6 +29,7 @@ export default class GhostEnemy extends GameObject {
       velY,
       velX,
       name: 'Ghost Enemy',
+      symbiosisName: 'Ghost',
     });
 
     this.game = game;

@@ -1,9 +1,9 @@
 import InputHandler from './input';
+import AudioHandler from './audio';
 import Player from './player';
 import { GAME_STATE } from '../enum/game_state';
 import { ENTITY_ID } from '../enum/entitiy_id';
 import GameObject from './gameObject';
-//import Menu from "./menu";
 import Hud from './hud';
 import Spawner from './spawner';
 import Trail from './trail';
@@ -31,9 +31,11 @@ export default class Game {
   spawner: Spawner;
   hud: Hud;
   inputHandler: InputHandler;
+  audioHandler: AudioHandler;
   birthday: number;
   darkness: number; // 0 to 100;
   timeScale: number; // 1 means normal, 2 means half the speed etc
+  keyLastTimePressed: number;
   updateTimeCounter: number;
 
   constructor({ canvasHeight, canvasWidth }: GameProps) {
@@ -66,8 +68,10 @@ export default class Game {
 
     this.inputHandler = new InputHandler({ game: this });
     this.inputHandler.initEvents();
+    this.audioHandler = new AudioHandler({ game: this });
     this.darkness = 0;
     this.timeScale = 1;
+    this.keyLastTimePressed = this.now;
     this.updateTimeCounter = 0;
   }
 
@@ -122,9 +126,12 @@ export default class Game {
         this.gameObjects[i].gameObject.id === ENTITY_ID.SNOWFLAKE ||
         this.gameObjects[i].gameObject.id === ENTITY_ID.FROSTY ||
         this.gameObjects[i].gameObject.id === ENTITY_ID.HACKER ||
-        this.gameObjects[i].gameObject.id === ENTITY_ID.REAPER
+        this.gameObjects[i].gameObject.id === ENTITY_ID.REAPER ||
+        this.gameObjects[i].gameObject.id === ENTITY_ID.BIPOLAR ||
+        this.gameObjects[i].gameObject.id === ENTITY_ID.TRICKSTER ||
+        this.gameObjects[i].gameObject.id === ENTITY_ID.RADIOACTIVE_AURA
       ) {
-        this.gameObjects.splice(i, 1);
+        this.removeGameObject(this.gameObjects[i]);
         i--;
       }
     }
@@ -147,10 +154,14 @@ export default class Game {
   }
 
   dispatchVictory(_stars: number) {
+    this.audioHandler.victory.play();
+    this.player.achievementManager.evaluate(true);
     this.setGameState(GAME_STATE.PAGE_VICTORY);
   }
 
   dispatchDefeat(_stars: number) {
+    this.audioHandler.defeat.play();
+    this.player.achievementManager.evaluate();
     this.setGameState(GAME_STATE.PAGE_DEFEAT);
   }
 
@@ -160,9 +171,21 @@ export default class Game {
     } else if (this.gameState === GAME_STATE.PAUSED) {
       this.gameState = GAME_STATE.PLAYING;
     } else if (this.gameState === GAME_STATE.PLAYING) {
+      this.audioHandler.button.play();
       this.gameState = GAME_STATE.PAUSED;
     }
     store.dispatch(setGameState(this.gameState));
+  }
+
+  keyPressed() {
+    this.keyLastTimePressed = this.now;
+  }
+
+  removeGameObject(gameObject: GameObject) {
+    const index = this.gameObjects.indexOf(gameObject);
+    if (index > -1) {
+      this.gameObjects.splice(index, 1);
+    }
   }
 
   update(deltaTime: number) {
