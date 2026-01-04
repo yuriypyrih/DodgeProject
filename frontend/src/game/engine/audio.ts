@@ -49,69 +49,69 @@ export default class AudioHandler {
     }
 
     this.theme = new Howl({
-      src: ['/src/assets/audio/electromagic.wav'], //['/src/assets/audio/ninja.wav', '/src/assets/audio/electromagic.wav', '/src/assets/audio/theme.ogg'],
+      src: ['/audio/electromagic.wav'], //['/audio/ninja.wav', '/audio/electromagic.wav', '/audio/theme.ogg'],
       loop: true,
       volume: musicVolume,
     });
 
     this.damage = new Howl({
-      src: ['/src/assets/audio/laser.wav'],
+      src: ['/audio/laser.wav'],
       volume: soundVolume,
     });
     this.starAppear = new Howl({
-      src: ['/src/assets/audio/star_appear.wav'],
+      src: ['/audio/star_appear.wav'],
       volume: soundVolume,
     });
     this.starGrab = new Howl({
-      src: ['/src/assets/audio/star_grab.wav'],
+      src: ['/audio/star_grab.wav'],
       volume: soundVolume,
     });
     this.victory = new Howl({
-      src: ['/src/assets/audio/victory.wav'],
+      src: ['/audio/victory.wav'],
       volume: soundVolume,
     });
     this.defeat = new Howl({
-      src: ['/src/assets/audio/defeat.wav'],
+      src: ['/audio/defeat.wav'],
       volume: soundVolume,
     });
     this.radiation = new Howl({
-      src: ['/src/assets/audio/radiation.wav'],
+      src: ['/audio/radiation.wav'],
       volume: soundVolume,
     });
     this.button = new Howl({
-      src: ['/src/assets/audio/button.wav'],
+      src: ['/audio/button.wav'],
       volume: soundVolume,
     });
     this.deathmark = new Howl({
-      src: ['/src/assets/audio/deathmark.wav'],
+      src: ['/audio/deathmark.wav'],
       volume: soundVolume,
     });
     this.poison = new Howl({
-      src: ['/src/assets/audio/poison.wav'],
+      src: ['/audio/poison.wav'],
       volume: soundVolume,
     });
     this.burn = new Howl({
-      src: ['/src/assets/audio/damage.wav'],
+      src: ['/audio/damage.wav'],
       volume: soundVolume,
     });
     this.hacked = new Howl({
-      src: ['/src/assets/audio/hacked.wav'],
+      src: ['/audio/hacked.wav'],
       volume: soundVolume,
     });
     this.heal = new Howl({
-      src: ['/src/assets/audio/heal.wav'],
+      src: ['/audio/heal.wav'],
       volume: soundVolume,
     });
     this.shield = new Howl({
-      src: ['/src/assets/audio/shield.wav'],
+      src: ['/audio/shield.wav'],
       volume: soundVolume,
     });
     this.teleport = new Howl({
-      src: ['/src/assets/audio/teleport.wav'],
+      src: ['/audio/teleport.wav'],
       volume: soundVolume,
     });
     this.roar = new Howl({
-      src: ['/src/assets/audio/roar.wav'],
+      src: ['/audio/roar.wav'],
       volume: soundVolume,
     });
   }
