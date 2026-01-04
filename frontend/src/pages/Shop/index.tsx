@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { Box, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import styles from './styles.module.scss';
 import CustomButton from '../../components/CustomButton';
 import StoreOption from 'components/StoreOption';
@@ -14,12 +13,15 @@ import { TITLES } from '../../lib/api/specs/api.ts';
 import UnlockLevelModal from 'components/UnlockLevelModal/UnlockLevelModal.tsx';
 import { unlockTitle } from 'redux/slices/authSlice.ts';
 import ProfileButton from 'components/ProfileButton';
+import WikiButton from 'components/WikiButton';
+import useNavigateBack from 'utils/hooks/useNavigateBack.ts';
+import PaymentComponent from 'components/PaymentComponent';
 
 const ShopPage: React.FC<unknown> = () => {
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
+  const { navigateBack } = useNavigateBack();
   const { user } = useSelector((state: RootState) => state.authSlice);
-  const [activeFilter, setActiveFilter] = useState<'titles' | 'stars'>('titles');
+  const [activeFilter, setActiveFilter] = useState<'titles' | 'stars' | 'arenas'>('titles');
   const [buyCosmetic, setBuyCosmetic] = useState<TitleType | null>(null);
 
   const titles = useMemo(
@@ -34,22 +36,17 @@ const ShopPage: React.FC<unknown> = () => {
     dispatch(unlockTitle({ title: buyCosmetic?.textStyle as TITLES }));
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const _getArenas = () => {
-  //   return (
-  //     <Box className={styles.mainContainerArena}>
-  //       {LocalArenas.map((arena) => (
-  //         <StoreOption
-  //           title={arena.name + ' Arena'}
-  //           key={arena.name}
-  //           background={arena.url}
-  //           requirement={arena.requiremnt}
-  //           stars={arena.cost}
-  //         />
-  //       ))}
-  //     </Box>
-  //   );
-  // };
+  const getArenas = () => {
+    return <Box className={styles.mainContainerArena}>New type of Cosmetics are coming soon!</Box>;
+  };
+
+  const getStars = () => {
+    return (
+      <Box className={styles.mainContainerStars}>
+        <PaymentComponent />
+      </Box>
+    );
+  };
 
   const getTitles = () => {
     return (
@@ -75,8 +72,9 @@ const ShopPage: React.FC<unknown> = () => {
   };
 
   const getContent = () => {
-    // if (activeFilter === 'arenas') return getArenas();
     if (activeFilter === 'titles') return getTitles();
+    if (activeFilter === 'arenas') return getArenas();
+    if (activeFilter === 'stars') return getStars();
     else return <div>No Content</div>;
   };
 
@@ -91,7 +89,8 @@ const ShopPage: React.FC<unknown> = () => {
                 Shop
               </Typography>
             </Box>
-            <Box>
+            <Box sx={{ height: 44, display: 'flex', wrap: 'nowrap', gap: 1, justifyContent: 'flex-end' }}>
+              <WikiButton tab={3} />
               <ShopButton />
             </Box>
           </Box>
@@ -107,8 +106,8 @@ const ShopPage: React.FC<unknown> = () => {
             <Box className={styles.filters}>
               {[
                 { key: 'titles', label: 'TITLES', color: '#00afa3' },
-                // { key: 'wip', label: 'WIP', color: '#00afa3', disabled: true },
-                { key: 'stars', label: 'STARS', color: '#00afa3', disabled: true },
+                { key: 'arenas', label: '{{WIP}}', color: '#00afa3' },
+                { key: 'stars', label: 'STARS', color: '#00afa3', disabled: false },
               ].map(({ key, label, color, disabled }) => (
                 <label
                   key={key}
@@ -131,7 +130,7 @@ const ShopPage: React.FC<unknown> = () => {
           </Box>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <CustomButton text={'BACK'} onClick={() => navigate('/Selection')} />
+          <CustomButton text={'BACK'} onClick={() => navigateBack('/Selection')} />
         </Box>
       </Box>
       {buyCosmetic !== null && (

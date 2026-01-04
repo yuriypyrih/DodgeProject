@@ -7,20 +7,34 @@ type AudioHandlerProps = {
 
 export default class AudioHandler {
   game: Game;
+  themeIsPlaying: boolean;
   theme: Howl;
   damage: Howl;
   starAppear: Howl;
   starGrab: Howl;
+  radiation: Howl;
   victory: Howl;
+  defeat: Howl;
+  button: Howl;
+  poison: Howl;
+  deathmark: Howl;
+  burn: Howl;
+  hacked: Howl;
+  heal: Howl;
+  shield: Howl;
+  teleport: Howl;
+  roar: Howl;
 
   constructor({ game }: AudioHandlerProps) {
     this.game = game;
+    this.themeIsPlaying = false;
+
     const localStorageMusicVolume = localStorage.getItem('musicVolume');
     let musicVolume = 0.1;
     if (localStorageMusicVolume === 'High') {
       musicVolume = 0.1;
     } else if (localStorageMusicVolume === 'Low') {
-      musicVolume = 0.05;
+      musicVolume = 0.02;
     } else if (localStorageMusicVolume === 'Off') {
       musicVolume = 0;
     }
@@ -56,11 +70,58 @@ export default class AudioHandler {
       src: ['/src/assets/audio/victory.wav'],
       volume: soundVolume,
     });
+    this.defeat = new Howl({
+      src: ['/src/assets/audio/defeat.wav'],
+      volume: soundVolume,
+    });
+    this.radiation = new Howl({
+      src: ['/src/assets/audio/radiation.wav'],
+      volume: soundVolume,
+    });
+    this.button = new Howl({
+      src: ['/src/assets/audio/button.wav'],
+      volume: soundVolume,
+    });
+    this.deathmark = new Howl({
+      src: ['/src/assets/audio/deathmark.wav'],
+      volume: soundVolume,
+    });
+    this.poison = new Howl({
+      src: ['/src/assets/audio/poison.wav'],
+      volume: soundVolume,
+    });
+    this.burn = new Howl({
+      src: ['/src/assets/audio/damage.wav'],
+      volume: soundVolume,
+    });
+    this.hacked = new Howl({
+      src: ['/src/assets/audio/hacked.wav'],
+      volume: soundVolume,
+    });
+    this.heal = new Howl({
+      src: ['/src/assets/audio/heal.wav'],
+      volume: soundVolume,
+    });
+    this.shield = new Howl({
+      src: ['/src/assets/audio/shield.wav'],
+      volume: soundVolume,
+    });
+    this.teleport = new Howl({
+      src: ['/src/assets/audio/teleport.wav'],
+      volume: soundVolume,
+    });
+    this.roar = new Howl({
+      src: ['/src/assets/audio/roar.wav'],
+      volume: soundVolume,
+    });
   }
 
   initAudio() {
     // Play the theme song when the game loads
-    this.theme.play();
+    if (!this.themeIsPlaying) {
+      this.theme.play();
+      this.themeIsPlaying = true;
+    }
   }
 
   changeSoundVolume(volume: number) {

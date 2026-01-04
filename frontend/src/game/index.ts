@@ -8,7 +8,7 @@ export const setContext = (newContext: any) => {
 };
 
 const startEngine = () => {
-  const canvas = <HTMLCanvasElement>document.getElementById('gameScreen-canvas');
+  const canvas = document.getElementById('gameScreen-canvas') as HTMLCanvasElement | null;
 
   if (canvas) {
     context = canvas.getContext('2d');
@@ -19,30 +19,46 @@ const startEngine = () => {
 
   const game = new Game({ canvasWidth: GAME_WIDTH, canvasHeight: GAME_HEIGHT });
 
-  let lastTime = performance.now();
   const FPS = 60;
-  const FRAME_TARGET = 1000 / FPS;
+  const FRAME_MS = 1000 / FPS;
 
-  function gameLoop(timestamp: number) {
-    const deltaTime = timestamp - lastTime;
+  let nextTick = performance.now();
+  let paintScheduled = false;
+  const running = true;
 
-    if (deltaTime < FRAME_TARGET) {
-      requestAnimationFrame(gameLoop);
-      return;
-    }
+  function schedulePaint() {
+    if (paintScheduled) return;
 
-    lastTime = timestamp - (deltaTime % FRAME_TARGET);
+    paintScheduled = true;
+    requestAnimationFrame(() => {
+      paintScheduled = false;
 
-    if (game.gameState === GAME_STATE.PLAYING && context !== null) {
-      context.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-      game.update(deltaTime);
-      game.draw(context);
-    }
-
-    requestAnimationFrame(gameLoop);
+      if (game.gameState === GAME_STATE.PLAYING && context) {
+        context.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        game.update(FRAME_MS); // fixed cadence, as requested
+        game.draw(context);
+      }
+    });
   }
 
-  requestAnimationFrame(gameLoop);
+  function tick() {
+    if (!running) return;
+
+    const now = performance.now();
+
+    // Hard resync after long stalls (tab switch, GC, etc.)
+    if (now > nextTick + 100) {
+      nextTick = now;
+    }
+
+    schedulePaint();
+
+    nextTick += FRAME_MS;
+    const delay = Math.max(0, nextTick - performance.now());
+    setTimeout(tick, delay);
+  }
+
+  setTimeout(tick, 0);
 
   return game;
 };

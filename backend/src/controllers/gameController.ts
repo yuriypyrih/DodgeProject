@@ -124,6 +124,14 @@ export const beatLevel = catchAsync(async (req, res, next) => {
       foundUser.stars += 1;
       foundUser.completeLevels = [...foundUser.completeLevels, String(level)];
     }
+
+    if (
+      foundUser.selectedRelic === AUGMENTS.HARVESTER &&
+      !foundUser.harvestedLevels.includes(level)
+    ) {
+      foundUser.stars += 100;
+      foundUser.harvestedLevels = [...foundUser.harvestedLevels, String(level)];
+    }
   }
   // Achievement handling
   if (Array.isArray(newAchievements) && newAchievements.length > 0) {
@@ -194,7 +202,7 @@ export async function checkForAchievements(foundUser: any): Promise<string[]> {
   // Chaos dungeon shared data
   const needsChaosCheck =
     !unlocked.has(ACHIEVEMENTS.SILVER_TALENTED) ||
-    !unlocked.has(ACHIEVEMENTS.GOLD_ACHIEVER) ||
+    !unlocked.has(ACHIEVEMENTS.GOLD_CMAMPION) ||
     !unlocked.has(ACHIEVEMENTS.LEADER);
 
   const chaosResults: Record<string, { isTop10: boolean; isFirst: boolean }> =
@@ -225,12 +233,12 @@ export async function checkForAchievements(foundUser: any): Promise<string[]> {
     unlocked.add(ACHIEVEMENTS.SILVER_TALENTED);
   }
 
-  // GOLD_ACHIEVER
+  // GOLD_CMAMPION
   if (
-    !unlocked.has(ACHIEVEMENTS.GOLD_ACHIEVER) &&
+    !unlocked.has(ACHIEVEMENTS.GOLD_CMAMPION) &&
     CHAOS_DUNGEON_LEVELS.every((lvl) => chaosResults[lvl]?.isTop10 === true)
   ) {
-    unlocked.add(ACHIEVEMENTS.GOLD_ACHIEVER);
+    unlocked.add(ACHIEVEMENTS.GOLD_CMAMPION);
   }
 
   // LEADER

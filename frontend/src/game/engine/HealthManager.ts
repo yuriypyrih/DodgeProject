@@ -45,6 +45,7 @@ export default class HealthManager {
       ImmunityShiftInMS?: number;
       isSecondaryDamage?: boolean;
       disableChaosDamage?: boolean;
+      disableDefaultSound?: boolean;
     },
   ) {
     const healthPreDmg = this.health;
@@ -55,7 +56,7 @@ export default class HealthManager {
     if (options && options.isSecondaryDamage) {
       if (!this.isImmuneSecondary && !this.game.player.relicManager.isImmune) {
         console.log('TAKE DAMAGE', damage, options?.lastWhoDamagedMe);
-        this.game.player.achievementManager.updateTrackables({ hasTakenDmg: true });
+        this.game.player.achievementManager.takeHit(options?.lastWhoDamagedMe);
         this.lastTimeDamagedSecondary = this.game.now + immunityShit;
         if (options?.lastWhoDamagedMe) this.lastWhoDamagedMe = options.lastWhoDamagedMe;
         if (options?.isTrueDmg) {
@@ -63,9 +64,11 @@ export default class HealthManager {
         } else {
           this.buffered_dmg += calculatedDmg;
         }
-        this.game.audioHandler.damage.play();
         if (!options?.disableDefaultPulse) {
           store.dispatch(playAnimation(VFX.PULSE_RED));
+        }
+        if (!options?.disableDefaultSound) {
+          this.game.audioHandler.damage.play();
         }
 
         if (options?.callback) {
@@ -75,7 +78,7 @@ export default class HealthManager {
     } else {
       if (!this.isImmune && !this.game.player.relicManager.isImmune) {
         console.log('TAKE DAMAGE', damage, options?.lastWhoDamagedMe);
-        this.game.player.achievementManager.updateTrackables({ hasTakenDmg: true });
+        this.game.player.achievementManager.takeHit(options?.lastWhoDamagedMe);
         this.lastTimeDamaged = this.game.now + immunityShit;
         if (options?.lastWhoDamagedMe) this.lastWhoDamagedMe = options.lastWhoDamagedMe;
         if (options?.isTrueDmg) {
@@ -85,7 +88,9 @@ export default class HealthManager {
           this.game.player.relicManager.damagedNeedHealing = true;
         }
 
-        this.game.audioHandler.damage.play();
+        if (!options?.disableDefaultSound) {
+          this.game.audioHandler.damage.play();
+        }
         if (!options?.disableDefaultPulse) {
           store.dispatch(playAnimation(VFX.PULSE_RED));
         }

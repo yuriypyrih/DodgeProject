@@ -3,7 +3,7 @@ import { Box, Button, Typography } from '@mui/material';
 import Game from '../../game/engine/game.ts';
 import styles from './styles.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { GAME_STATE } from '../../game/enum/game_state.ts';
+import { GAME_STATE } from 'game/enum/game_state.ts';
 
 type PauseProps = {
   game: Game | null;

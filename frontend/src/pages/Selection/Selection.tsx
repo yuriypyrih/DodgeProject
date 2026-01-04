@@ -19,7 +19,6 @@ import LeaderboardButton from '../../components/LeaderboardButton';
 import { API_LEVEL } from 'Models/enum/API_LEVEL.ts';
 import CustomButton from '../../components/CustomButton';
 import WikiButton from 'components/WikiButton';
-import ProfileButton from 'components/ProfileButton';
 
 const Selection: React.FC<unknown> = () => {
   const NORMAL_PAGE_SIZE = 12;
@@ -117,7 +116,7 @@ const Selection: React.FC<unknown> = () => {
             </Button>
           </Box>
           <Box sx={{ height: 44, display: 'flex', wrap: 'nowrap', gap: 1, justifyContent: 'flex-end' }}>
-            {page === 3 && <LeaderboardButton />}
+            {(page === 3 || page === 5) && <LeaderboardButton />}
             <WikiButton />
             <ShopButton />
           </Box>
@@ -146,10 +145,28 @@ const Selection: React.FC<unknown> = () => {
           ))}
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Box mr={2}>
+          <Box mr={2} sx={{ position: 'relative', display: 'flex', flexWrap: 'nowrap', alignItems: 'center' }}>
             <IconButton color={'primary'} onClick={previousPage} disabled={isFirstPage()}>
               <ArrowBackIosIcon className={styles.paginatorBtn} />
             </IconButton>
+            <Box sx={{ position: 'relative', display: 'flex', gap: '4px', alignContent: 'center' }}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Box
+                  key={i}
+                  sx={{
+                    width: 5,
+                    height: 5,
+                    borderRadius: '50%',
+                    backgroundColor: page === i + 1 ? 'primary.main' : 'rgba(255,255,255,0.35)',
+                    transition: 'background-color 0.2s ease',
+                    display: 'flex',
+                    flexDir: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                />
+              ))}
+            </Box>
             <IconButton color={'primary'} onClick={nextPage} disabled={isLastPage()}>
               <ArrowForwardIosIcon className={styles.paginatorBtn} />
             </IconButton>

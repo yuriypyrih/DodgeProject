@@ -19,9 +19,11 @@ export interface IUser extends Document {
   stars: number;
   unlockedLevels: string[];
   completeLevels: string[];
+  harvestedLevels: string[];
   unlockedRelics: string[];
   unlockedTitles: string[];
   unlockedAchievements: string[];
+  paidTransactions: string[];
   selectedTitle: string;
   selectedRelic: string;
   feedbackSentAt: Date | null;
@@ -81,6 +83,11 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       default: [LEVELS.LVL_1],
       select: true
     },
+    harvestedLevels: {
+      type: [String],
+      default: [],
+      select: true
+    },
     completeLevels: {
       type: [String],
       default: [],
@@ -99,6 +106,11 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     unlockedTitles: {
       type: [String],
       default: [TITLES.DEFAULT],
+      select: true
+    },
+    paidTransactions: {
+      type: [String],
+      default: [],
       select: true
     },
     selectedTitle: {

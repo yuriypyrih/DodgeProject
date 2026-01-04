@@ -304,7 +304,7 @@ const augmentsContent: ContentType[] = [
     title: ['Elixir of Vigor', '(Active x3)'],
     description: [
       'Cleanses all negative effects like Poison, Deathmark, and Frost/Darkness/Radiation buildup',
-      '- Also heals you 5hp + 5% of your missing hp + all the hp you lost from Poion/Radiation until then',
+      '- Also heals you 5hp + 5% of your missing hp + all the hp you lost from Poison/Radiation until then',
       '- Stored Poison/Radiation is reused for subsequent healing making Elixir stronger each time',
     ],
   },
@@ -444,7 +444,7 @@ const achievementList: ContentType[] = [
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Gold Champion',
-    meta: ACHIEVEMENT.GOLD_ACHIEVER,
+    meta: ACHIEVEMENT.GOLD_CMAMPION,
     description: ['Be in top 10 in all of the leaderboards at the same time.', '- Reward: 100 stars'],
   },
   {
@@ -472,7 +472,7 @@ const achievementList: ContentType[] = [
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Living Nightmare',
     meta: ACHIEVEMENT.LIVING_NIGHTMARE,
-    description: ['Scare at least 22 enemies in a single level.', '- Reward: 50 stars'],
+    description: ['Scare at least 22 enemies or bullets in a single level.', '- Reward: 50 stars'],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
@@ -503,7 +503,7 @@ const achievementList: ContentType[] = [
     title: 'Frostbite',
     meta: ACHIEVEMENT.BITEFROST,
     description: [
-      'Collect every star in level 18 while having maxium Frost buildup during collection.',
+      'Collect every star in level 18 while being slowed by Frost during collection.',
       '- Reward: 50 stars',
     ],
   },
@@ -525,15 +525,21 @@ const achievementList: ContentType[] = [
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
-    title: 'Mutation Junkie',
-    meta: ACHIEVEMENT.MUTATION_JUNKIE,
-    description: ['Win level 29 using Berserk augment.', '- Reward: 50 stars'],
+    title: 'Biohazard',
+    meta: ACHIEVEMENT.BIOHAZARD,
+    description: [
+      'Win level 29 by activating the Berserk augment before even collecting the first star.',
+      '- Reward: 50 stars',
+    ],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
-    title: 'Perseviarance',
-    meta: ACHIEVEMENT.PERSEVIARANCE,
-    description: ['With level 31 by using Mediation augment and having healed over 100hp.', '- Reward: 50 stars'],
+    title: 'Resilience',
+    meta: ACHIEVEMENT.RESILIENCE,
+    description: [
+      'With level 31 with the Mediation augment and having being hit by 4 different enemy types.',
+      '- Reward: 50 stars',
+    ],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
@@ -545,14 +551,14 @@ const achievementList: ContentType[] = [
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'Get Hacked!',
     meta: ACHIEVEMENT.GET_HACKED,
-    description: ['Get hacked in Clown Fiest Chaos Dungeon while using no augments.', '- Reward: 50 stars'],
+    description: ['Get killed by a Hacker in Clown Fiesta Chaos Dungeon', '- Reward: 50 stars'],
   },
   {
     Icon: <NewStarIcon style={{ width: 30, height: 30 }} />,
     title: 'No escape',
     meta: ACHIEVEMENT.NO_ESCAPE,
     description: [
-      'Survive for 40s in the Final Destination Chaos Dungeon using Guardian Angel augment.',
+      'Survive for 72s in the Final Destination Chaos Dungeon using Guardian Angel augment.',
       '- Reward: 50 stars',
     ],
   },

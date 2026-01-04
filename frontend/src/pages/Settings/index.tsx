@@ -37,11 +37,11 @@ const SettingsPage: React.FC<unknown> = () => {
   );
   const zoom = useSelector((state: RootState) => state.layoutSlice.zoom);
   const [soundVolume, setSoundVolume] = useState('High');
-  const [musicVolume, setMusicVolume] = useState('High');
+  const [musicVolume, setMusicVolume] = useState('Low');
 
   useEffect(() => {
     const localStorageMusicVolume = localStorage.getItem('musicVolume');
-    setMusicVolume(localStorageMusicVolume || 'High');
+    setMusicVolume(localStorageMusicVolume || 'Low');
     const localStorageSoundVolume = localStorage.getItem('soundVolume');
     setSoundVolume(localStorageSoundVolume || 'High');
   }, []);

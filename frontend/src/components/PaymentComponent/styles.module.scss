@@ -1,0 +1,26 @@
+.root {
+  position: relative;
+  display: flex;
+  flex: 1;
+}
+
+.promo {
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  img {
+    max-height: 160px;
+  }
+}
+
+.promoDisabled {
+  cursor: default;
+  opacity: 0.5;
+  img {
+    filter: grayscale(100%);
+  }
+}
+
+.form {
+
+}

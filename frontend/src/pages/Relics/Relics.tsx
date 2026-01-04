@@ -12,6 +12,7 @@ import ShopButton from '../../components/ShopButton';
 import useNavigateBack from '../../utils/hooks/useNavigateBack.ts';
 import CustomButton from '../../components/CustomButton';
 import WikiButton from 'components/WikiButton';
+import ProfileButton from 'components/ProfileButton';
 
 const Relics: React.FC = () => {
   const { navigateBack } = useNavigateBack();
@@ -34,7 +35,7 @@ const Relics: React.FC = () => {
       >
         <Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Box sx={{ width: '160px' }}>{/*<Button className={classes.relicBtn}>{getRelic()}</Button>*/}</Box>
+            <Box sx={{ width: '160px' }}>{/*<ProfileButton />*/}</Box>
             <Box>
               <Typography variant={'h5'} color={'primary'}>
                 Augment Selection

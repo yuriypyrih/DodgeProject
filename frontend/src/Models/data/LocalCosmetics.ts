@@ -27,7 +27,7 @@ export const LocalTitles: TitleType[] = [
     name: 'Champion',
     cost: 30,
     requiremnt: 'Requires Gold Champion achievement',
-    achievements: [ACHIEVEMENT.GOLD_ACHIEVER],
+    achievements: [ACHIEVEMENT.GOLD_CMAMPION],
   },
   {
     textStyle: TITLES.PORTAL,

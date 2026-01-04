@@ -21,8 +21,8 @@ export const ACHIEVEMENTS: AchievementsMap = {
     unlocked: false,
     reward: 100,
   },
-  [ACHIEVEMENT.GOLD_ACHIEVER]: {
-    name: ACHIEVEMENT.GOLD_ACHIEVER,
+  [ACHIEVEMENT.GOLD_CMAMPION]: {
+    name: ACHIEVEMENT.GOLD_CMAMPION,
     unlocked: false,
     reward: 100,
   },
@@ -62,8 +62,8 @@ export const ACHIEVEMENTS: AchievementsMap = {
     unlocked: false,
     reward: 50,
   },
-  [ACHIEVEMENT.PERSEVIARANCE]: {
-    name: ACHIEVEMENT.PERSEVIARANCE,
+  [ACHIEVEMENT.RESILIENCE]: {
+    name: ACHIEVEMENT.RESILIENCE,
     unlocked: false,
     reward: 50,
   },
@@ -72,8 +72,8 @@ export const ACHIEVEMENTS: AchievementsMap = {
     unlocked: false,
     reward: 50,
   },
-  [ACHIEVEMENT.MUTATION_JUNKIE]: {
-    name: ACHIEVEMENT.MUTATION_JUNKIE,
+  [ACHIEVEMENT.BIOHAZARD]: {
+    name: ACHIEVEMENT.BIOHAZARD,
     unlocked: false,
     reward: 50,
   },

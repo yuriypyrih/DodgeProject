@@ -6,13 +6,18 @@
   background: #2b2b2c;
 }
 .mainContainerArena {
-  padding-right: 8px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex: 1;
+  justify-content: left;
+  color: white;
+}
+
+.mainContainerStars {
+  display: flex;
+  flex: 1;
   width: 100%;
-  gap: 16px;
-  max-height: 140px;
-  overflow: auto;
+  position: relative;
+  color: white;
 }
 
 .mainContainer {

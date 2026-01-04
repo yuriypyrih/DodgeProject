@@ -4,7 +4,6 @@ import { sec } from 'utils/deltaTime';
 import { Stars } from '../../types/Stars';
 import Game from '../game';
 import Star from '../../entities/star.ts';
-import MimicEnemy from '../../entities/Mimic/mimic_enemy.ts';
 import RadioactiveEnemy from 'game/entities/Radioactive/radiactive_enemy.ts';
 import ShadowEnemy from 'game/entities/Shadow/shadow_enemy.ts';
 import FrostyEnemy from 'game/entities/Frosty/frosty_enemy.ts';

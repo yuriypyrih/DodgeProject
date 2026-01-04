@@ -75,13 +75,14 @@ export default class AfflictionManager {
     if (!this.isTricked) {
       this.isTricked = true;
       store.dispatch(playText(['PRANKED']));
-      store.dispatch(playAnimation(VFX.PULSE_PORTAL));
+      store.dispatch(playAnimation(VFX.PULSE_PINK));
     }
   }
 
   getPoisoned() {
     if (!this.isPoisoned) {
       this.isPoisoned = true;
+      this.game.audioHandler.poison.play();
       store.dispatch(setPoisoned(true));
       store.dispatch(playText(['POISONED']));
       store.dispatch(playAnimation(VFX.PULSE_PURPLE));
@@ -97,6 +98,7 @@ export default class AfflictionManager {
     if (!this.isDeathmarked) {
       this.isDeathmarked = true;
       this.deathmarkStartTime = Date.now();
+      this.game.audioHandler.deathmark.play();
       store.dispatch(playText(['DEATHMARKED']));
       store.dispatch(playAnimation(VFX.PULSE_DEATHMARK));
     }
@@ -236,6 +238,7 @@ export default class AfflictionManager {
         player.gameObject.width,
         player.gameObject.height,
       );
+      context.lineWidth = 2;
     }
   }
 

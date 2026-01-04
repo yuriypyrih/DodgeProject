@@ -1,12 +1,17 @@
 import { Button, Tooltip, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LEVEL_STATUS } from 'Models/enum/LEVEL_STATUS.ts';
 import clsx from 'clsx';
 import { Level } from 'Models/level.ts';
 import styles from './styles.module.scss';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import SkullIcon from 'assets/svg/skull.svg?react';
+
 import StarCost from '../StarCost';
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store.ts';
+import { API_LEVEL } from 'Models/enum/API_LEVEL.ts';
 
 type CubePlayButtonProps = {
   level: Level;
@@ -18,6 +23,11 @@ type CubePlayButtonProps = {
 const CubePlayButton: React.FC<CubePlayButtonProps> = ({ level, complete, clickBuy, tooltipBot = false }) => {
   const navigate = useNavigate();
   const [hovered, setHovered] = useState<boolean>(false);
+  const { harvestedLevels } = useSelector((state: RootState) => state.authSlice.user);
+
+  const isHarvested = useMemo(() => {
+    return harvestedLevels?.includes(level.levelId as API_LEVEL);
+  }, [harvestedLevels, level.levelId]);
 
   const handleClick = () => {
     if (level.status === LEVEL_STATUS.UNLOCKED) {
@@ -49,6 +59,22 @@ const CubePlayButton: React.FC<CubePlayButtonProps> = ({ level, complete, clickB
         onMouseLeave={() => setHovered(false)}
         disabled={level.status == LEVEL_STATUS.DISABLED || level.status === LEVEL_STATUS.COMING_SOON}
       >
+        {isHarvested && (
+          <SkullIcon
+            className={styles.skullIcon}
+            style={{
+              position: 'absolute',
+              bottom: -16,
+              left: 20,
+              width: 24,
+              height: 24,
+              padding: 2,
+              backgroundColor: '#2b2b2c',
+              // boxShadow: '0 0 3px 1px #2dd5c4',
+              borderRadius: '99px',
+            }}
+          />
+        )}
         {complete && (
           <MilitaryTechIcon
             style={{

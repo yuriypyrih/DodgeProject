@@ -10,8 +10,6 @@ $DEFAULT_BORDER: #2dd5c4;
   width: 100%; height: 100%;
   border-radius: 3px;
   border: 1px solid $DEFAULT_BORDER;
-
-  // Important: allow the outer glow to render outside the edges.
   overflow: visible;
 }
 
@@ -19,8 +17,6 @@ $DEFAULT_BORDER: #2dd5c4;
   position: relative;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  // Keep your content clipping here, not on .root
-  overflow: hidden;
 }
 
 // -------- Mixins -------------------------------------------------------------
@@ -123,6 +119,11 @@ $DEFAULT_BORDER: #2dd5c4;
   @include playOuterHalo(pulseHacked, 700ms, ease-in);
 }
 
+.PULSE_PINK_ANIMATION {
+  @include outerHaloPulse(pulseHacked, $PINK, 0.6, 20px, 6px);
+  @include playOuterHalo(pulseHacked, 700ms, ease-in);
+}
+
 .PULSE_PURPLE_ANIMATION {
   @include outerHaloPulse(pulsePurple, $PURPLE, 0.4, 22px, 7px);
   @include playOuterHalo(pulsePurple, 3s, ease-out);
@@ -144,12 +145,12 @@ $DEFAULT_BORDER: #2dd5c4;
 }
 
 .PULSE_PORTAL_ORANGE {
-  @include outerPortalGlow(pulsePortalOrange, left, #ff934d, 0.38, 28px, 22px, 12px);
+  @include outerPortalGlow(pulsePortalOrange, left, #ff934d, 0.38, 10px, 22px, 2px);
   &::after { animation: pulsePortalOrange-halo 500ms ease-out; }
 }
 
 .PULSE_PORTAL_BLUE {
-  @include outerPortalGlow(pulsePortalBlue, right, #4db9ff, 0.38, 28px, 22px, 12px);
+  @include outerPortalGlow(pulsePortalBlue, right, #4db9ff, 0.38, 10px, 22px, 2px);
   &::after { animation: pulsePortalBlue-halo 500ms ease-out; }
 }
 

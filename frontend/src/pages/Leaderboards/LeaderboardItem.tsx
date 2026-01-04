@@ -74,7 +74,7 @@ const LeaderboardItem: React.FC<TProps> = ({ scoreRecord, index, lastPlaced, hig
             <Box sx={{ color: 'white' }}>{getPlace()}</Box>
           </Box>
           <Box sx={{ flex: 1, display: 'flex', gap: 1 }}>
-            <USerIcon sx={{ color: 'white' }} />
+            <USerIcon sx={{ color: '#2DD5C4' }} />
             <Box sx={{ color: 'white' }}>
               <TitleCosmetic
                 // sx={{ fontSize: 16 }}

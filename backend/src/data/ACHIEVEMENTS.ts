@@ -1,7 +1,7 @@
 export enum ACHIEVEMENTS {
   BRONZE_COMPETENT = 'BRONZE_COMPETENT',
   SILVER_TALENTED = 'SILVER_TALENTED',
-  GOLD_ACHIEVER = 'GOLD_ACHIEVER',
+  GOLD_CMAMPION = 'GOLD_CMAMPION',
   OVERACHIEVER = 'OVERACHIEVER',
   PHASE_SHIFT = 'PHASE_SHIFT',
   THE_UNSEEN = 'THE_UNSEEN',
@@ -9,9 +9,9 @@ export enum ACHIEVEMENTS {
   TOXIC_SPRITZ = 'TOXIC_SPRITZ',
   NO_ESCAPE = 'NO_ESCAPE',
   LIVING_NIGHTMARE = 'LIVING_NIGHTMARE',
-  PERSEVIARANCE = 'PERSEVIARANCE',
+  RESILIENCE = 'RESILIENCE',
   INNER_CONNECTION = 'INNER_CONNECTION',
-  MUTATION_JUNKIE = 'MUTATION_JUNKIE',
+  BIOHAZARD = 'BIOHAZARD',
   CALL_OF_THE_VOID = 'CALL_OF_THE_VOID',
   PLAYING_WITH_FIRE = 'PLAYING_WITH_FIRE',
   BITEFROST = 'BITEFROST',
@@ -30,7 +30,7 @@ export enum ACHIEVEMENTS {
  *       enum:
  *         - BRONZE_COMPETENT
  *         - SILVER_TALENTED
- *         - GOLD_ACHIEVER
+ *         - GOLD_CMAMPION
  *         - OVERACHIEVER
  *         - PHASE_SHIFT
  *         - THE_UNSEEN
@@ -38,9 +38,9 @@ export enum ACHIEVEMENTS {
  *         - TOXIC_SPRITZ
  *         - NO_ESCAPE
  *         - LIVING_NIGHTMARE
- *         - PERSEVIARANCE
+ *         - RESILIENCE
  *         - INNER_CONNECTION
- *         - MUTATION_JUNKIE
+ *         - BIOHAZARD
  *         - CALL_OF_THE_VOID
  *         - PLAYING_WITH_FIRE
  *         - BITEFROST
@@ -72,8 +72,8 @@ export const ACHIEVEMENTS_OBJECT: AchievementsMap = {
     unlocked: false,
     reward: 100
   },
-  [ACHIEVEMENTS.GOLD_ACHIEVER]: {
-    name: ACHIEVEMENTS.GOLD_ACHIEVER,
+  [ACHIEVEMENTS.GOLD_CMAMPION]: {
+    name: ACHIEVEMENTS.GOLD_CMAMPION,
     unlocked: false,
     reward: 100
   },
@@ -113,8 +113,8 @@ export const ACHIEVEMENTS_OBJECT: AchievementsMap = {
     unlocked: false,
     reward: 50
   },
-  [ACHIEVEMENTS.PERSEVIARANCE]: {
-    name: ACHIEVEMENTS.PERSEVIARANCE,
+  [ACHIEVEMENTS.RESILIENCE]: {
+    name: ACHIEVEMENTS.RESILIENCE,
     unlocked: false,
     reward: 50
   },
@@ -123,8 +123,8 @@ export const ACHIEVEMENTS_OBJECT: AchievementsMap = {
     unlocked: false,
     reward: 50
   },
-  [ACHIEVEMENTS.MUTATION_JUNKIE]: {
-    name: ACHIEVEMENTS.MUTATION_JUNKIE,
+  [ACHIEVEMENTS.BIOHAZARD]: {
+    name: ACHIEVEMENTS.BIOHAZARD,
     unlocked: false,
     reward: 50
   },

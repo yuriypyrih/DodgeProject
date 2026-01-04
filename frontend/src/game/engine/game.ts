@@ -4,7 +4,6 @@ import Player from './player';
 import { GAME_STATE } from '../enum/game_state';
 import { ENTITY_ID } from '../enum/entitiy_id';
 import GameObject from './gameObject';
-//import Menu from "./menu";
 import Hud from './hud';
 import Spawner from './spawner';
 import Trail from './trail';
@@ -47,7 +46,7 @@ export default class Game {
 
     this.level = 1;
     // Dev option for debugging
-    this.dev = true; // process.env.NODE_ENV === 'development';
+    this.dev = false; // process.env.NODE_ENV === 'development';
     /**
      * gameObjects -> Player can interact with (Player excluded)
      * particleObject -> Player usually cannot interact with
@@ -70,7 +69,6 @@ export default class Game {
     this.inputHandler = new InputHandler({ game: this });
     this.inputHandler.initEvents();
     this.audioHandler = new AudioHandler({ game: this });
-    this.audioHandler.initAudio();
     this.darkness = 0;
     this.timeScale = 1;
     this.keyLastTimePressed = this.now;
@@ -162,6 +160,7 @@ export default class Game {
   }
 
   dispatchDefeat(_stars: number) {
+    this.audioHandler.defeat.play();
     this.player.achievementManager.evaluate();
     this.setGameState(GAME_STATE.PAGE_DEFEAT);
   }
@@ -172,6 +171,7 @@ export default class Game {
     } else if (this.gameState === GAME_STATE.PAUSED) {
       this.gameState = GAME_STATE.PLAYING;
     } else if (this.gameState === GAME_STATE.PLAYING) {
+      this.audioHandler.button.play();
       this.gameState = GAME_STATE.PAUSED;
     }
     store.dispatch(setGameState(this.gameState));

@@ -43,7 +43,7 @@ const Home: React.FC = () => {
               <Typography
                 onClick={handleGoPatches}
                 sx={{
-                  fontSize: 14,
+                  fontSize: 16,
                   textDecoration: 'underline',
                   cursor: 'pointer',
                 }}

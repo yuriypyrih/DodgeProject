@@ -16,6 +16,7 @@ type WormEnemyProps = {
 export default class WormEnemy extends GameObject {
   game: Game;
   maxSpeed: number;
+  isFeared: boolean;
 
   constructor({ game, position, velX = 0, velY = 4 }: WormEnemyProps) {
     super({
@@ -31,6 +32,7 @@ export default class WormEnemy extends GameObject {
 
     this.game = game;
     this.maxSpeed = 14;
+    this.isFeared = false;
   }
 
   getBounds() {
@@ -66,29 +68,49 @@ export default class WormEnemy extends GameObject {
     this.gameObject.position.x += this.gameObject.velX;
     this.gameObject.position.y += this.gameObject.velY;
 
+    // viariables
+    const halfX = this.game.canvas.canvasWidth / 2;
+    const halfY = this.game.canvas.canvasHeight / 2;
+
     // Top wall
     if (this.gameObject.position.y <= 0) {
       this.gameObject.position.y = 1;
-      this.gameObject.velX = -this.maxSpeed;
       this.gameObject.velY = 0;
+      if (this.gameObject.position.x > halfX) {
+        this.gameObject.velX = -this.maxSpeed;
+      } else {
+        this.gameObject.velX = this.maxSpeed;
+      }
     }
     // Bottom wall
     else if (this.gameObject.position.y >= this.game.canvas.canvasHeight - this.gameObject.height) {
       this.gameObject.position.y = this.game.canvas.canvasHeight - (this.gameObject.height + 1);
-      this.gameObject.velX = this.maxSpeed;
       this.gameObject.velY = 0;
+      if (this.gameObject.position.x > halfX) {
+        this.gameObject.velX = -this.maxSpeed;
+      } else {
+        this.gameObject.velX = this.maxSpeed;
+      }
     }
     // Left wall
     else if (this.gameObject.position.x <= 0) {
       this.gameObject.position.x = 1;
       this.gameObject.velX = 0;
-      this.gameObject.velY = this.maxSpeed;
+      if (this.gameObject.position.y > halfY) {
+        this.gameObject.velY = -this.maxSpeed;
+      } else {
+        this.gameObject.velY = this.maxSpeed;
+      }
     }
     // Right wall
     else if (this.gameObject.position.x >= this.game.canvas.canvasWidth - this.gameObject.width) {
       this.gameObject.position.x = this.game.canvas.canvasWidth - (this.gameObject.width + 1);
       this.gameObject.velX = 0;
-      this.gameObject.velY = -this.maxSpeed;
+      if (this.gameObject.position.y > halfY) {
+        this.gameObject.velY = -this.maxSpeed;
+      } else {
+        this.gameObject.velY = this.maxSpeed;
+      }
     }
 
     // Creating a Trail particle and add it to the list

@@ -376,6 +376,8 @@ type User = {
   unlockedTitles: TITLES[];
   selectedTitle: TITLES | null;
   completeLevels: API_LEVEL[];
+  harvestedLevels: API_LEVEL[];
+  paidTransactions: string[];
   feedbackSentAt: Date | null;
   stars: number;
 };
@@ -410,6 +412,8 @@ const initialState: authSliceType = {
     unlockedLevels: [],
     completeLevels: [],
     unlockedAchievements: [],
+    harvestedLevels: [],
+    paidTransactions: [],
     feedbackSentAt: null,
     stars: 0,
   },

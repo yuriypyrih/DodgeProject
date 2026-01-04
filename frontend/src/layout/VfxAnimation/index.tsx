@@ -42,6 +42,12 @@ const VfxAnimation: React.FC<VfxAnimationProps> = ({ children }) => {
         setContainerClass('');
       }, 700);
     }
+    if (vfxObject.run_animation === VFX.PULSE_PINK) {
+      setContainerClass(styles.PULSE_PINK_ANIMATION);
+      setTimeout(() => {
+        setContainerClass('');
+      }, 700);
+    }
     if (vfxObject.run_animation === VFX.PULSE_GOLD) {
       setContainerClass(styles.PULSE_GOLD_ANIMATION);
       setTimeout(() => {

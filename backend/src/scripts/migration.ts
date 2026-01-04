@@ -14,14 +14,18 @@ const migrationScript = async () => {
         $or: [
           { unlockedTitles: { $exists: false } },
           { unlockedAchievements: { $exists: false } },
-          { selectedTitle: { $exists: false } }
+          { harvestedLevels: { $exists: false } },
+          { selectedTitle: { $exists: false } },
+          { paidTransactions: { $exists: false } }
         ]
       },
       {
         $set: {
           unlockedTitles: ['DEFAULT'],
           unlockedAchievements: [],
-          selectedTitle: 'DEFAULT'
+          harvestedLevels: [],
+          selectedTitle: 'DEFAULT',
+          paidTransactions: []
         }
       },
       {

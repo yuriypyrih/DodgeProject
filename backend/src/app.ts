@@ -1,5 +1,8 @@
-import userRouter from './routes/userRoutes';
+import userRouter from './routes/userRouter';
 import gameRouter from './routes/gameRouter';
+import stripeRouter from './routes/stripeRouter';
+import * as paymentController from './controllers/paymentController';
+
 import { AppError } from './utils/appError';
 import path from 'path';
 import cookieParser from 'cookie-parser';
@@ -55,6 +58,15 @@ const limiter = rateLimit({
 });
 // app.use('/api', limiter);
 
+import bodyParser from 'body-parser';
+
+// Stripe webhook — MUST be first
+app.post(
+  '/api/v1/stripe/webhook',
+  bodyParser.raw({ type: 'application/json' }),
+  paymentController.webhookParser
+);
+
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
@@ -89,6 +101,7 @@ app.use((req, res, next) => {
 // ROUTES
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/game', gameRouter);
+app.use('/api/v1/stripe', stripeRouter);
 
 // Setup Swagger
 setupSwagger(app);

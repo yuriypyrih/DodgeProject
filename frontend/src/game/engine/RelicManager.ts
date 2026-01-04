@@ -12,7 +12,6 @@ import { AUGMENTS } from '../../lib/api/specs/api.ts';
 import { getSec } from 'utils/deltaTime.ts';
 import { ENTITY_ID } from 'game/enum/entitiy_id.ts';
 import { calculateMissingHp } from 'utils/calculateMissingHp.ts';
-import { relics } from 'game/engine/relics/relics_collection.tsx';
 
 type TProps = {
   game: Game;
@@ -144,14 +143,17 @@ export default class RelicManager {
       }
       if (this.relic.id === AUGMENTS.HEAL) {
         healthManager.health += 35;
+        this.game.audioHandler.heal.play();
         store.dispatch(playAnimation(VFX.PULSE_GREEN));
       }
       if (this.relic.id === AUGMENTS.IMMUNITY) {
+        this.game.audioHandler.shield.play();
         this.immunityActivationTime = Date.now();
         this.game.player.healthManager.health += 15;
         store.dispatch(playAnimation(VFX.PULSE_IMMUNITY));
       }
       if (this.relic.id === AUGMENTS.POISON_CURE) {
+        this.game.audioHandler.heal.play();
         const missingHp = calculateMissingHp(healthManager.health, 5);
         const totalHealing = afflictionManager.poisonConsumed + 5 + missingHp;
         healthManager.health += totalHealing;
@@ -170,12 +172,14 @@ export default class RelicManager {
       }
       if (this.relic.id === AUGMENTS.RECALL_BEACON) {
         if (this.beaconPlaced === null) {
+          this.game.audioHandler.button.play();
           this.beaconPlaced = {
             x: player.gameObject.position.x + 8,
             y: player.gameObject.position.y + 8,
           };
           this.beaconPlacedTime = Date.now();
         } else {
+          this.game.audioHandler.teleport.play();
           this.game.gameObjects.forEach((object: GameObject) => {
             // Very forgiving Bounds while recalling for collecting a star
             if (
@@ -200,6 +204,7 @@ export default class RelicManager {
         }
       }
       if (this.relic.id === AUGMENTS.STOPWATCH) {
+        this.game.audioHandler.shield.play();
         this.game.player.achievementManager.updateTrackables((prev) => ({ stopwatchUsed: prev.stopwatchUsed + 1 }));
         this.stopwatchActivationTime = Date.now();
         this.game.player.afflictionManager.isDeathmarked = false;
@@ -209,6 +214,9 @@ export default class RelicManager {
         this.game.player.resetMovement();
       }
       if (this.relic.id === AUGMENTS.SYMBIOTIC_LINK && this.symbioticLinked === null) {
+        this.game.audioHandler.shield.play();
+        store.dispatch(playAnimation(VFX.PULSE_LIGHT_BLUE));
+
         const { x: px, y: py } = player.gameObject.position;
 
         let nearestName = null;
@@ -238,6 +246,7 @@ export default class RelicManager {
   }
 
   applyFear() {
+    this.game.audioHandler.roar.play();
     const player = this.game.player;
     this.fear_animation_timer = 0;
     player.afflictionManager.frostIntensity = -40;
@@ -255,6 +264,21 @@ export default class RelicManager {
   testSymbioticLink(object: GameObject): boolean {
     if (object.gameObject.symbiosisName === this.symbioticLinked && this.symbioticLinked) {
       if (this.available_uses === 0) {
+        return false;
+      }
+      if (
+        (object.gameObject.id === ENTITY_ID.SHADOW_AURA ||
+          object.gameObject.id === ENTITY_ID.RADIOACTIVE_AURA ||
+          object.gameObject.id === ENTITY_ID.FROSTY ||
+          object.gameObject.id === ENTITY_ID.MAGNET_AURA_PLUS ||
+          object.gameObject.id === ENTITY_ID.MAGNET_AURA_MINUS) &&
+        !this.game.player.collision({
+          x: object.gameObject.position.x,
+          y: object.gameObject.position.y,
+          width: object.gameObject.width,
+          height: object.gameObject.height,
+        })
+      ) {
         return false;
       }
       const healthManager = this.game.player.healthManager;
@@ -410,9 +434,6 @@ export default class RelicManager {
 
       if (isMeditating && getSec(this.meditationIntervalTime, 2) > REGEN_INTERVAL_TOTAL) {
         const healAmount = HEAL_PER_SEC + (this.damagedNeedHealing ? 6 : 0);
-        this.game.player.achievementManager.updateTrackables((prev) => ({
-          meditationTotalHeal: prev.meditationTotalHeal + healAmount,
-        }));
         healthManager.health += healAmount;
         this.damagedNeedHealing = false;
         this.meditationIntervalTime = 0;

@@ -67,7 +67,17 @@ export default class Player extends GameObject {
 
   resetMovement() {
     this.afflictionManager.frostIntensity = 0;
-    this.gameObject.velX = this.gameObject.velX > 0 ? this.maxSpeed : -this.maxSpeed;
+
+    if (this.gameObject.velX > 0) {
+      this.gameObject.velX = this.maxSpeed;
+    } else if (this.gameObject.velX < 0) {
+      this.gameObject.velX = -this.maxSpeed;
+    }
+    if (this.gameObject.velY > 0) {
+      this.gameObject.velY = this.maxSpeed;
+    } else if (this.gameObject.velY < 0) {
+      this.gameObject.velY = -this.maxSpeed;
+    }
   }
 
   moveLeft() {
@@ -187,6 +197,9 @@ export default class Player extends GameObject {
       // Berserk Relic
       const relic = this.relicManager.relic;
       if (relic && relic.id === AUGMENTS.BERSERK && this.relicManager.available_uses > 0) {
+        if (this.stars === 0) {
+          this.achievementManager.updateTrackables({ activatedBerserkBeforeFirstStar: true });
+        }
         store.dispatch(playText(['BERSERK']));
         this.healthManager.health = 100;
         this.relicManager.berserkIsActive = true;
@@ -201,6 +214,7 @@ export default class Player extends GameObject {
 
       //Guardian Angel Relic
       else if (relic && relic.id === AUGMENTS.GUARDIAN_ANGEL && this.relicManager.available_uses > 0) {
+        this.game.audioHandler.shield.play();
         store.dispatch(playText(['GUARDIAN ANGEL']));
         store.dispatch(playAnimation(VFX.PULSE_IMMUNITY));
         this.healthManager.health = 35;
@@ -234,7 +248,7 @@ export default class Player extends GameObject {
     this.game.removeGameObject(starObject);
     this.milestone = !isChaosDungeon(this.game.level);
     this.healthManager.lastTimeDamaged = this.game.now;
-    if (this.game.level === 18 && this.afflictionManager.frostIntensity >= 30) {
+    if (this.game.level === 18 && this.afflictionManager.frostIntensity > 1) {
       this.achievementManager.updateTrackables((prev) => ({
         numberOfStarsCollectedWhileBeingFrozen: prev.numberOfStarsCollectedWhileBeingFrozen + 1,
       }));
@@ -342,6 +356,7 @@ export default class Player extends GameObject {
         if (object.gameObject.id === ENTITY_ID.REAPER) {
           this.healthManager.takeDamage(0, {
             disableDefaultPulse: true,
+            disableDefaultSound: !this.afflictionManager.isPoisoned,
             callback: () => this.afflictionManager.getDeathmarked(),
           });
         }
@@ -371,8 +386,12 @@ export default class Player extends GameObject {
             lastWhoDamagedMe: 'Firewall',
             ImmunityShiftInMS: -500,
             isSecondaryDamage: true,
+            disableDefaultSound: true,
             callback: () => {
-              this.achievementManager.updateTrackables((prev) => ({ totalFireDmg: prev.totalFireDmg + fireDmg }));
+              this.game.audioHandler.burn.play();
+              this.achievementManager.updateTrackables((prev) => ({
+                totalFireDmg: prev.totalFireDmg + fireDmg,
+              }));
             },
           });
         }
@@ -419,6 +438,7 @@ export default class Player extends GameObject {
           this.healthManager.takeDamage(this.afflictionManager.isPoisoned ? 30 : 5, {
             lastWhoDamagedMe: 'Venom Enemy',
             disableDefaultPulse: !this.afflictionManager.isPoisoned,
+            disableDefaultSound: !this.afflictionManager.isPoisoned,
             bypassCallback: () => this.afflictionManager.getPoisoned(),
           });
         }
@@ -426,8 +446,10 @@ export default class Player extends GameObject {
           this.healthManager.takeDamage(20, {
             disableDefaultPulse: true,
             lastWhoDamagedMe: 'Hacker Enemy',
+            disableDefaultSound: !this.afflictionManager.isHacked,
             bypassCallback: () => {
               if (!this.afflictionManager.isHacked) {
+                this.game.audioHandler.hacked.play();
                 this.afflictionManager.getHacked();
               }
             },
@@ -437,8 +459,10 @@ export default class Player extends GameObject {
           this.healthManager.takeDamage(20, {
             disableDefaultPulse: true,
             lastWhoDamagedMe: 'Trickster Enemy',
+            disableDefaultSound: !this.afflictionManager.isTricked,
             bypassCallback: () => {
               if (!this.afflictionManager.isTricked) {
+                this.game.audioHandler.hacked.play();
                 this.afflictionManager.getTricked();
               }
             },
@@ -489,10 +513,14 @@ export default class Player extends GameObject {
             ImmunityShiftInMS: -200,
             isSecondaryDamage: true,
             disableChaosDamage: true,
+            disableDefaultSound: true,
             disableDefaultPulse: Boolean(this.afflictionManager.radioBuildup < 6 || this.relicManager.berserkIsActive),
             callback: () => {
               this.afflictionManager.poisonConsumed += this.afflictionManager.radioBuildup;
               this.afflictionManager.radioBuildup += 0.5;
+              if (this.afflictionManager.radioBuildup >= 3) {
+                this.game.audioHandler.radiation.play();
+              }
             },
           });
           this.getHitByBodyAura(object, 25, 'Radioactive Enemy');
@@ -530,6 +558,7 @@ export default class Player extends GameObject {
     if (this.relicManager.relic?.id === AUGMENTS.PORTAL) {
       // Player Collision with left wall
       if (this.gameObject.position.x < 0) {
+        this.game.audioHandler.teleport.play();
         store.dispatch(playAnimation(VFX.PULSE_PORTAL));
         this.gameObject.position.x = gameWidth - this.gameObject.width;
         this.relicManager.tempStabilizedTime = Date.now();
@@ -538,6 +567,7 @@ export default class Player extends GameObject {
       }
       // Player Collision with right wall
       if (this.gameObject.position.x + this.gameObject.width > gameWidth) {
+        this.game.audioHandler.teleport.play();
         store.dispatch(playAnimation(VFX.PULSE_PORTAL));
         this.gameObject.position.x = 0;
         this.relicManager.tempStabilizedTime = Date.now();

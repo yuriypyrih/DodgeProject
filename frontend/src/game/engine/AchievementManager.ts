@@ -1,7 +1,7 @@
 import Game from 'game/engine/game.ts';
 import { ACHIEVEMENTS, AchievementState } from 'game/engine/achievements/achievements.ts';
 import store from 'redux/store.ts';
-import { addAchievementsToSend, addUnlockedAchievement } from 'redux/slices/gameSlice.ts';
+import { addAchievementsToSend } from 'redux/slices/gameSlice.ts';
 import { ACHIEVEMENT, AUGMENTS } from '../../lib/api/specs/api.ts';
 import { getSec } from 'utils/deltaTime.ts';
 
@@ -12,10 +12,11 @@ type Trackables = {
   toxicSpritzTotalHeal: number;
   hasSurvived40SecondsInChaosDungeon: boolean;
   numberOfEnemiesScared: number;
-  meditationTotalHeal: number;
+  listOfEnemyHit: string[];
   callOfTheVoidWentOutside: boolean;
   totalFireDmg: number;
   numberOfStarsCollectedWhileBeingFrozen: number;
+  activatedBerserkBeforeFirstStar: boolean;
   hasBeenHacked: boolean;
   stopwatchUsed: number;
 };
@@ -43,6 +44,14 @@ export default class AchievementManager {
       ...nextPartial,
     };
   }
+
+  takeHit(id?: string) {
+    this.trackables.hasTakenDmg = true;
+    if (id && !this.trackables.listOfEnemyHit.includes(id)) {
+      this.trackables.listOfEnemyHit.push(id);
+    }
+  }
+
   unlock(name: ACHIEVEMENT, evaluateFunc: () => boolean): boolean {
     const achievement = ACHIEVEMENTS[name];
     if (!achievement) return false;
@@ -76,7 +85,6 @@ export default class AchievementManager {
       return Boolean(hasVictory) && game.level === 14 && !this.trackables.phaseShiftLeftButtonPressed;
     });
     this.unlock(ACHIEVEMENT.FULL_OF_HEART, () => {
-      console.log('FULL OF HEART', this.trackables.fullOfHeartTimesDroppedBellowThreshold20, selectedRelic);
       return (
         Boolean(hasVictory) &&
         selectedRelic === AUGMENTS.HEAL &&
@@ -87,13 +95,18 @@ export default class AchievementManager {
       return this.trackables.toxicSpritzTotalHeal > 200;
     });
     this.unlock(ACHIEVEMENT.NO_ESCAPE, () => {
-      return getSec(this.game.spawner.chaosRoundTimer) >= 40 && this.game.level === 42;
+      return getSec(this.game.spawner.chaosRoundTimer) >= 72 && this.game.level === 42;
     });
     this.unlock(ACHIEVEMENT.LIVING_NIGHTMARE, () => {
       return this.trackables.numberOfEnemiesScared >= 22;
     });
-    this.unlock(ACHIEVEMENT.PERSEVIARANCE, () => {
-      return Boolean(hasVictory) && game.level === 31 && this.trackables.meditationTotalHeal >= 100;
+    this.unlock(ACHIEVEMENT.RESILIENCE, () => {
+      return (
+        Boolean(hasVictory) &&
+        game.level === 31 &&
+        selectedRelic === AUGMENTS.MEDITATE &&
+        this.trackables.listOfEnemyHit.length >= 4
+      );
     });
     this.unlock(ACHIEVEMENT.INNER_CONNECTION, () => {
       return (
@@ -103,8 +116,8 @@ export default class AchievementManager {
         selectedRelic === AUGMENTS.SYMBIOTIC_LINK
       );
     });
-    this.unlock(ACHIEVEMENT.MUTATION_JUNKIE, () => {
-      return Boolean(hasVictory) && game.level === 29 && selectedRelic === AUGMENTS.BERSERK;
+    this.unlock(ACHIEVEMENT.BIOHAZARD, () => {
+      return Boolean(hasVictory) && game.level === 29 && this.trackables.activatedBerserkBeforeFirstStar;
     });
     this.unlock(ACHIEVEMENT.CALL_OF_THE_VOID, () => {
       return Boolean(hasVictory) && game.level === 20 && !this.trackables.callOfTheVoidWentOutside;
@@ -119,7 +132,7 @@ export default class AchievementManager {
       return Boolean(hasVictory) && game.level === 19 && selectedRelic === AUGMENTS.HARVESTER;
     });
     this.unlock(ACHIEVEMENT.GET_HACKED, () => {
-      return this.trackables.hasBeenHacked && player.isChaosActive && selectedRelic === AUGMENTS.HACKED;
+      return game.level === 25 && player.isChaosActive && player.healthManager.lastWhoDamagedMe === 'Hacker Enemy';
     });
     this.unlock(ACHIEVEMENT.BORROW_TIME, () => {
       return this.trackables.stopwatchUsed >= 4 && player.isChaosActive;
@@ -137,12 +150,13 @@ export default class AchievementManager {
       fullOfHeartTimesDroppedBellowThreshold20: 0,
       toxicSpritzTotalHeal: 0,
       numberOfEnemiesScared: 0,
-      meditationTotalHeal: 0,
+      listOfEnemyHit: [],
       callOfTheVoidWentOutside: false,
       totalFireDmg: 0,
       numberOfStarsCollectedWhileBeingFrozen: 0,
       hasSurvived40SecondsInChaosDungeon: false,
       hasBeenHacked: false,
+      activatedBerserkBeforeFirstStar: false,
       stopwatchUsed: 0,
     };
   }
