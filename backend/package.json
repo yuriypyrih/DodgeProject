@@ -4,7 +4,7 @@
   "description": "Backend for DodgerReactApp",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build":  "npx tsc",
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
     "migration": "ts-node src/scripts/migration.ts",
