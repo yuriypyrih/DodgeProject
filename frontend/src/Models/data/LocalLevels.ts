@@ -331,19 +331,18 @@ type gameSliceType = {
   };
 };
 
-// @ts-ignore
-const initialState: gameSliceType = {
-  game: null,
-  level: 1,
-  levels: LocalLevels,
-  relics: relics,
-  selectedRelic: relics[1],
-  hp: 0,
-  gameState: GAME_STATE.PLAYING,
-  poisoned: false,
-  progress: {
-    max_stars: 3,
-    total_stars_collected: 0,
-    star_timers: [],
-  },
-};
+// const initialState: gameSliceType = {
+//   game: null,
+//   level: 1,
+//   levels: LocalLevels,
+//   relics: relics,
+//   selectedRelic: relics[1],
+//   hp: 0,
+//   gameState: GAME_STATE.PLAYING,
+//   poisoned: false,
+//   progress: {
+//     max_stars: 3,
+//     total_stars_collected: 0,
+//     star_timers: [],
+//   },
+// };

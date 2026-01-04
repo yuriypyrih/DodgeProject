@@ -1,6 +1,6 @@
 import Game from './game';
 import store from '../../redux/store';
-import { getSec, sec } from '../../utils/deltaTime';
+import { getSec, sec } from 'utils/deltaTime.ts';
 import { setChaosTimer, setCurrentTimer, setProgress } from 'redux/slices/gameSlice.ts';
 import { getLevel0, level0Stars } from './levels/getLevel0';
 import { getLevel1, level1Stars } from './levels/getLevel1';

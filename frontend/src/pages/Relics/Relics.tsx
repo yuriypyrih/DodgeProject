@@ -12,7 +12,6 @@ import ShopButton from '../../components/ShopButton';
 import useNavigateBack from '../../utils/hooks/useNavigateBack.ts';
 import CustomButton from '../../components/CustomButton';
 import WikiButton from 'components/WikiButton';
-import ProfileButton from 'components/ProfileButton';
 
 const Relics: React.FC = () => {
   const { navigateBack } = useNavigateBack();

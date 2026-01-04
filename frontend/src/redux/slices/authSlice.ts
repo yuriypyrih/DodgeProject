@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, PayloadAction, StoreEnhancerStoreCreator } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
   changeNamedRequest,
   changePasswordRequest,
