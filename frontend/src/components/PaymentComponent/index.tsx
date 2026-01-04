@@ -54,6 +54,7 @@ const PaymentComponent: React.FC = () => {
             flexDirection: 'column',
             backgroundColor: 'black',
             borderRadius: 4,
+            width: 340,
             background: 'linear-gradient(180deg,transparent 0%, #1a1a1d 100%)',
           }}
         >

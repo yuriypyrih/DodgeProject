@@ -1,4 +1,4 @@
-import { Howl } from 'howler';
+import { Howl, Howler } from 'howler';
 import Game from './game';
 
 type AudioHandlerProps = {
@@ -119,8 +119,15 @@ export default class AudioHandler {
   initAudio() {
     // Play the theme song when the game loads
     if (!this.themeIsPlaying) {
+      this.unlockAudio();
       this.theme.play();
-      this.themeIsPlaying = true;
+    }
+  }
+
+  unlockAudio() {
+    this.themeIsPlaying = true;
+    if (Howler.ctx && Howler.ctx.state === 'suspended') {
+      Howler.ctx.resume();
     }
   }
 

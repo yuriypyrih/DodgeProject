@@ -18,6 +18,7 @@ export { game };
 function App() {
   const dispatch: AppDispatch = useDispatch();
   const zoom = useSelector((state: RootState) => state.layoutSlice.zoom);
+  const accessToken = useSelector((state: RootState) => state.authSlice.accessToken);
   const chaosTimer = useSelector((state: RootState) => state.gameSlice.chaosTimer);
 
   useEffect(() => {
@@ -26,6 +27,12 @@ function App() {
       dispatch(setZoom(Number(savedZoom)));
     }
   }, [dispatch]);
+
+  const handleInitAudio = () => {
+    if (accessToken) {
+      game.audioHandler.initAudio();
+    }
+  };
 
   return (
     <div className={clsx(styles.app, chaosTimer > 0 ? styles.chaos : null)}>
@@ -52,7 +59,7 @@ function App() {
         <div className="bar"></div>
         <div className="bar"></div>
       </div>
-      <div className={styles.mainWindow} style={{ transform: `scale(${zoom})` }}>
+      <div className={styles.mainWindow} style={{ transform: `scale(${zoom})` }} onClick={handleInitAudio}>
         <VfxAnimation>
           <Routes />
         </VfxAnimation>
