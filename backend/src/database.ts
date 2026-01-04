@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { env } from './utils/env';
 
-const mongoDB = env.DB_CONNECTION_STRING_LOCAL;
+const mongoDB = env.DB_CONNECTION_STRING;
 
 mongoose.set('strictQuery', false);
 
@@ -11,7 +11,7 @@ const connectDB = async () => {
 
   try {
     // await mongoose.connect(mongoDB, { dbName: 'dodge' });
-    await mongoose.connect(mongoDB, { dbName: 'dodge_dev' });
+    await mongoose.connect(mongoDB, { dbName: 'dodge' });
     console.log('MongoDB: connected...');
     // await createAdminUser();
   } catch (error) {
