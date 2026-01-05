@@ -59,7 +59,7 @@ export default class TricksterBoss extends GameObject {
       this.gameObject.velY = 0;
       this.gameObject.velX = 5;
     } else if (!this.awaken && !this.game.player.afflictionManager.isHacked && this.gameObject.position.y >= 0) {
-      this.game.player.afflictionManager.getHacked();
+      this.game.player.afflictionManager.getTricked();
     }
   }
 

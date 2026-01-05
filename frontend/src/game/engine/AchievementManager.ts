@@ -72,6 +72,15 @@ export default class AchievementManager {
     const game = this.game;
     const player = this.game.player;
     const selectedRelic = store.getState()?.authSlice.user?.selectedRelic;
+    console.log(
+      'evaluate hasTakenDmg:',
+      this.trackables.hasTakenDmg,
+      selectedRelic,
+      ' hasVictiry',
+      Boolean(hasVictory),
+      ' level ===',
+      game.level,
+    );
 
     this.unlock(ACHIEVEMENT.THE_UNSEEN, () => {
       return (

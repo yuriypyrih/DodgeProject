@@ -55,8 +55,10 @@ export default class HealthManager {
 
     if (options && options.isSecondaryDamage) {
       if (!this.isImmuneSecondary && !this.game.player.relicManager.isImmune) {
-        console.log('TAKE DAMAGE', damage, options?.lastWhoDamagedMe);
-        this.game.player.achievementManager.takeHit(options?.lastWhoDamagedMe);
+        console.log('TAKE SECONDARY DAMAGE', damage, options?.lastWhoDamagedMe);
+        if (damage) {
+          this.game.player.achievementManager.takeHit(options?.lastWhoDamagedMe);
+        }
         this.lastTimeDamagedSecondary = this.game.now + immunityShit;
         if (options?.lastWhoDamagedMe) this.lastWhoDamagedMe = options.lastWhoDamagedMe;
         if (options?.isTrueDmg) {
@@ -77,8 +79,10 @@ export default class HealthManager {
       }
     } else {
       if (!this.isImmune && !this.game.player.relicManager.isImmune) {
-        console.log('TAKE DAMAGE', damage, options?.lastWhoDamagedMe);
-        this.game.player.achievementManager.takeHit(options?.lastWhoDamagedMe);
+        console.log('TAKE PRIMARY DAMAGE', damage, options?.lastWhoDamagedMe);
+        if (damage) {
+          this.game.player.achievementManager.takeHit(options?.lastWhoDamagedMe);
+        }
         this.lastTimeDamaged = this.game.now + immunityShit;
         if (options?.lastWhoDamagedMe) this.lastWhoDamagedMe = options.lastWhoDamagedMe;
         if (options?.isTrueDmg) {
@@ -126,9 +130,6 @@ export default class HealthManager {
     this.health = 100;
     this.lastTimeDamaged = Date.now();
     this.buffered_dmg = 0;
-    if (this.game.player.relicManager.relic?.id === AUGMENTS.HARVESTER) {
-      this.health = 1;
-    }
   }
 
   update(_deltaNumber: number) {

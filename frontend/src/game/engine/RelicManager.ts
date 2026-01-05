@@ -214,9 +214,6 @@ export default class RelicManager {
         this.game.player.resetMovement();
       }
       if (this.relic.id === AUGMENTS.SYMBIOTIC_LINK && this.symbioticLinked === null) {
-        this.game.audioHandler.shield.play();
-        store.dispatch(playAnimation(VFX.PULSE_LIGHT_BLUE));
-
         const { x: px, y: py } = player.gameObject.position;
 
         let nearestName = null;
@@ -238,6 +235,7 @@ export default class RelicManager {
 
         if (nearestName) {
           this.symbioticLinked = nearestName;
+          this.game.audioHandler.shield.play();
           store.dispatch(playAnimation(VFX.PULSE_LIGHT_BLUE));
           this.updateRelic(this.symbioticLinked);
         }
@@ -284,12 +282,10 @@ export default class RelicManager {
       const healthManager = this.game.player.healthManager;
       healthManager.takeDamage(0, {
         disableDefaultPulse: true,
+        disableDefaultSound: true,
         callback: () => {
           this.available_uses--;
-          // if (this.available_uses <= 0) {
-          //   const foundRelic = relics.find((r) => r.id === AUGMENTS.HACKED);
-          //   if (foundRelic) this.assignRelic(foundRelic, true);
-          // }
+          this.game.audioHandler.dodge.play();
         },
       });
       if (this.relic?.id === AUGMENTS.SYMBIOTIC_LINK) {
@@ -297,6 +293,7 @@ export default class RelicManager {
       }
       return true;
     } else {
+      // Being hit by other non linked enemies
       this.available_uses = this.relic?.max_uses || 0;
       this.updateRelic(this.symbioticLinked as string);
       return false;
@@ -417,6 +414,7 @@ export default class RelicManager {
     }
 
     if (this.relic?.id === AUGMENTS.HARVESTER && healthManager.health > 1) {
+      console.log('HARVESTER HARVESTER HARVESTER HARVESTER');
       healthManager.health = 1;
     }
 

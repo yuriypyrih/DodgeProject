@@ -5,6 +5,7 @@ import { Rectangle } from 'game/types/Rectangle.ts';
 import Game from 'game/engine/game.ts';
 import TetherBullet from 'game/entities/Tether/tether_bullet.ts';
 import { lineTouchesRect } from 'game/entities/Tether/tether_enemy.ts';
+import { AUGMENTS } from '../../../lib/api/specs/api.ts';
 
 type TProps = {
   game: Game;
@@ -32,6 +33,7 @@ export default class TetherBoss extends GameObject {
       position: position ? position : { x: game.canvas.canvasWidth / 2 - 25, y: -60 },
       velY,
       velX,
+      symbiosisName: 'Tether',
     });
 
     this.game = game;
@@ -146,7 +148,16 @@ export default class TetherBoss extends GameObject {
         line.y += 2;
         const touching = lineTouchesRect({ x: line.x1, y: line.y }, { x: line.x2, y: line.y }, playerRect);
         if (touching) {
-          player.healthManager.takeDamage(25, { lastWhoDamagedMe: 'Tether line' });
+          if (
+            player.relicManager.relic?.id === AUGMENTS.SYMBIOTIC_LINK &&
+            player.relicManager.symbioticLinked &&
+            player.relicManager.available_uses > 0 &&
+            this.gameObject.symbiosisName
+          ) {
+            player.relicManager.testSymbioticLink(this);
+          } else {
+            player.healthManager.takeDamage(25, { lastWhoDamagedMe: 'Tether line' });
+          }
         }
         if (line.y > this.game.canvas.canvasHeight) {
           line.y = 0;

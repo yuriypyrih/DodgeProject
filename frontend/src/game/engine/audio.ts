@@ -24,6 +24,7 @@ export default class AudioHandler {
   shield: Howl;
   teleport: Howl;
   roar: Howl;
+  dodge: Howl;
 
   constructor({ game }: AudioHandlerProps) {
     this.game = game;
@@ -112,6 +113,10 @@ export default class AudioHandler {
     });
     this.roar = new Howl({
       src: ['/audio/roar.wav'],
+      volume: soundVolume,
+    });
+    this.dodge = new Howl({
+      src: ['/audio/dodge.wav'],
       volume: soundVolume,
     });
   }

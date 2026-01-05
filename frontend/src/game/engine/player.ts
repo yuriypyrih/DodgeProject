@@ -346,6 +346,7 @@ export default class Player extends GameObject {
               this.afflictionManager.getPoisoned();
             } else {
               this.healthManager.health += 100;
+              this.game.audioHandler.heal.play();
               store.dispatch(playAnimation(VFX.PULSE_GREEN));
             }
             this.healthManager.lastTimeDamaged = this.game.now;
@@ -424,6 +425,8 @@ export default class Player extends GameObject {
           });
         } else if (object.gameObject.id === ENTITY_ID.LIFELINE_BULLET) {
           this.healthManager.health += 15;
+          this.game.audioHandler.heal.play();
+          store.dispatch(playAnimation(VFX.PULSE_GREEN));
           this.game.removeGameObject(object);
         }
         if (object.gameObject.id === ENTITY_ID.BULLET) {
