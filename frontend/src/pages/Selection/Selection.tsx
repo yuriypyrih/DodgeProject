@@ -42,7 +42,7 @@ const Selection: React.FC<unknown> = () => {
     const queryPage = query.get('queryPage');
     if (queryPage) {
       const newPage = Number(queryPage);
-      if (newPage >= 1 && newPage <= 3) {
+      if (newPage >= 1 && newPage <= 5) {
         setPage(newPage);
       }
     }

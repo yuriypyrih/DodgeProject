@@ -8,6 +8,7 @@ import { RootState } from 'redux/store.ts';
 import { getRandomNumber } from 'utils/random.ts';
 import { DEFEAT_QUOTES } from '../../modules/quotes/DEFEAT_QUOTES.ts';
 import { CHAOS_DUNGEON_QUOTES } from '../../modules/quotes/CHAOS_QUOTES.ts';
+import { getPageBasedOnLevel } from 'utils/getPageBasedOnLevel.ts';
 
 const Defeat: React.FC<unknown> = () => {
   const { search } = useLocation();
@@ -55,17 +56,7 @@ const Defeat: React.FC<unknown> = () => {
 
   const handleQuit = () => {
     const lvl = Number(window.location.pathname.split('/')[2]);
-    let page = 1;
-    if (!lvl) {
-      page = 1;
-    }
-    if (lvl <= 12) {
-      page = 1;
-    } else if (lvl <= 24) {
-      page = 2;
-    } else if (lvl <= 27) {
-      page = 3;
-    }
+    const page = getPageBasedOnLevel(lvl);
     navigate(`/Selection?queryPage=${page}`, { replace: true });
   };
 

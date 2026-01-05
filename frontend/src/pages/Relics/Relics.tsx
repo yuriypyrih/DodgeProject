@@ -75,7 +75,7 @@ const Relics: React.FC = () => {
       {buyAugment !== null && (
         <UnlockLevelModal
           cost={buyAugment.cost}
-          description={`To unlock ${buyAugment.name}`}
+          description={`To unlock ${buyAugment.name} augment`}
           onBuy={() => dispatch(unlockAugment({ augment: buyAugment.id, cost: buyAugment.cost }))}
           onClose={() => setBuyAugment(null)}
         />

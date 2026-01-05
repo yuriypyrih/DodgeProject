@@ -42,7 +42,7 @@ const UnlockLevelModal: React.FC<UnlockLevelModalProps> = ({ description, onBuy,
               }}
             />
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 6 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 4 }}>
             <Button
               disabled={stars < cost}
               onClick={handleBuy}

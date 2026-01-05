@@ -11,6 +11,9 @@ const Home: React.FC = () => {
   const handleGoPatches = () => {
     navigate('/Patches');
   };
+  const handleGoReport = () => {
+    navigate('/Feedback');
+  };
   const handleGoSelection = () => {
     navigate('/Selection');
   };
@@ -39,18 +42,25 @@ const Home: React.FC = () => {
             </Typography>
           </Box>
           <Box sx={{ width: 150, display: 'flex', justifyContent: 'flex-end', p: 1 }}>
-            <Box>
+            <Box sx={{ textAlign: 'right' }}>
               <Typography
                 onClick={handleGoPatches}
+                color={'primary'}
                 sx={{
                   fontSize: 16,
                   textDecoration: 'underline',
                   cursor: 'pointer',
                 }}
+              >{`Patch Notes ${PATCH_NOTES[0].tag}`}</Typography>
+              <Typography
+                onClick={handleGoReport}
                 color={'primary'}
-              >
-                {`Patch Notes ${PATCH_NOTES[0].tag}`}
-              </Typography>
+                sx={{
+                  fontSize: 16,
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                }}
+              >{`Report a Bug`}</Typography>
             </Box>
           </Box>
         </Box>

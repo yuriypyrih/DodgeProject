@@ -3,7 +3,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PATCH_NOTES } from 'Models/data/PatchNotes.ts';
 import styles from './index.module.scss';
-import FeedbackButton from '../../components/FeedbackButton';
 import CustomButton from '../../components/CustomButton';
 
 const Patches: React.FC<unknown> = () => {
@@ -18,9 +17,7 @@ const Patches: React.FC<unknown> = () => {
               Patch Notes
             </Typography>
           </Box>
-          <Box sx={{ position: 'absolute', right: 16 }}>
-            <FeedbackButton />
-          </Box>
+          <Box sx={{ position: 'absolute', right: 16 }}>{/*<FeedbackButton />*/}</Box>
         </Box>
         <Box
           sx={{

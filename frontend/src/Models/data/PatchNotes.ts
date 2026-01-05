@@ -4,23 +4,24 @@ export const PATCH_NOTES: Array<{
   content: string[];
 }> = [
   {
-    title: 'Patch v1.4: Golden Age Expansion',
+    title: 'Patch v1.4: The Golden Age Expansion',
     tag: 'v1.4',
     content: [
       'I have cooked new stuff for you, I hope you like them!',
-      '- 12 new playable levels (36 in total)',
-      '- 3 new Chaos Dungeons (6 in total)',
-      '- 2 new Augments (18 in total)',
-      '- 20 unclokable Achievements with rewards',
-      '- Unlockable cosmetics such as titles to show the others in the leaderboards who is the Boss',
-      '- Music & SFX',
+      '- New: Music & SFX',
+      '- New: 20 unclokable Achievements with rewards',
+      '- New: Cosmetics such as titles to show the others in the leaderboards who is the Boss',
+      '- Added: 12 new playable levels (36 in total)',
+      '- Added: 3 new Chaos Dungeons (6 in total)',
+      '- Added: 5 new Augments (17 in total)',
+      '- QoL: Chaos Dungeon Timers now start right away, no more waiting',
     ],
   },
   {
-    title: 'Patch v1.3: Chaos Expansion',
+    title: 'Patch v1.3: The Chaos Expansion',
     tag: 'v1.3',
     content: [
-      'After a long pause due to life circumstances, we are back with a explosive entrance!',
+      'After a long pause, we are back with a explosive entrance!',
       '- Full backend support and account management',
       '- 24 playable levels',
       '- 3 Chaos Dungeons',
@@ -41,7 +42,7 @@ export const PATCH_NOTES: Array<{
     ],
   },
   {
-    title: 'Patch v1.2: Backend',
+    title: 'Patch v1.2: Backend Introduction',
     tag: 'v1.2',
     content: [
       'The backend integration is now live! You can now log in and keep your progress stored in your account.',

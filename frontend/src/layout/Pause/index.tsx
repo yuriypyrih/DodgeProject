@@ -4,6 +4,7 @@ import Game from '../../game/engine/game.ts';
 import styles from './styles.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { GAME_STATE } from 'game/enum/game_state.ts';
+import { getPageBasedOnLevel } from 'utils/getPageBasedOnLevel.ts';
 
 type PauseProps = {
   game: Game | null;
@@ -24,17 +25,7 @@ const Pause: React.FC<PauseProps> = ({ game, toggleReset }) => {
   const handleQuit = () => {
     if (game) game.close();
     const lvl = Number(window.location.pathname.split('/')[2]);
-    let page = 1;
-    if (!lvl) {
-      page = 1;
-    }
-    if (lvl <= 12) {
-      page = 1;
-    } else if (lvl <= 24) {
-      page = 2;
-    } else if (lvl <= 27) {
-      page = 3;
-    }
+    const page = getPageBasedOnLevel(lvl);
     navigate(`/Selection?queryPage=${page}`, { replace: true });
   };
 

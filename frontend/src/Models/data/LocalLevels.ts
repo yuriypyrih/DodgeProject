@@ -1,9 +1,5 @@
 import { Level } from '../level';
 import { LEVEL_STATUS } from '../enum/LEVEL_STATUS';
-import Game from '../../game/engine/game';
-import { Relic } from 'game/types/Relic.ts';
-import { GAME_STATE } from 'game/enum/game_state.ts';
-import { relics } from 'game/engine/relics/relics_collection.tsx';
 
 export const LocalLevels: Level[] = [
   // {
@@ -209,91 +205,91 @@ export const LocalLevels: Level[] = [
     level: 28,
     levelId: 'LVL_28',
     description: 'Lifeline',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     cost: 10,
   },
   {
     level: 29,
     levelId: 'LVL_29',
     description: 'Radioactive',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     cost: 10,
   },
   {
     level: 30,
     levelId: 'LVL_30',
     description: 'Trickster',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     cost: 10,
   },
   {
     level: 31,
     levelId: 'LVL_31',
     description: 'Puppet',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     cost: 10,
   },
   {
     level: 32,
     levelId: 'LVL_32',
     description: 'Tether',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     cost: 10,
   },
   {
     level: 33,
     levelId: 'LVL_33',
     description: 'Marathon V6',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     cost: 10,
   },
   {
     level: 34,
     levelId: 'LVL_34',
     description: 'Marathon V7',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     cost: 10,
   },
   {
     level: 35,
     levelId: 'LVL_35',
     description: 'Marathon V8',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     cost: 10,
   },
   {
     level: 36,
     levelId: 'LVL_36',
     description: 'Marathon V9',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     cost: 10,
   },
   {
     level: 37,
     levelId: 'LVL_37',
     description: 'Marathon V10',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     cost: 10,
   },
   {
     level: 38,
     levelId: 'LVL_38',
     description: 'Marathon V11',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     cost: 10,
   },
   {
     level: 39,
     levelId: 'LVL_39',
     description: 'Marathon V12',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     cost: 10,
   },
   {
     level: 40,
     levelId: 'LVL_40',
     description: 'Singularity',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     chaosDungeon: true,
     cost: 20,
   },
@@ -301,7 +297,7 @@ export const LocalLevels: Level[] = [
     level: 41,
     levelId: 'LVL_41',
     description: 'Metro Exodus',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     chaosDungeon: true,
     cost: 20,
   },
@@ -309,40 +305,8 @@ export const LocalLevels: Level[] = [
     level: 42,
     levelId: 'LVL_42',
     description: 'Final Destination',
-    status: LEVEL_STATUS.UNLOCKED,
+    status: LEVEL_STATUS.LOCKED,
     chaosDungeon: true,
     cost: 20,
   },
 ];
-
-type gameSliceType = {
-  game: Game | null;
-  level: number;
-  levels: Level[];
-  relics: Relic[];
-  selectedRelic: Relic;
-  hp: number;
-  gameState: GAME_STATE;
-  poisoned: boolean;
-  progress: {
-    max_stars: number;
-    total_stars_collected: number;
-    star_timers: number[];
-  };
-};
-
-// const initialState: gameSliceType = {
-//   game: null,
-//   level: 1,
-//   levels: LocalLevels,
-//   relics: relics,
-//   selectedRelic: relics[1],
-//   hp: 0,
-//   gameState: GAME_STATE.PLAYING,
-//   poisoned: false,
-//   progress: {
-//     max_stars: 3,
-//     total_stars_collected: 0,
-//     star_timers: [],
-//   },
-// };

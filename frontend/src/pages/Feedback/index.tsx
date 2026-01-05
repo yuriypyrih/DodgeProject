@@ -81,7 +81,7 @@ const FeedbackPage: React.FC<unknown> = () => {
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
           <CustomButton text={'SUBMIT'} disabled={!isSubmittable || alreadySubmitted} onClick={handleSubmit} />
-          <CustomButton text={'BACK'} onClick={() => navigate('/Patches')} />
+          <CustomButton text={'BACK'} onClick={() => navigate('/Home')} />
         </Box>
       </Box>
     </Box>

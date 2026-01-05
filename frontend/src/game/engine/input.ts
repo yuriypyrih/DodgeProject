@@ -100,7 +100,8 @@ export default class InputHandler {
     document.addEventListener('keyup', this.onKeyUp);
 
     // Mobile
-    if (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) {
+    const isTouchPrimary = window.matchMedia('(pointer: coarse)').matches;
+    if (isTouchPrimary) {
       this.mobile = new MobileControls(this.game);
       this.mobile.mount();
 

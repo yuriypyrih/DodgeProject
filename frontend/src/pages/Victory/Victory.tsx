@@ -13,6 +13,7 @@ import { GAME_STATE } from 'game/enum/game_state.ts';
 import CustomButton from '../../components/CustomButton';
 import { VICTORY_QUOTES } from '../../modules/quotes/VICTORY_QUOTES.ts';
 import { getRandomNumber } from 'utils/random.ts';
+import { getPageBasedOnLevel } from 'utils/getPageBasedOnLevel.ts';
 
 const Victory: React.FC<unknown> = () => {
   const navigate = useNavigate();
@@ -53,17 +54,7 @@ const Victory: React.FC<unknown> = () => {
   const handleQuit = () => {
     if (game) game.close();
     const lvl = Number(window.location.pathname.split('/')[2]);
-    let page = 1;
-    if (!lvl) {
-      page = 1;
-    }
-    if (lvl <= 12) {
-      page = 1;
-    } else if (lvl <= 24) {
-      page = 2;
-    } else if (lvl <= 27) {
-      page = 3;
-    }
+    const page = getPageBasedOnLevel(lvl);
     navigate(`/Selection?queryPage=${page}`, { replace: true });
   };
 
