@@ -103,43 +103,55 @@ const shadowStyle = {
 const hackerStyle = {
   color: 'black',
   textShadow: `
-    0 0 4px rgba(0, 255, 120, 0.7),
-    0 0 12px rgba(0, 255, 100, 0.6),
-    0 0 20px rgba(0, 200, 80, 0.55)
+    0 0 5px rgba(0, 255, 140, 0.85),
+    0 0 14px rgba(0, 255, 120, 0.7),
+    0 0 26px rgba(0, 220, 100, 0.6),
+    0 0 38px rgba(0, 255, 140, 0.25)
   `,
-  animation: 'shadowGlitch 2.8s infinite steps(24, end)',
+  animation: 'shadowGlitch 5s 1s infinite steps(24, end)',
   '@keyframes shadowGlitch': {
     '0%': {
       transform: 'translate(0, 0)',
       textShadow: `
-        0 0 4px rgba(0, 255, 120, 0.7),
-        0 0 10px rgba(0, 255, 100, 0.6),
-        0 0 18px rgba(0, 200, 80, 0.55)
-      `,
+      0 0 5px rgba(0, 255, 140, 0.85),
+      0 0 12px rgba(0, 255, 120, 0.7),
+      0 0 22px rgba(0, 220, 100, 0.6),
+      0 0 34px rgba(0, 255, 140, 0.22)
+    `,
     },
-    '8%': { transform: 'translate(0.5px, -0.3px)' },
-    '12%': {
-      transform: 'translate(-0.9px, 0.5px)',
+
+    '5%': { transform: 'translate(0.9px, -0.6px)' },
+
+    '6.5%': {
+      transform: 'translate(-1.4px, 0.9px)',
       textShadow: `
-        1px 0 rgba(0, 255, 120, 0.6),
-        -1px 0 rgba(0, 180, 80, 0.6),
-        0 0 14px rgba(0, 255, 180, 0.5)
-      `,
+      1px 0 rgba(0, 255, 160, 0.8),
+      -1px 0 rgba(0, 200, 100, 0.75),
+      0 0 26px rgba(0, 255, 200, 0.7),
+      0 0 48px rgba(0, 255, 160, 0.32)
+    `,
     },
-    '14%': { transform: 'translate(0, 0)' },
-    '30%': { transform: 'translate(0.3px, 0.2px)' },
-    '32%': {
-      transform: 'translate(-0.6px, -0.3px)',
+
+    '8%': { transform: 'translate(0, 0)' },
+
+    '22%': { transform: 'translate(0.6px, 0.4px)' },
+
+    '23.5%': {
+      transform: 'translate(-1.1px, -0.7px)',
       textShadow: `
-        -1px 0 rgba(0, 255, 140, 0.6),
-        1px 0 rgba(0, 200, 90, 0.55),
-        0 0 16px rgba(0, 255, 180, 0.45)
-      `,
+      -1px 0 rgba(0, 255, 160, 0.78),
+      1px 0 rgba(0, 220, 120, 0.72),
+      0 0 28px rgba(0, 255, 210, 0.68),
+      0 0 50px rgba(0, 255, 170, 0.3)
+    `,
     },
-    '34%': { transform: 'translate(0, 0)' },
-    '60%': { transform: 'translate(0.5px, 0)' },
-    '62%': { transform: 'translate(0, 0.3px)' },
-    '64%': { transform: 'translate(0, 0)' },
+
+    '25%': { transform: 'translate(0, 0)' },
+
+    '60%': { transform: 'translate(0.6px, 0)' },
+    '61.5%': { transform: 'translate(0, 0.6px)' },
+    '63%': { transform: 'translate(0, 0)' },
+
     '100%': { transform: 'translate(0, 0)' },
   },
 };

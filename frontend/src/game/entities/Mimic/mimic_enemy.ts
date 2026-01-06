@@ -98,8 +98,7 @@ export default class MimicEnemy extends GameObject {
       this.mimicTimer = 160;
       const tempVelX = this.enemyMimicked ? this.enemyMimicked.gameObject.velX : this.gameObject.velX;
       const tempVelY = this.enemyMimicked ? this.enemyMimicked.gameObject.velY : this.gameObject.velY;
-      // const MAX_NUMBER = this.fullPower ? 13 : 7;
-      const MAX_NUMBER = this.fullPower ? 13 : 2;
+      const MAX_NUMBER = this.fullPower ? 13 : 7;
       const MIN_NUMBER = 0;
       let randomNum = Math.floor(Math.random() * (MAX_NUMBER - MIN_NUMBER)) + MIN_NUMBER;
       if (randomNum === this.prevMimicked) {
@@ -114,12 +113,12 @@ export default class MimicEnemy extends GameObject {
           velX: tempVelX >= 0 ? 5 : -5,
           velY: tempVelY >= 0 ? 5 : -5,
         });
-      } else if (randomNum === 4) {
-        this.enemyMimicked = new SpeederEnemy({
+      } else if (randomNum === 1) {
+        this.enemyMimicked = new VenomEnemy({
           game: this.game,
           position: this.gameObject.position,
-          velX: tempVelX >= 0 ? 2 : -2,
-          velY: tempVelY >= 0 ? 11 : -11,
+          horizontalToRight: tempVelX >= 0,
+          verticalToBottom: tempVelY >= 0,
         });
       } else if (randomNum === 2) {
         this.enemyMimicked = new TracerEnemy({
@@ -133,12 +132,12 @@ export default class MimicEnemy extends GameObject {
           velX: tempVelX >= 0 ? 1.8 : -1.8,
           velY: tempVelY >= 0 ? 5 : -5,
         });
-      } else if (randomNum === 1) {
-        this.enemyMimicked = new VenomEnemy({
+      } else if (randomNum === 4) {
+        this.enemyMimicked = new SpeederEnemy({
           game: this.game,
           position: this.gameObject.position,
-          horizontalToRight: tempVelX >= 0,
-          verticalToBottom: tempVelY >= 0,
+          velX: tempVelX >= 0 ? 2 : -2,
+          velY: tempVelY >= 0 ? 11 : -11,
         });
       } else if (randomNum === 5) {
         this.enemyMimicked = new BomberEnemy({

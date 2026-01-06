@@ -70,8 +70,8 @@ const StoreOption: React.FC<TProps> = ({
           </Box>
           <Box style={{ minHeight: '26px', display: 'flex', justifyContent: 'center' }}>{content}</Box>
           <Box
-            className={styles.titleCosmetic}
-            style={{ minHeight: '26px', display: 'flex', fontSize: 14, opacity: 0.4, justifyContent: 'center' }}
+            className={clsx(styles.titleCosmetic)}
+            style={{ minHeight: '26px', display: 'flex', fontSize: 14, justifyContent: 'center' }}
           >
             {isLocked ? requirement : 'Ready for you'}
           </Box>

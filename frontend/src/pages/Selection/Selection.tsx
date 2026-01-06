@@ -18,6 +18,7 @@ import ShopButton from '../../components/ShopButton';
 import LeaderboardButton from '../../components/LeaderboardButton';
 import { API_LEVEL } from 'Models/enum/API_LEVEL.ts';
 import CustomButton from '../../components/CustomButton';
+import SettingsIcon from '@mui/icons-material/Settings';
 import WikiButton from 'components/WikiButton';
 
 const Selection: React.FC<unknown> = () => {
@@ -110,14 +111,17 @@ const Selection: React.FC<unknown> = () => {
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
-          <Box>
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'nowrap' }}>
             <Button className={clsx(styles.relicBtn)} onClick={() => navigate('/Relics')}>
               {getRelic()}
+            </Button>
+            <Button className={clsx(styles.relicBtn)} onClick={() => navigate('/Settings')}>
+              <SettingsIcon />
             </Button>
           </Box>
           <Box sx={{ height: 44, display: 'flex', wrap: 'nowrap', gap: 1, justifyContent: 'flex-end' }}>
             {(page === 3 || page === 5) && <LeaderboardButton />}
-            <WikiButton />
+            <WikiButton isSpecial={true} />
             <ShopButton />
           </Box>
         </Box>
@@ -154,11 +158,11 @@ const Selection: React.FC<unknown> = () => {
                 <Box
                   key={i}
                   sx={{
-                    width: 5,
-                    height: 5,
-                    borderRadius: '50%',
+                    width: page === i + 1 ? 10 : 4,
+                    height: 4,
+                    borderRadius: '2px',
                     backgroundColor: page === i + 1 ? 'primary.main' : 'rgba(255,255,255,0.35)',
-                    transition: 'background-color 0.2s ease',
+                    transition: 'all 0.2s ease',
                     display: 'flex',
                     flexDir: 'column',
                     justifyContent: 'center',

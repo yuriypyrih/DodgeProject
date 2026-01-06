@@ -5,6 +5,7 @@ import styles from './styles.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { GAME_STATE } from 'game/enum/game_state.ts';
 import { getPageBasedOnLevel } from 'utils/getPageBasedOnLevel.ts';
+import VolumeControls from 'components/VolumeControls';
 
 type PauseProps = {
   game: Game | null;
@@ -32,6 +33,9 @@ const Pause: React.FC<PauseProps> = ({ game, toggleReset }) => {
   return (
     <Box className={styles.root}>
       <Box className={styles.container}>
+        <Box sx={{ position: 'absolute', right: 8, top: 8 }}>
+          <VolumeControls showLabel={true} showBackground={true} />
+        </Box>
         <Typography variant="h2" style={{ color: 'white', textShadow: '5px 5px #222' }}>
           PAUSED
         </Typography>

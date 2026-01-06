@@ -12,7 +12,8 @@ export default class Hud {
   healthBar_width: number;
   healthBar_height: number;
   healthBar_player: number;
-  deltaTime: number;
+  lastTimeCalled: number;
+  samples: number[];
   fps: number;
 
   constructor({ game }: HudProps) {
@@ -22,17 +23,29 @@ export default class Hud {
     this.healthBar_width = 200;
     this.healthBar_height = 15;
     this.healthBar_player = 0;
-    this.deltaTime = 0;
+    this.lastTimeCalled = performance.now();
+    this.samples = [];
     this.fps = 0;
   }
 
-  update(deltaTime: number) {
+  update(_deltaTime: number) {
     if (this.game.dev) {
       const healthManager = this.game.player.healthManager;
       const HP = healthManager.health >= 1 ? healthManager.health : 5;
       this.healthBar_player = Math.ceil((this.healthBar_width / 100) * HP);
-      this.deltaTime = Math.round(deltaTime * 100) / 100;
-      this.fps = Math.round((1000 / this.deltaTime) * 10) / 10;
+      if (this.lastTimeCalled !== 0) {
+        const now = Math.round(performance.now());
+        const delta = now - this.lastTimeCalled;
+        this.lastTimeCalled = now;
+        // store delta
+        this.samples.push(delta);
+        if (this.samples.length > 10) {
+          this.samples.shift();
+        }
+        // average delta
+        const avgDelta = this.samples.reduce((a, b) => a + b, 0) / this.samples.length;
+        this.fps = Math.round((1000 / avgDelta) * 10) / 10;
+      }
     }
   }
   draw(context: any) {
@@ -47,7 +60,6 @@ export default class Hud {
       context.fillText(`Timer: ${this.game.spawner.roundTimer}, ${getSec(this.game.spawner.roundTimer)}`, 10, 90);
       context.fillText(`gameObjects: ${this.game.gameObjects.length}`, 10, 105);
       context.fillText(`Particles: ${this.game.particleObjects.length}`, 10, 120);
-      context.fillText(`deltaTime: ${this.deltaTime}`, 10, 135);
       context.fillText(`fps: ${this.fps}`, 10, 150);
       context.fillText(`HP: ${healthManager.health}`, 10, 165);
       context.fillText(`Stars: ${this.game.player.stars}, ${this.game.spawner.executionSequence}`, 10, 180);

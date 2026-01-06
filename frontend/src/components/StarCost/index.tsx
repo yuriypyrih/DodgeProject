@@ -34,12 +34,12 @@ const StarCost: React.FC<StarCostProps> = ({
     <Box
       style={{
         backgroundColor: disabled ? '#00AFA310' : '#00AFA3',
-        border: disabled ? '2px solid #2dd5c410' : '2px solid #2dd5c4',
+        border: disabled ? '2px solid #EC515180' : '2px solid #2dd5c4',
+        color: disabled ? '#EC515180' : '#1a1a1d',
         borderRadius: '4px',
         overflow: 'hidden',
         position: position,
         zIndex: 2,
-        color: 'white',
         right: right,
         top: top,
         display: 'flex',
@@ -51,7 +51,7 @@ const StarCost: React.FC<StarCostProps> = ({
       {!withoutLock && getLock()}
       <Box sx={{ display: 'flex', flexWrap: 'nowrap', alignItems: 'center', justifyContent: 'center', px: 0.5 }}>
         <Box>
-          <Typography sx={{ fontSize: 12 }}>{cost}</Typography>
+          <Typography sx={{ fontSize: 12, color: 'white' }}>{cost}</Typography>
         </Box>
         <StarIcon
           style={{

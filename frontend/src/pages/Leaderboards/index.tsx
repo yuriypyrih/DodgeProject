@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, CircularProgress, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Tab, Tabs, Typography } from '@mui/material';
 import LeaderboardItem from './LeaderboardItem.tsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 'redux/store.ts';
@@ -7,6 +7,9 @@ import styles from './styles.module.scss';
 import { getLeaderboards } from 'redux/slices/chaosSlice.ts';
 import CustomButton from '../../components/CustomButton';
 import useNavigateBack from '../../utils/hooks/useNavigateBack.ts';
+import WikiButton from 'components/WikiButton';
+import ShopButton from 'components/ShopButton';
+import ProfileButton from 'components/ProfileButton';
 
 const LeaderboardsPage: React.FC<unknown> = () => {
   const { navigateBack } = useNavigateBack();
@@ -68,10 +71,19 @@ const LeaderboardsPage: React.FC<unknown> = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', gap: 1 }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, flex: 1 }}>
           <Box>
-            <Box>
+            <Box sx={{ position: 'absolute', width: '100%' }}>
               <Typography variant={'h5'} color={'primary'} sx={{ textAlign: 'center' }}>
                 Global Leaderboards
               </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'nowrap' }}>
+                <ProfileButton />
+              </Box>
+              <Box sx={{ height: 44, display: 'flex', wrap: 'nowrap', gap: 1, justifyContent: 'flex-end' }}>
+                <WikiButton isSpecial={true} tab={2} />
+                <ShopButton />
+              </Box>
             </Box>
           </Box>
           <Tabs value={tab} onChange={handleChange} indicatorColor="primary">

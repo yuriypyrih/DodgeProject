@@ -185,7 +185,7 @@ export const register = createAsyncThunk(
       if (error.response.data.error.code && error.response.data.error.code === 11000) {
         thunkAPI.dispatch(
           setStatusMsg({
-            statusMsg: 'There is already an account with this email',
+            statusMsg: 'There is already an account with this email or name',
             msgIsError: true,
           }),
         );

@@ -40,6 +40,8 @@ export const getLevel1 = (game: Game): null => {
       game.gameObjects.push(new BasicEnemy({ game, position: { x: 1, y: 40 } }));
     } else if (game.spawner.roundTimer === sec(levelStars[0] + 3)) {
       game.gameObjects.push(new BasicEnemy({ game, position: { x: 1, y: 60 } }));
+    } else if (game.spawner.roundTimer === sec(levelStars[0] + 8)) {
+      store.dispatch(playText(['You can press Space or Escape', 'to pause the game', 'if you want']));
     } else if (game.spawner.roundTimer === sec(levelStars[1])) {
       game.gameObjects.push(
         new Star({

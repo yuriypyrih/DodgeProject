@@ -207,7 +207,7 @@ const AuthPage: React.FC = () => {
           <CustomTextfield label={'Name'} value={regName} setValue={handleSetName} />
           <CustomTextfield label={'Email'} value={regEmail} setValue={setRegEmail} />
         </Box>
-        <Box>
+        <Box sx={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', wrap: 'nowrap', gap: 2, width: '100%' }}>
             <CustomTextfield label={'Password'} type={'password'} value={regPass} setValue={setRegPass} />
             <CustomTextfield

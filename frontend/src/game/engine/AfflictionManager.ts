@@ -293,7 +293,13 @@ export default class AfflictionManager {
         if (!relicManager.isImmune) {
           const poisonDmg = relicManager.relic?.id === AUGMENTS.NIGHT_VISION ? 1 : 3;
           this.poisonConsumed += poisonDmg;
-          player.healthManager.health += relicManager.relic?.id === AUGMENTS.DEMON_SOUL ? poisonDmg : -poisonDmg;
+          if (relicManager.relic?.id === AUGMENTS.DEMON_SOUL) {
+            player.healthManager.health += poisonDmg;
+          } else if (relicManager.relic?.id === AUGMENTS.REGENERATION && player.healthManager.health <= 5) {
+            // DO NOTHING, DO NOT HARM THE PLAYER
+          } else {
+            player.healthManager.health -= poisonDmg;
+          }
           player.healthManager.lastWhoDamagedMe = 'Poison';
         }
       }

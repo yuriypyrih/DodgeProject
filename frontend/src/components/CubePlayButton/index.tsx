@@ -92,7 +92,7 @@ const CubePlayButton: React.FC<CubePlayButtonProps> = ({ level, complete, clickB
           />
         )}
         {level.status === LEVEL_STATUS.LOCKED && (
-          <StarCost cost={level.cost} right={'-12px'} top={'-12px'} hovered={hovered} />
+          <StarCost cost={level.cost} right={'-16px'} top={'-12px'} hovered={hovered} />
         )}
         {level.status !== LEVEL_STATUS.COMING_SOON ? (
           <Typography variant={'h6'}>{level.level}</Typography>

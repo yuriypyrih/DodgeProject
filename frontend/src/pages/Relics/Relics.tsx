@@ -41,7 +41,7 @@ const Relics: React.FC = () => {
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: 1 }}>
-              <WikiButton tab={2} />
+              <WikiButton tab={2} isSpecial={true} />
               <ShopButton />
             </Box>
           </Box>

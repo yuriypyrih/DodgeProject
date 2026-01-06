@@ -1,9 +1,76 @@
 .journalBtn {
   &:global(.MuiButton-root) {
+    position: relative;
+    overflow: hidden;
+
     padding: 4px;
     background: #00afa3;
     border: 2px solid #2dd5c4;
     border-radius: 4px;
     color: white;
+
+    transition: transform 150ms ease;
+  }
+}
+
+.isSpecial {
+  &:global(.MuiButton-root) {
+    animation: pulseScale 3s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+
+  &:global(.MuiButton-root)::after {
+    content: '';
+    position: absolute;
+    inset: -40%;
+    background: linear-gradient(
+                    120deg,
+                    transparent 40%,
+                    rgba(255, 215, 120, 0.75),
+                    rgba(255, 240, 180, 0.9),
+                    rgba(255, 215, 120, 0.75),
+                    transparent 60%
+    );
+    transform: translateX(-100%);
+    opacity: 0;
+
+    animation: goldShine 3s ease-in-out infinite;
+    animation-delay: 2s;
+
+    pointer-events: none;
+  }
+}
+
+@keyframes pulseScale {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.06);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes goldShine {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(120%);
+    opacity: 0;
   }
 }

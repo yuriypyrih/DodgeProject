@@ -5,6 +5,11 @@ type AudioHandlerProps = {
   game: Game;
 };
 
+export const MUSIC_HIGH = 0.08;
+export const MUSIC_LOW = 0.008;
+export const SOUND_HIGH = 0.15;
+export const SOUND_LOW = 0.05;
+
 export default class AudioHandler {
   game: Game;
   themeIsPlaying: boolean;
@@ -31,20 +36,20 @@ export default class AudioHandler {
     this.themeIsPlaying = false;
 
     const localStorageMusicVolume = localStorage.getItem('musicVolume');
-    let musicVolume = 0.1;
+    let musicVolume = MUSIC_LOW;
     if (localStorageMusicVolume === 'High') {
-      musicVolume = 0.1;
+      musicVolume = MUSIC_HIGH;
     } else if (localStorageMusicVolume === 'Low') {
-      musicVolume = 0.02;
+      musicVolume = MUSIC_LOW;
     } else if (localStorageMusicVolume === 'Off') {
       musicVolume = 0;
     }
     const localStorageSoundVolume = localStorage.getItem('soundVolume');
     let soundVolume = 0.15;
     if (localStorageSoundVolume === 'High') {
-      soundVolume = 0.15;
+      soundVolume = SOUND_HIGH;
     } else if (localStorageSoundVolume === 'Low') {
-      soundVolume = 0.05;
+      soundVolume = SOUND_LOW;
     } else if (localStorageSoundVolume === 'Off') {
       soundVolume = 0;
     }
@@ -141,6 +146,22 @@ export default class AudioHandler {
     this.starGrab.volume(volume);
     this.starAppear.volume(volume);
     this.damage.volume(volume);
+    this.radiation.volume(volume);
+    this.victory.volume(volume);
+    this.defeat.volume(volume);
+    this.button.volume(volume);
+    this.poison.volume(volume);
+    this.deathmark.volume(volume);
+    this.burn.volume(volume);
+    this.hacked.volume(volume);
+    this.heal.volume(volume);
+    this.shield.volume(volume);
+    this.teleport.volume(volume);
+    this.roar.volume(volume);
+    this.dodge.volume(volume);
+
+    // Play button to test
+    this.button.play();
   }
 
   stopAudio() {

@@ -1,6 +1,5 @@
 import { Box, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styles from './index.module.scss';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import { sendFeedback } from '../../redux/slices/authSlice.ts';
@@ -8,9 +7,10 @@ import { AppDispatch, RootState } from '../../redux/store.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import { isBefore, subHours } from 'date-fns';
 import CustomButton from '../../components/CustomButton';
+import useNavigateBack from 'utils/hooks/useNavigateBack.ts';
 
 const FeedbackPage: React.FC<unknown> = () => {
-  const navigate = useNavigate();
+  const { navigateBack } = useNavigateBack();
   const dispatch: AppDispatch = useDispatch();
   const [content, setContent] = useState<string>('');
   const { feedbackSentAt } = useSelector((state: RootState) => state.authSlice.user);
@@ -81,7 +81,7 @@ const FeedbackPage: React.FC<unknown> = () => {
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
           <CustomButton text={'SUBMIT'} disabled={!isSubmittable || alreadySubmitted} onClick={handleSubmit} />
-          <CustomButton text={'BACK'} onClick={() => navigate('/Home')} />
+          <CustomButton text={'BACK'} onClick={() => navigateBack('/Home')} />
         </Box>
       </Box>
     </Box>

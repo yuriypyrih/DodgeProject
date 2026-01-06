@@ -82,7 +82,7 @@ const generalContent: ContentType[] = [
     title: 'Augments',
     description: [
       'Augments are powerful abilities that you can equip during the level selection.',
-      '- To activate an augment press Q (or L when playing AWSD) during the game.',
+      '- To activate an augment press L (or Q when playing with Arrows) during the game.',
       '- Hop into the augment section to learn more about them individually.',
     ],
   },
@@ -91,11 +91,10 @@ const generalContent: ContentType[] = [
     title: 'Chaos Dungeons',
     description: [
       'Once you get enough experience you can jump into the Chaos Dungeons!',
-      "It starts as a normal level but it doesn't have a boss or an ending. " +
-        'Instead at the last star you enter into a race to get the best score by surviving as long as possible.',
-      '- When the timer starts, EVERYTHING deals 5 extra damage on hit.',
+      '- No Boss and No ending. Everything kicks at once and you have to survive as long as you can.',
+      '- EVERYTHING deals 5 extra damage on hit.',
+      '- Every 100s the enemies reset and you get a star, just for fun.',
       '- You can compare scores on the global leaderboards!',
-      '- Your augment is your best friend so choose wisely..',
     ],
   },
 ];
@@ -296,6 +295,7 @@ const augmentsContent: ContentType[] = [
     title: 'Regeneration (Passive ∞)',
     description: [
       'Heals for 2hp every second and take 10% less damage',
+      '- You can not die from Poison but you still take damage',
       `- Damage reduction doesn't apply on Poison, Explosions, Deathmark and Burn effects`,
     ],
   },
@@ -419,9 +419,9 @@ const augmentsContent: ContentType[] = [
     title: 'Symbiotic Link (Active)',
     description: [
       'Activate to create a link to the closest enemy',
-      '- While being linked you will ignore being hit by that enemy type and its effects (Explosions, Firewall, Auras, etc)',
+      '- While being linked you will ignore being hit by that enemy type and its effects (Explosions, Firewalls, Tethers, etc)',
       '- Being hit by the linked enemy 4x times consecutively will disable the link',
-      '- Auras count as hits when linked to an Aura Enemy',
+      '- Auras do not count and you are still affected by them',
       '- Being hit by another non-linked enemy will fully replenish the link',
     ],
   },
@@ -666,7 +666,10 @@ const Wiki: React.FC<unknown> = () => {
     <Box className={styles.root}>
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
-          <Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', px: 1 }}>
+            <Typography color={'primary'} sx={{ fontSize: 24, width: 180 }}>
+              Dodge Wiki
+            </Typography>
             <Tabs value={tab} onChange={handleChange} indicatorColor="primary">
               <Tab label="General" className={styles.tabs} />
               <Tab label="Enemies" className={styles.tabs} />
